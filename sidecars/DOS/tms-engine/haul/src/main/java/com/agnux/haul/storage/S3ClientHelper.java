@@ -5,7 +5,7 @@ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
-import com.agnux.haul.errors.ElementalException;
+import com.agnux.haul.errors.TmsException;
 import com.agnux.haul.errors.ErrorCodes;
 
 import java.util.Optional;
@@ -25,11 +25,11 @@ class S3ClientHelper {
      * credentials provider will be used.
      * @return An instance of {@link S3Client} configured with the appropriate
      * credentials and region.
-     * @throws ElementalException If required environment variables (AWS_REGION,
+     * @throws TmsException If required environment variables (AWS_REGION,
      * AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY) are missing or invalid when
      * {@code seekout} is {@code true}.
      */
-    public static S3Client setupWithEnv(boolean seekout) throws ElementalException {
+    public static S3Client setupWithEnv(boolean seekout) throws TmsException {
         if (!seekout) {
             // Use the default credentials provider
             return S3Client.builder()
@@ -43,14 +43,13 @@ class S3ClientHelper {
         Optional<String> secret = Optional.ofNullable(System.getenv("AWS_SECRET_ACCESS_KEY"));
 
         // Validate and create AWS credentials
-        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(
-                key.orElseThrow(() -> new ElementalException("AWS key was not provided", ErrorCodes.STORAGE_PROVIDEER_ISSUES)),
-                secret.orElseThrow(() -> new ElementalException("AWS secret was not provided", ErrorCodes.STORAGE_PROVIDEER_ISSUES))
+        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(key.orElseThrow(() -> new TmsException("AWS key was not provided", ErrorCodes.STORAGE_PROVIDEER_ISSUES)),
+                secret.orElseThrow(() -> new TmsException("AWS secret was not provided", ErrorCodes.STORAGE_PROVIDEER_ISSUES))
         );
 
         // Configure and build the S3 client
         return S3Client.builder()
-                .region(Region.of(region.orElseThrow(() -> new ElementalException("AWS region was not provided", ErrorCodes.STORAGE_PROVIDEER_ISSUES))))
+                .region(Region.of(region.orElseThrow(() -> new TmsException("AWS region was not provided", ErrorCodes.STORAGE_PROVIDEER_ISSUES))))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
                 .build();
     }

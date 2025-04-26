@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class TripDto {
+public class TripDetailsDto {
 
     private int origin;
     private int destiny;

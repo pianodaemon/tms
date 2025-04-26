@@ -1,7 +1,7 @@
 package com.agnux.haul.errors;
 
 /**
- * Custom exception class representing errors within the Maverick tralvel system.
+ * Custom exception class representing errors within the TMS management system.
  * <p>
  * This class extends the `Exception` class and includes an error code that
  * corresponds to a specific error type in the system. The error code is
@@ -11,7 +11,7 @@ package com.agnux.haul.errors;
  * exception.
  * </p>
  */
-final public class ElementalException extends Exception {
+final public class TmsException extends Exception {
 
     /**
      * The error code associated with this exception.
@@ -19,7 +19,7 @@ final public class ElementalException extends Exception {
     final int errorCode;
 
     /**
-     * Constructor for creating a new `ElementalException` with a specified
+     * Constructor for creating a new `TmsException` with a specified
      * error message and error code.
      * <p>
      * This constructor allows the exception to carry an error message along
@@ -31,13 +31,13 @@ final public class ElementalException extends Exception {
      * @param errorCode The error code associated with this exception, from the
      * `ErrorCodes` enum.
      */
-    public ElementalException(String message, ErrorCodes errorCode) {
+    public TmsException(String message, ErrorCodes errorCode) {
         super(message);
         this.errorCode = errorCode.getCode();
     }
 
     /**
-     * Constructor for creating a new `ElementalException` with a specified
+     * Constructor for creating a new `TmsException` with a specified
      * error message and a cause.
      * <p>
      * This constructor allows the exception to carry an error message and the
@@ -49,13 +49,13 @@ final public class ElementalException extends Exception {
      * exception.
      * @param cause The underlying cause of the exception (another throwable).
      */
-    public ElementalException(String message, Throwable cause) {
+    public TmsException(String message, Throwable cause) {
         super(message, cause);
         this.errorCode = ErrorCodes.UNKNOWN_ISSUE.getCode();
     }
 
     /**
-     * Constructor for creating a new `ElementalException` with a specified
+     * Constructor for creating a new `TmsException` with a specified
      * error message, cause, and error code.
      * <p>
      * This constructor allows the exception to carry an error message, the
@@ -69,7 +69,7 @@ final public class ElementalException extends Exception {
      * @param errorCode The error code associated with this exception, from the
      * `ErrorCodes` enum.
      */
-    public ElementalException(String message, Throwable cause, ErrorCodes errorCode) {
+    public TmsException(String message, Throwable cause, ErrorCodes errorCode) {
         super(message, cause);
         this.errorCode = errorCode.getCode();
     }

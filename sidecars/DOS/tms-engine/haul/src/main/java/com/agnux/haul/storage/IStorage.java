@@ -1,7 +1,7 @@
 package com.agnux.haul.storage;
 
 import java.io.BufferedInputStream;
-import com.agnux.haul.errors.ElementalException;
+import com.agnux.haul.errors.TmsException;
 
 import java.io.InputStream;
 
@@ -29,13 +29,13 @@ public interface IStorage {
      * @param len The length of the file in bytes.
      * @param fileName The name of the file to be uploaded.
      * @param inputStream The input stream of the file to upload.
-     * @throws ElementalException If an error occurs during the upload, an
-     * ElementalException is thrown.
+     * @throws TmsException If an error occurs during the upload, an
+ TmsException is thrown.
      */
     public void upload(final String cType,
             final long len,
             final String fileName,
-            InputStream inputStream) throws ElementalException;
+            InputStream inputStream) throws TmsException;
 
     /**
      * Downloads a file from the storage system.
@@ -46,10 +46,10 @@ public interface IStorage {
      *
      * @param fileName The name of the file to download.
      * @return A BufferedInputStream that can be used to read the file.
-     * @throws ElementalException If an error occurs during the download, an
-     * ElementalException is thrown.
+     * @throws TmsException If an error occurs during the download, an
+ TmsException is thrown.
      */
-    public BufferedInputStream download(final String fileName) throws ElementalException;
+    public BufferedInputStream download(final String fileName) throws TmsException;
 
     /**
      * Retrieves the target name of the storage system.
@@ -58,10 +58,10 @@ public interface IStorage {
      * represent a specific location or system.
      *
      * @return The target name of the storage system.
-     * @throws ElementalException If an error occurs while retrieving the target
-     * name, an ElementalException is thrown.
+     * @throws TmsException If an error occurs while retrieving the target
+ name, an TmsException is thrown.
      */
-    public String getTargetName() throws ElementalException;
+    public String getTargetName() throws TmsException;
 
     /**
      * Retrieves the URI (Uniform Resource Identifier) for accessing a file in
@@ -72,8 +72,8 @@ public interface IStorage {
      *
      * @param fileName The name of the file for which the URI is requested.
      * @return A URI string for accessing the file.
-     * @throws ElementalException If an error occurs while generating the URI,
-     * an ElementalException is thrown.
+     * @throws TmsException If an error occurs while generating the URI,
+ an TmsException is thrown.
      */
-    public String getUri(final String fileName) throws ElementalException;
+    public String getUri(final String fileName) throws TmsException;
 }

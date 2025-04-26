@@ -4,7 +4,7 @@ import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
-import com.agnux.haul.errors.ElementalException;
+import com.agnux.haul.errors.TmsException;
 import com.agnux.haul.errors.ErrorCodes;
 import com.agnux.haul.storage.IStorage;
 
@@ -52,14 +52,14 @@ public class S3BucketStorage implements IStorage {
      * @param len The length (size) of the file in bytes.
      * @param fileName The name to assign to the file in S3.
      * @param inputStream The input stream containing the file data.
-     * @throws ElementalException If an error occurs during the upload process.
+     * @throws TmsException If an error occurs during the upload process.
      */
     @Override
     public void upload(
             final String cType,
             final long len,
             final String fileName,
-            InputStream inputStream) throws ElementalException {
+            InputStream inputStream) throws TmsException {
 
         try {
             // Upload the file to the specified S3 bucket
@@ -73,9 +73,9 @@ public class S3BucketStorage implements IStorage {
                     RequestBody.fromInputStream(inputStream, len) // The file data
             );
         } catch (S3Exception ex) {
-            // Log the error and throw an ElementalException if the upload fails
+            // Log the error and throw an TmsException if the upload fails
             log.error(String.format("File %s cannot be uploaded: %s", fileName, ex.awsErrorDetails().errorMessage()));
-            throw new ElementalException("A failure occurred when attempting to write to the bucket storage",
+            throw new TmsException("A failure occurred when attempting to write to the bucket storage",
                     ex, ErrorCodes.STORAGE_PROVIDEER_ISSUES);
         }
     }
@@ -87,11 +87,11 @@ public class S3BucketStorage implements IStorage {
      *
      * @param fileName The name of the file to be downloaded from the S3 bucket.
      * @return A BufferedInputStream containing the file's data.
-     * @throws ElementalException If an error occurs during the download
+     * @throws TmsException If an error occurs during the download
      * process.
      */
     @Override
-    public BufferedInputStream download(final String fileName) throws ElementalException {
+    public BufferedInputStream download(final String fileName) throws TmsException {
         try {
             // Get the file as a byte array from S3
             ResponseBytes<GetObjectResponse> response = s3Client.getObjectAsBytes(
@@ -103,9 +103,9 @@ public class S3BucketStorage implements IStorage {
             // Return the file data wrapped in a buffered input stream
             return new BufferedInputStream(new ByteArrayInputStream(response.asByteArray()));
         } catch (S3Exception ex) {
-            // Log the error and throw an ElementalException if the download fails
+            // Log the error and throw an TmsException if the download fails
             log.error(String.format("Failed to download file %s: %s", fileName, ex.awsErrorDetails().errorMessage()));
-            throw new ElementalException("Failed to download file from bucket storage",
+            throw new TmsException("Failed to download file from bucket storage",
                     ex, ErrorCodes.STORAGE_PROVIDEER_ISSUES);
         }
     }
@@ -115,12 +115,12 @@ public class S3BucketStorage implements IStorage {
      * provided, this method throws an exception.
      *
      * @return The name of the S3 bucket.
-     * @throws ElementalException If the bucket name is missing.
+     * @throws TmsException If the bucket name is missing.
      */
     @Override
-    public String getTargetName() throws ElementalException {
+    public String getTargetName() throws TmsException {
         // Ensure the target bucket name is provided
-        return target.orElseThrow(() -> new ElementalException("AWS bucket was not provided", ErrorCodes.STORAGE_PROVIDEER_ISSUES));
+        return target.orElseThrow(() -> new TmsException("AWS bucket was not provided", ErrorCodes.STORAGE_PROVIDEER_ISSUES));
     }
 
     /**
@@ -129,16 +129,16 @@ public class S3BucketStorage implements IStorage {
      *
      * @param fileName The name of the file in the S3 bucket.
      * @return The S3 URI for the specified file.
-     * @throws ElementalException If the file name is null, empty, or invalid.
+     * @throws TmsException If the file name is null, empty, or invalid.
      */
     @Override
-    public String getUri(final String fileName) throws ElementalException {
+    public String getUri(final String fileName) throws TmsException {
         // Get the bucket name
         final String bucketName = getTargetName();
 
         // Validate the file name
         if (fileName == null || fileName.trim().isEmpty()) {
-            throw new ElementalException("File name cannot be null or empty", ErrorCodes.STORAGE_PROVIDEER_ISSUES);
+            throw new TmsException("File name cannot be null or empty", ErrorCodes.STORAGE_PROVIDEER_ISSUES);
         }
 
         // Return the S3 URI for the file

@@ -21,17 +21,21 @@ public enum ErrorCodes {
      */
     UNKNOWN_ISSUE(1000),
     /**
+     * Error code indicating that a lack of data integrity has been spotted.
+     */
+    LACKOF_DATA_INTEGRITY(1001),
+    /**
      * Error code indicating that a required configuration element was not
      * found. This error typically occurs when an expected environment variable
      * or configuration setting is missing.
      */
-    CONFIG_ELEMENT_NOT_FOUND(1001),
+    CONFIG_ELEMENT_NOT_FOUND(1002),
     /**
      * Error code indicating issues with interacting with the storage provider
      * entity. This error occurs when there are problems with storage-related
      * operations, such as uploading or downloading data.
      */
-    STORAGE_PROVIDEER_ISSUES(1002), // Lack of interaction with storage provider entity
+    STORAGE_PROVIDEER_ISSUES(1003), // Lack of interaction with storage provider entity
 
     /**
      * Error code indicating issues with interacting with the FIFO provider

@@ -1,10 +1,15 @@
 package com.agnux.haul.core.mgmt;
 
-import com.agnux.haul.repositories.Route;
+import com.agnux.haul.errors.ErrorCodes;
+import com.agnux.haul.errors.TmsException;
+import com.agnux.haul.repositories.CargoAssignment;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import com.agnux.haul.repositories.IHaulRepo;
+import com.agnux.haul.repositories.TransLogRecord;
+import com.agnux.haul.repositories.Vehicle;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 @AllArgsConstructor
 public class HaulMgmt {
@@ -13,29 +18,61 @@ public class HaulMgmt {
     private IHaulRepo repo;
 
     public String assignTrip(
-            final @NonNull TripDto tripData,
+            final @NonNull String tenantId,
+            final @NonNull String userId,
             final @NonNull String vehicleId,
-            final @NonNull String tenantId) {
+            final @NonNull TripDetailsDto tripDetails) throws TmsException {
 
-        Route route = new Route();
-        route.setTenantId(tenantId);
-
-        /* aqui se deben de tomar 
-           todos los datos de los Dto,
-           cargar variables especificas para el tenant,
-           validar el uso de el vehiculo pasado como argumento,
-           calcular consumo de combustible en base a variables
-           (quizas esto ya paso en la UI, pero se tiene que hacer aqui de nuevo)
+        /* 
+           En este punto se deben cargar criterios especificos para el tenant
+           y para el user, de esa manera se hacen efectivos los roles
+           tambien conocidos como ACLs (access control lists)
         */
-        route.setFuelConsumption(BigDecimal.ZERO);
+        
+        // Si el vehiculo no esta disponible 
+        // Una exception sera levantada con el respectivo codigo de error
+        // para esta situacion
+        Vehicle ship = repo.getAvailableVehicule(vehicleId);
 
-        /*
-           executar otros calculos necesarios,
-           comunicacion con otros programas distribuidos (aqui se obtienen datos de otros microservicios)
-           y ejecutar toda la logica de
-           negocio necesaria para
-           para setear una instancia de el modelo Route */
+        if (ship.getTenantId() != tenantId) {
+            final String emsg = "The assigned vehicle does not pertain to tenant " + tenantId;
+            throw new TmsException(emsg, ErrorCodes.LACKOF_DATA_INTEGRITY);
+        }
+ 
+        // calcular consumo de combustible en base a variables
+        // (quizas esto ya paso en la UI, pero se tiene que hacer aqui de nuevo)
+        // Si esto require a una recalibracion 
+        // Una exception sera levantada con el respectivo codigo de error
+        BigDecimal fuelEstimated = estimateFuel(tenantId, userId, vehicleId, tripDetails);
 
-        return repo.createRoute(route);
+        TransLogRecord tlRecord = new TransLogRecord(tripDetails.getDistUnit(), tripDetails.getDistScalar(), fuelEstimated);
+
+        CargoAssignment cas = new CargoAssignment(tenantId, ship, tlRecord);
+
+        // Salva la asignacion sobre la base de datos elegida
+        // para este microservicio
+        // y retornara una referencia/ID que nos permitira localizar
+        // el cargo para otros casos de uso que asi lo requieran
+        String cargoId = repo.createCargoAssignment(cas);
+        
+        // En este punto se puede establecer comunicacion con otros programas distribuidos
+        // Que requieran ejecutar acciones relacionadas a la nueva asignacion de cargo
+
+        return cargoId;
+    }
+
+    /*
+    Determines the quantity of the required fuel
+    based on vehicule features and distance   
+     */
+    public BigDecimal estimateFuel(
+            final @NonNull String tenantId,
+            final @NonNull String userId,
+            final @NonNull String vehicleId,
+            final @NonNull TripDetailsDto tripData) throws TmsException {
+
+        // Aqui se tiene que cargar y ejecutar el algoritmo de estimacion 
+        // de combustible de el respectivo tenant
+        return BigDecimal.ZERO;
     }
 }
