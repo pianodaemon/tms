@@ -28,4 +28,4 @@ jobs:
       - name: Build and Test tms-engine
         run: |
           cd sidecars/DOS/tms-engine
-          ./gradlew test
+          sh ./gradlew test
