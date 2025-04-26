@@ -9,7 +9,6 @@ import com.agnux.haul.repositories.IHaulRepo;
 import com.agnux.haul.repositories.TransLogRecord;
 import com.agnux.haul.repositories.Vehicle;
 import java.math.BigDecimal;
-import java.util.Optional;
 
 @AllArgsConstructor
 public class HaulMgmt {
@@ -18,8 +17,7 @@ public class HaulMgmt {
     private IHaulRepo repo;
 
     public String assignTrip(
-            final @NonNull String tenantId,
-            final @NonNull String userId,
+            final @NonNull TenantDetailsDto tenantDetails,
             final @NonNull String vehicleId,
             final @NonNull TripDetailsDto tripDetails) throws TmsException {
 
@@ -34,8 +32,8 @@ public class HaulMgmt {
         // para esta situacion
         Vehicle ship = repo.getAvailableVehicule(vehicleId);
 
-        if (ship.getTenantId() != tenantId) {
-            final String emsg = "The assigned vehicle does not pertain to tenant " + tenantId;
+        if (!ship.getTenantId().equals(tenantDetails.getTenantId())) {
+            final String emsg = "The assigned vehicle does not pertain to tenant " + tenantDetails.getTenantId();
             throw new TmsException(emsg, ErrorCodes.LACKOF_DATA_INTEGRITY);
         }
  
@@ -43,11 +41,11 @@ public class HaulMgmt {
         // (quizas esto ya paso en la UI, pero se tiene que hacer aqui de nuevo)
         // Si esto require a una recalibracion 
         // Una exception sera levantada con el respectivo codigo de error
-        BigDecimal fuelEstimated = estimateFuel(tenantId, userId, vehicleId, tripDetails);
+        BigDecimal fuelEstimated = estimateFuel(tenantDetails, vehicleId, tripDetails);
 
         TransLogRecord tlRecord = new TransLogRecord(tripDetails.getDistUnit(), tripDetails.getDistScalar(), fuelEstimated);
 
-        CargoAssignment cas = new CargoAssignment(tenantId, ship, tlRecord);
+        CargoAssignment cas = new CargoAssignment(tenantDetails.getTenantId(), ship, tlRecord);
 
         // Salva la asignacion sobre la base de datos elegida
         // para este microservicio
@@ -66,8 +64,7 @@ public class HaulMgmt {
     based on vehicule features and distance   
      */
     public BigDecimal estimateFuel(
-            final @NonNull String tenantId,
-            final @NonNull String userId,
+            final @NonNull TenantDetailsDto tenantDetails,
             final @NonNull String vehicleId,
             final @NonNull TripDetailsDto tripData) throws TmsException {
 
