@@ -14,11 +14,6 @@ jobs:
         with:
           go-version: '1.23.2'
 
-      - name: Build and Test fiscal-engine
-        run: |
-          cd DOS/cfdi-engine
-          make test
-
       # Set up Java environment
       - name: Set up Java
         uses: actions/setup-java@v4
@@ -32,5 +27,5 @@ jobs:
       # Run Gradle build
       - name: Build and Test tms-engine
         run: |
-          cd DOS/scrander
+          cd sidecars/DOS/tms-engine
           ./gradlew test
