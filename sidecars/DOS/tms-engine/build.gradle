@@ -1,0 +1,35 @@
+allprojects {
+
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    java {
+        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+    }
+
+    dependencies {
+
+        // Use JUnit Jupiter for testing.
+        testImplementation "org.junit.jupiter:junit-jupiter:${junit_jupiter_version}"
+        testImplementation "org.junit-pioneer:junit-pioneer:${junit_pioneer_version}"
+
+        // Mockito for mocking
+        testImplementation "org.mockito:mockito-core:${mockito_version}"
+
+        // Optional: Mockito JUnit 5 integration
+        testImplementation "org.mockito:mockito-junit-jupiter:${mockito_version}"
+
+        implementation "org.apache.logging.log4j:log4j-core:${log4j_version}"
+        implementation "org.apache.logging.log4j:log4j-api:${log4j_version}"
+
+        compileOnly "org.projectlombok:lombok:${lombok_version}"
+        annotationProcessor "org.projectlombok:lombok:${lombok_version}"
+    }
+}
