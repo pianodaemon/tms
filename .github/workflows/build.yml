@@ -1,0 +1,71 @@
+name: CI for homeless
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23.2'
+
+      - name: Build and Test fiscal-engine
+        run: |
+          cd DOS/cfdi-engine
+          make test
+
+
+      # Set up Java environment
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'  # Set your required Java version here
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
+
+      # Run Gradle build
+      - name: Build and Test tms-engine
+        run: |
+          cd DOS/scrander
+          ./gradlew test
+
+      # Set up Python environment for Python tests
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11' # Use the appropriate Python version
+
+      # Install Python dependencies
+      - name: Install Python dependencies
+        run: |
+          cd DOS/cfdi-dozer
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest testcontainers==3.7.1  # Add any other dependencies here
+
+      # Run Python tests
+      - name: Run Python tests
+        run: |
+          cd DOS/cfdi-dozer  # Navigate to your Python test directory
+          python3 -m unittest test_dozer.py
+
+      # Install Python dependencies
+      - name: Install Python dependencies
+        run: |
+          cd DOS/cfdi-processor
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest testcontainers==3.7.1  # Add any other dependencies here
+
+      # Run Python tests
+      - name: Run Python tests
+        run: |
+          cd DOS/cfdi-processor  # Navigate to your Python test directory
+          python3 -m unittest test_processor.py
