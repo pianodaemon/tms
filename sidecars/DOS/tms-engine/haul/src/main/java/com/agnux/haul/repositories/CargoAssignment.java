@@ -7,7 +7,13 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CargoAssignment {
 
+    private String Id;
     private String tenantId;
+
     private Vehicle vehicle;
     private TransLogRecord tlRecord;
+
+    public CargoAssignment(String tenantId, Vehicle vehicle, TransLogRecord tlRecord) {
+        this(null, tenantId, vehicle, tlRecord);
+    }
 }

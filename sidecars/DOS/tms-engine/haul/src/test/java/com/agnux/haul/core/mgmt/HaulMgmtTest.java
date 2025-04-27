@@ -4,6 +4,7 @@ import com.agnux.haul.errors.ErrorCodes;
 import com.agnux.haul.errors.TmsException;
 import com.agnux.haul.repositories.Agreement;
 import com.agnux.haul.repositories.CargoAssignment;
+import com.agnux.haul.repositories.Customer;
 import com.agnux.haul.repositories.DistUnit;
 import com.agnux.haul.repositories.IHaulRepo;
 import com.agnux.haul.repositories.Vehicle;
@@ -28,10 +29,12 @@ class HaulMgmtTest {
     private TripDetailsDto tripDetails;
     private Vehicle ship;
     private Agreement agreement;
+    private Customer customer;
 
     @BeforeEach
     void setUpData() {
         tenantDetails = new TenantDetailsDto("tenant001", "gerald");
+        customer = new Customer("customer001", "tenant001");
         tripDetails = new TripDetailsDto("ship001", "agreement001");
         agreement = new Agreement("agreement001", "tenant001", "customer001", 0, 0, 0, 0, DistUnit.KM, new BigDecimal("100"));
         ship = new Vehicle("ship001", tenantDetails.getTenantId());
