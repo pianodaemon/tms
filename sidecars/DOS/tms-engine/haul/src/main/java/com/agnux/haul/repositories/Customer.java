@@ -1,10 +1,15 @@
 package com.agnux.haul.repositories;
 
-import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@AllArgsConstructor
-public class Customer {
+@Getter
+public class Customer extends TmcModel {
 
-    private String Id;
-    private String tenantId;
+    public Customer(final String customerId, final String tenantId) {
+        super(customerId, tenantId);
+    }
+
+    public Customer(final String tenantId) {
+        this(null, tenantId);
+    }
 }

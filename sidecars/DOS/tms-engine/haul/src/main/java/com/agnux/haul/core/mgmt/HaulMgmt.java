@@ -53,7 +53,7 @@ public class HaulMgmt {
         // Una exception sera levantada con el respectivo codigo de error
         BigDecimal fuelEstimated = estimateFuel(tenantDetails, tripDetails);
 
-        TransLogRecord tlRecord = new TransLogRecord(agreement.getDistUnit(), agreement.getDistScalar(), fuelEstimated);
+        TransLogRecord tlRecord = new TransLogRecord(tenantDetails.getTenantId(),  agreement.getDistUnit(), agreement.getDistScalar(), fuelEstimated);
 
         CargoAssignment cas = new CargoAssignment(tenantDetails.getTenantId(), ship, tlRecord);
 

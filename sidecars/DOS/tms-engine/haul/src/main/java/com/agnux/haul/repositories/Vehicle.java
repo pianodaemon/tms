@@ -1,14 +1,13 @@
 package com.agnux.haul.repositories;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
-@AllArgsConstructor
-public class Vehicle {
+@Getter
+public class Vehicle extends TmcModel {
 
-    private String id;
-    private String tenantId;
+    public Vehicle(final String vehicleId, final String tenantId) {
+        super(vehicleId, tenantId);
+    }
 
     public Vehicle(final String tenantId) {
         this(null, tenantId);
