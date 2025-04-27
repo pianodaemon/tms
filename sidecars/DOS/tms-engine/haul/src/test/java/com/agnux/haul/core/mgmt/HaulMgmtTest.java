@@ -33,7 +33,7 @@ class HaulMgmtTest {
     void setUpData() {
         tenantDetails = new TenantDetailsDto("tenant001", "gerald");
         tripDetails = new TripDetailsDto("ship001", "agreement001");
-        agreement = new Agreement("agreement001", "tenant001", 0, 0, 0, 0, DistUnit.KM, new BigDecimal("100"));
+        agreement = new Agreement("agreement001", "tenant001", "customer001", 0, 0, 0, 0, DistUnit.KM, new BigDecimal("100"));
         ship = new Vehicle("ship001", tenantDetails.getTenantId());
     }
 
