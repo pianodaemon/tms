@@ -1,19 +1,20 @@
 package com.agnux.haul.repositories;
 
 public enum DistUnit {
-    KM(1);
+    KM(1.0),
+    MI(1.60934);
 
     /**
      * The integer code representing this distance unit.
      */
-    protected int code;
+    protected double code;
 
     /**
      * Constructor for creating an error code with a specific integer value.
      *
      * @param code The integer code associated with the distance unit.
      */
-    DistUnit(final int code) {
+    DistUnit(final double code) {
         this.code = code;
     }
 
@@ -22,7 +23,7 @@ public enum DistUnit {
      *
      * @return The integer error code.
      */
-    public int getCode() {
+    public double getCode() {
         return code;
     }
 }
