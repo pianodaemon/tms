@@ -8,6 +8,7 @@ import com.agnux.haul.repository.model.Customer;
 import com.agnux.haul.repository.model.DistUnit;
 import com.agnux.haul.repository.IHaulRepo;
 import com.agnux.haul.repository.model.Vehicle;
+import com.agnux.haul.repository.model.VehicleType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +38,7 @@ class HaulMgmtTest {
         customer = new Customer("customer001", "tenant001");
         tripDetails = new TripDetailsDto("ship001", "agreement001");
         agreement = new Agreement("agreement001", "tenant001", "customer001", 0, 0, 0, 0, DistUnit.KM, new BigDecimal("100"));
-        ship = new Vehicle("ship001", tenantDetails.getTenantId());
+        ship = new Vehicle("ship001", tenantDetails.getTenantId(), "GAS9500", VehicleType.CAR);
     }
 
     @Test
@@ -68,7 +69,7 @@ class HaulMgmtTest {
     @Test
     void assignTrip_ShouldThrowTmsException_WhenTenantMismatch() throws TmsException {
         // Arrange
-        Vehicle mismatchedVehicle = new Vehicle("ship001", "other-tenant");
+        Vehicle mismatchedVehicle = new Vehicle("ship001", "other-tenant", VehicleType.CAR);
         when(repo.getAvailableVehicule("ship001")).thenReturn(mismatchedVehicle);
 
         // Act & Assert
