@@ -69,7 +69,7 @@ class HaulMgmtTest {
     @Test
     void assignTrip_ShouldThrowTmsException_WhenTenantMismatch() throws TmsException {
         // Arrange
-        Vehicle mismatchedVehicle = new Vehicle("ship001", "other-tenant", VehicleType.CAR);
+        Vehicle mismatchedVehicle = new Vehicle("ship001", "other-tenant", "GAS9500", VehicleType.CAR);
         when(repo.getAvailableVehicule("ship001")).thenReturn(mismatchedVehicle);
 
         // Act & Assert
