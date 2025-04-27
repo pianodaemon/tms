@@ -5,25 +5,25 @@ public enum DistUnit {
     MI(1.60934);
 
     /**
-     * The integer code representing this distance unit.
+     * The double value representing this distance unit.
      */
-    protected double code;
+    protected double scalarValue;
 
     /**
-     * Constructor for creating an error code with a specific integer value.
+     * Constructor for creating a distance unit with a specific scalar value.
      *
-     * @param code The integer code associated with the distance unit.
+     * @param code The double associated with the distance unit.
      */
     DistUnit(final double code) {
-        this.code = code;
+        this.scalarValue = code;
     }
 
     /**
-     * Retrieves the integer code associated with this distance unit.
+     * Retrieves the scalar value value associated with this distance unit.
      *
-     * @return The integer error code.
+     * @return The double scalar value.
      */
     public double getCode() {
-        return code;
+        return scalarValue;
     }
 }
