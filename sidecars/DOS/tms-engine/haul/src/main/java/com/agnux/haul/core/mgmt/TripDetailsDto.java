@@ -1,15 +1,16 @@
 package com.agnux.haul.core.mgmt;
 
-import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NonNull;
 
 @AllArgsConstructor
 @Getter
 public class TripDetailsDto {
 
-    private int origin;
-    private int destiny;
-    private String distUnit;
-    private BigDecimal distScalar;
+    private @NonNull
+    String vehicleId;
+
+    private @NonNull
+    String agreement;
 }

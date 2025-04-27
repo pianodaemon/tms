@@ -9,11 +9,11 @@ import lombok.Getter;
 public class TransLogRecord {
 
     private String id;
-    private String distUnit;
+    private DistUnit distUnit;
     private BigDecimal distScalar;
     private BigDecimal fuelConsumption;
 
-    public TransLogRecord(String distUnit, BigDecimal distScalar, BigDecimal fuelConsumption) {
+    public TransLogRecord(DistUnit distUnit, BigDecimal distScalar, BigDecimal fuelConsumption) {
         this(null, distUnit, distScalar, fuelConsumption);
     }
 }

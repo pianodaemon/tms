@@ -5,4 +5,6 @@ public interface IHaulRepo {
     String createCargoAssignment(CargoAssignment t);
     
     Vehicle getAvailableVehicule(String vehicleIdRef);
+    
+    Agreement getAvailableAgreement(String agreementRef);
 }
