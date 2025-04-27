@@ -40,7 +40,7 @@ public class HaulMgmt {
         // Si el convenio no esta disponible 
         // Una exception sera levantada con el respectivo codigo de error
         // para esta situacion
-        Agreement agreement = repo.getAvailableAgreement(tripDetails.getAgreement());
+        Agreement agreement = repo.getAvailableAgreement(tripDetails.getAgreementId());
 
         if (!agreement.getTenantId().equals(tenantDetails.getTenantId())) {
             final String emsg = "The assigned agreement does not pertain to tenant " + tenantDetails.getTenantId();

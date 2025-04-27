@@ -12,5 +12,5 @@ public class TripDetailsDto {
     String vehicleId;
 
     private @NonNull
-    String agreement;
+    String agreementId;
 }
