@@ -1,4 +1,8 @@
-package com.agnux.haul.repositories;
+package com.agnux.haul.repository;
+
+import com.agnux.haul.repository.model.CargoAssignment;
+import com.agnux.haul.repository.model.Vehicle;
+import com.agnux.haul.repository.model.Agreement;
 
 public interface IHaulRepo {
 

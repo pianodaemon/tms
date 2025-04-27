@@ -2,13 +2,13 @@ package com.agnux.haul.core.mgmt;
 
 import com.agnux.haul.errors.ErrorCodes;
 import com.agnux.haul.errors.TmsException;
-import com.agnux.haul.repositories.Agreement;
-import com.agnux.haul.repositories.CargoAssignment;
+import com.agnux.haul.repository.model.Agreement;
+import com.agnux.haul.repository.model.CargoAssignment;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
-import com.agnux.haul.repositories.IHaulRepo;
-import com.agnux.haul.repositories.TransLogRecord;
-import com.agnux.haul.repositories.Vehicle;
+import com.agnux.haul.repository.IHaulRepo;
+import com.agnux.haul.repository.model.TransLogRecord;
+import com.agnux.haul.repository.model.Vehicle;
 import java.math.BigDecimal;
 
 @AllArgsConstructor

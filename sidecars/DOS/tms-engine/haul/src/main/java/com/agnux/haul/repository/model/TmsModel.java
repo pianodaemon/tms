@@ -1,4 +1,4 @@
-package com.agnux.haul.repositories;
+package com.agnux.haul.repository.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

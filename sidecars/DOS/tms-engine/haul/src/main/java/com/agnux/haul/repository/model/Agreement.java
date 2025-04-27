@@ -1,4 +1,4 @@
-package com.agnux.haul.repositories;
+package com.agnux.haul.repository.model;
 
 import java.math.BigDecimal;
 import lombok.Getter;
