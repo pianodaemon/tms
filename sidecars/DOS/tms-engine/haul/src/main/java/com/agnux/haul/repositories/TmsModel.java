@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class TmcModel {
+public class TmsModel {
     protected String Id;
     protected String tenantId;
 }

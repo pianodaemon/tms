@@ -1,20 +1,15 @@
 package com.agnux.haul.repositories;
 
 import java.math.BigDecimal;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
-public class Agreement {
+public class Agreement extends TmsModel {
 
-    private String Id;
-    private String tenantId;
-    
     /*
     - No pueden existir dos Convenios con las mismas coordenadas polares (Origen y destino) para un mismo cliente
     - Dicho de otra manera, no puede haber dos convenios para un mismo cliente que tengan la misma ruta
-    */
+     */
     private String customerId;
     private double latitudeOrigin;
     private double longitudeOrigin;
@@ -23,6 +18,17 @@ public class Agreement {
 
     private DistUnit distUnit;
     private BigDecimal distScalar;
+
+    public Agreement(String agreementId, String tenantId, String customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
+        super(agreementId, tenantId);
+        this.customerId = customerId;
+        this.latitudeOrigin = latitudeOrigin;
+        this.longitudeOrigin = longitudeOrigin;
+        this.latitudeDestiny = latitudeDestiny;
+        this.longitudeDestiny = longitudeDestiny;
+        this.distUnit = distUnit;
+        this.distScalar = distScalar;
+    }
 
     public Agreement(String tenantId, String customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
         this(null, tenantId, customerId, latitudeOrigin, longitudeOrigin, latitudeDestiny, longitudeDestiny, distUnit, distScalar);

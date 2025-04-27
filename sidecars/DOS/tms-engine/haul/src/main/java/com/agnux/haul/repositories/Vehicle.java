@@ -3,7 +3,7 @@ package com.agnux.haul.repositories;
 import lombok.Getter;
 
 @Getter
-public class Vehicle extends TmcModel {
+public class Vehicle extends TmsModel {
 
     public Vehicle(final String vehicleId, final String tenantId) {
         super(vehicleId, tenantId);

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import lombok.Getter;
 
 @Getter
-public class TransLogRecord extends TmcModel {
+public class TransLogRecord extends TmsModel {
 
     private DistUnit distUnit;
     private BigDecimal distScalar;
