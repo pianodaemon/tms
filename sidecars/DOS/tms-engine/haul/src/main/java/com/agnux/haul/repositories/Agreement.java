@@ -10,11 +10,17 @@ public class Agreement {
 
     private String Id;
     private String tenantId;
+    
+    /*
+    - No pueden existir dos Convenios con las mismas coordenadas polares (Origen y destino) para un mismo cliente
+    - Dicho de otra manera, no puede haber dos convenios para un mismo cliente que tengan la misma ruta
+    */
     private String customerId;
     private double latitudeOrigin;
     private double longitudeOrigin;
     private double latitudeDestiny;
     private double longitudeDestiny;
+
     private DistUnit distUnit;
     private BigDecimal distScalar;
 
