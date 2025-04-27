@@ -5,11 +5,13 @@ import lombok.Getter;
 @Getter
 public class Vehicle extends TmsModel {
 
-    public Vehicle(final String vehicleId, final String tenantId) {
+    private String NumberPlate;
+            
+    public Vehicle(final String vehicleId, final String tenantId, String NumberPlate) {
         super(vehicleId, tenantId);
     }
 
-    public Vehicle(final String tenantId) {
-        this(null, tenantId);
+    public Vehicle(final String tenantId, String NumberPlate) {
+        this(null, tenantId, NumberPlate);
     }
 }
