@@ -15,8 +15,9 @@ public class Vehicle extends TmsModel {
     // Algunos vehiculos caracterizan una interface electronica
     // para obtener rendimiento directamente del motor
     // El rendimiento es una media de los históricos
-    private DistUnit performanceUnit;
-    private BigDecimal performanceScalar;
+    private DistUnit perfDistUnit;
+    private VolUnit perfVolUnit;
+    private BigDecimal perfScalar;
 
     public Vehicle(final String vehicleId, final String tenantId, String numberPlate, VehicleType vehicleType) {
         super(vehicleId, tenantId);
