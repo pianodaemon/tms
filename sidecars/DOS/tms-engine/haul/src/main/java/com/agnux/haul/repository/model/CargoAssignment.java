@@ -1,10 +1,9 @@
 package com.agnux.haul.repository.model;
 
-import com.agnux.haul.repository.model.Vehicle;
 import lombok.Getter;
 
 @Getter
-public class CargoAssignment extends TmsModel {
+public class CargoAssignment extends TmsBasicModel {
 
     private Vehicle vehicle;
     private TransLogRecord tlRecord;

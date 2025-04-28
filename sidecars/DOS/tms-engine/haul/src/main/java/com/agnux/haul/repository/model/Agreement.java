@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import lombok.Getter;
 
 @Getter
-public class Agreement extends TmsModel {
+public class Agreement extends TmsBasicModel {
 
     /*
     - No pueden existir dos Convenios con las mismas coordenadas polares (Origen y destino) para un mismo cliente

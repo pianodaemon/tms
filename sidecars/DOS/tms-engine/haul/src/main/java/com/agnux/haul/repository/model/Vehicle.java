@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class Vehicle extends TmsModel {
+public class Vehicle extends TmsBasicModel {
 
     private String numberPlate;
     private VehicleType vehicleType;
