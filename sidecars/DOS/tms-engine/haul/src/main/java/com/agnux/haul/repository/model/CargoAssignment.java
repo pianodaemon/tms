@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class CargoAssignment extends TmsBasicModel {
 
+    private Driver driver;
     private Vehicle vehicle;
     private TransLogRecord tlRecord;
 
