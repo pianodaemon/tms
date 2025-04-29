@@ -1,0 +1,12 @@
+package com.agnux.haul.repository.model;
+
+public class Patio extends TmsBasicModel {
+    
+    public Patio(final String patioId, final String tenantId) {
+        super(patioId, tenantId);
+    }
+
+    public Patio(final String tenantId) {
+        this(null, tenantId);
+    }
+}
