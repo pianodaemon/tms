@@ -6,9 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class Patio extends TmsBasicModel {
-    
-    private PatioType patioType;
-    
+
     public Patio(final String patioId, final String tenantId) {
         super(patioId, tenantId);
     }
