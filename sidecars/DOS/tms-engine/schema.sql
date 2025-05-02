@@ -36,6 +36,15 @@ CREATE TABLE customers (
 );
 
 
+CREATE TABLE drivers (
+    id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
+    tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
+    name VARCHAR(128) NOT NULL,
+    license_number VARCHAR(128) NOT NULL,
+    CONSTRAINT unique_license_per_tenant UNIQUE (tenant_id, license_number)
+);
+
+
 CREATE TABLE agreements (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
     tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
