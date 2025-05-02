@@ -29,6 +29,12 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
 
+CREATE TABLE customers (
+    id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
+    tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
+    name VARCHAR(128) NOT NULL,
+);
+
 
 CREATE TABLE agreements (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
