@@ -52,6 +52,7 @@ CREATE TABLE vehicle (
     vehicle_type VARCHAR(50) NOT NULL,  -- Store as a string (enum values)
     perf_dist_unit VARCHAR(50),         -- Store as a string (enum values)
     perf_vol_unit VARCHAR(50),          -- Store as a string (enum values)
+    perf_vol_scalar NUMERIC(10, 6),     -- Store the scalar value for VolUnit
     perf_scalar NUMERIC(10, 2),
     CONSTRAINT vehicle_unique_number_plate UNIQUE (tenant_id, number_plate)
 );
