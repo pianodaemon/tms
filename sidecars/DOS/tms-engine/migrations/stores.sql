@@ -11,6 +11,12 @@ CREATE OR REPLACE FUNCTION public.alter_vehicle(
 LANGUAGE plpgsql
 AS $$
 DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit vehicle                                          >>
+    -- >> Version:     haul                                                         >>
+    -- >> Date:        02/may/2025                                                  >>
+    -- >> Developer:   Edwin Plauchu for agnux                                      >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     current_moment TIMESTAMP WITH TIME ZONE := now();
     rmsg TEXT := '';
     new_id UUID;
