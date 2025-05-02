@@ -45,6 +45,18 @@ CREATE TABLE drivers (
 );
 
 
+CREATE TABLE vehicle (
+    id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
+    tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
+    number_plate VARCHAR(50) NOT NULL,
+    vehicle_type VARCHAR(50) NOT NULL,  -- Store as a string (enum values)
+    perf_dist_unit VARCHAR(50),         -- Store as a string (enum values)
+    perf_vol_unit VARCHAR(50),          -- Store as a string (enum values)
+    perf_scalar NUMERIC(10, 2),
+    CONSTRAINT vehicle_unique_number_plate UNIQUE (tenant_id, number_plate)
+);
+
+
 CREATE TABLE agreements (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
     tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
