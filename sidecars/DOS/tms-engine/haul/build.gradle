@@ -10,6 +10,9 @@ dependencies {
 
     implementation "com.fasterxml.jackson.core:jackson-databind:${jackson_version}"
 
+    implementation 'com.google.inject:guice:7.0.0'
+    implementation 'javax.inject:javax.inject:1'
+
     // Testcontainers Core Dependency
     testImplementation "org.testcontainers:testcontainers:${localstack_version}"
 
