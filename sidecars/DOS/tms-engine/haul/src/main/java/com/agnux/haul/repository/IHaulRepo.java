@@ -10,5 +10,7 @@ public interface IHaulRepo {
     
     Vehicle getAvailableVehicule(String vehicleIdRef);
     
+    Vehicle createVehicle();
+
     Agreement getAvailableAgreement(String agreementRef);
 }

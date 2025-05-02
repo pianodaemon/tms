@@ -27,7 +27,7 @@ public class IHaulRepoImpl implements IHaulRepo {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    public String updateVehicle(DataSource dataSource, Vehicle v) {
+    public static String updateVehicle(DataSource dataSource, Vehicle v) {
         String sql = "SELECT * FROM public.alter_vehicle(?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -57,5 +57,10 @@ public class IHaulRepoImpl implements IHaulRepo {
         }
 
         throw new RuntimeException("Unexpected error during vehicle update");
+    }
+
+    @Override
+    public Vehicle createVehicle() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
