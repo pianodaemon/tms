@@ -7,6 +7,8 @@ import lombok.Setter;
 @Getter
 public class Patio extends TmsBasicModel {
 
+    private String name;
+
     // Patio is featuring a geolocalization as well
     private double latitudeLocation;
     private double longitudeLocation;
