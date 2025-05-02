@@ -45,7 +45,7 @@ CREATE TABLE drivers (
 );
 
 
-CREATE TABLE vehicle (
+CREATE TABLE vehicles (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
     tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
     number_plate VARCHAR(50) NOT NULL,
@@ -61,16 +61,13 @@ CREATE TABLE vehicle (
 CREATE TABLE agreements (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
     tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
-
-    customer_id UUID NOT NULL,
+    customer_id UUID REFERENCES customers(id),
     latitude_origin DOUBLE PRECISION NOT NULL,
     longitude_origin DOUBLE PRECISION NOT NULL,
     latitude_destiny DOUBLE PRECISION NOT NULL,
     longitude_destiny DOUBLE PRECISION NOT NULL,
-
-    dist_unit VARCHAR(5) NOT NULL REFERENCES dist_units(code),
+    dist_unit VARCHAR(5) NOT NULL,
     dist_scalar NUMERIC(15, 6) NOT NULL,
-
     CONSTRAINT unique_route_per_customer UNIQUE (
         customer_id, latitude_origin, longitude_origin, latitude_destiny, longitude_destiny
     )
@@ -80,7 +77,28 @@ CREATE TABLE agreements (
 CREATE TABLE patios (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
     tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
-
+    name VARCHAR(128) NOT NULL,
     latitude_location DOUBLE PRECISION NOT NULL,
     longitude_location DOUBLE PRECISION NOT NULL
+);
+
+
+CREATE TABLE trans_log_records (
+    id UUID PRIMARY KEY,
+    tenant_id VARCHAR(255) NOT NULL,
+    trans_log_record_id VARCHAR(255),  -- corresponds to TmsBasicModel.Id
+    dist_unit VARCHAR(5) NOT NULL,
+    dist_scalar NUMERIC(15, 6) NOT NULL,
+    fuel_consumption NUMERIC(10, 2)
+);
+
+
+CREATE TABLE cargo_assignment (
+    id SERIAL PRIMARY KEY,
+    tenant_id VARCHAR(255) NOT NULL,
+    driver_id UUID REFERENCES drivers(id),
+    vehicle_id UUID REFERENCES vehicles(id),
+    trans_log_record_id UUID REFERENCES trans_log_records(id),
+    latitude_location DOUBLE PRECISION,
+    longitude_location DOUBLE PRECISION
 );
