@@ -13,6 +13,15 @@ dependencies {
     implementation 'com.google.inject:guice:7.0.0'
     implementation 'javax.inject:javax.inject:1'
 
+    // PostgreSQL JDBC Driver
+    testImplementation 'org.postgresql:postgresql:42.2.24'
+
+    // Testcontainers for PostgreSQL
+    testImplementation 'org.testcontainers:postgresql:1.16.0'
+
+    // For working with the PG data source
+    testImplementation 'org.postgresql:postgresql:42.2.24'
+
     // Testcontainers Core Dependency
     testImplementation "org.testcontainers:testcontainers:${localstack_version}"
 
