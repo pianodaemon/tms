@@ -39,10 +39,10 @@ public class IHaulRepoImpl implements IHaulRepo {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             // Set the input parameters
-            if (v.getId() == null) {
-                stmt.setNull(1, Types.OTHER); // _vehicle_id
-            } else {
+            if (v.getId().isPresent()) {
                 stmt.setObject(1, v.getId());
+            } else {
+                stmt.setNull(1, Types.OTHER); // _vehicle_id
             }
 
             stmt.setObject(2, v.getTenantId());                   // _tenant_id
@@ -72,7 +72,7 @@ public class IHaulRepoImpl implements IHaulRepo {
         }
     }
 
-    private static void verifyPgFunctionExists(Connection conn, String functionName) throws SQLException  {
+    private static void verifyPgFunctionExists(Connection conn, String functionName) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement("SELECT 1 FROM pg_proc WHERE proname = ?")) {
             stmt.setString(1, functionName);
             try (ResultSet rs = stmt.executeQuery()) {
