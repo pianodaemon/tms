@@ -18,6 +18,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE TABLE customers (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
     tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
+    blocked boolean DEFAULT false NOT NULL,
     name VARCHAR(128) NOT NULL
 );
 
@@ -274,6 +275,60 @@ BEGIN
     END CASE;
 
     RETURN (_patio_id::UUID, ''::TEXT);
+
+EXCEPTION
+    WHEN OTHERS THEN
+        GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
+        RETURN (NULL::UUID, rmsg::TEXT);
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION alter_customer(
+    _customer_id UUID,
+    _tenant_id   UUID,
+    _name        VARCHAR
+) RETURNS RECORD
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit customer                                        >>
+    -- >> Version:     haul                                                        >>
+    -- >> Date:        03/may/2025                                                 >>
+    -- >> Developer:   Edwin Plauchu for agnux                                     >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    current_moment TIMESTAMP WITH TIME ZONE := now();
+    rmsg TEXT := '';
+BEGIN
+    CASE
+        WHEN _customer_id IS NULL THEN
+
+            INSERT INTO customers (
+                id,
+                tenant_id,
+                name,
+                blocked
+            ) VALUES (
+                gen_random_uuid(),
+                _tenant_id,
+                _name,
+                false
+            ) RETURNING id INTO _customer_id;
+
+        WHEN _customer_id IS NOT NULL THEN
+
+            UPDATE customers
+            SET
+                tenant_id = _tenant_id,
+                name      = _name
+            WHERE id = _customer_id;
+
+        ELSE
+            RAISE EXCEPTION 'Invalid customer identifier: %', _customer_id;
+    END CASE;
+
+    RETURN (_customer_id::UUID, ''::TEXT);
 
 EXCEPTION
     WHEN OTHERS THEN
