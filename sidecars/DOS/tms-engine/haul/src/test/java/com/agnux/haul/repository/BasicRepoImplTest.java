@@ -2,6 +2,7 @@ package com.agnux.haul.repository;
 
 import com.agnux.haul.errors.ErrorCodes;
 import com.agnux.haul.errors.TmsException;
+import com.agnux.haul.repository.model.Customer;
 import com.agnux.haul.repository.model.Driver;
 import com.agnux.haul.repository.model.Vehicle;
 import com.agnux.haul.repository.model.VehicleType;
@@ -204,6 +205,45 @@ public class BasicRepoImplTest {
 
         TmsException ex = assertThrows(TmsException.class, () -> repo.getAvailablePatio(patioId));
         assertEquals(ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), ex.getErrorCode(), "Expected error code on blocked patio");
+    }
+
+    @Test
+    void testCustomer_crud_success() throws SQLException, TmsException {
+        UUID tenantId = UUID.randomUUID(); // Generate a valid tenant_id
+
+        // Create a new customer
+        Customer customer = new Customer(
+                null,
+                tenantId,
+                "John Doe"
+        );
+
+        // Create customer in the database
+        UUID customerId = repo.createCustomer(customer);
+        Customer retrieved = repo.getAvailableCustomer(customerId);
+
+        // Assertions to check if customer was created correctly
+        assertNotNull(retrieved, "Retrieved customer should not be null");
+        assertEquals(customerId, retrieved.getId().get(), "Customer ID should match");
+        assertEquals(customer.getTenantId(), retrieved.getTenantId(), "Tenant ID should match");
+        assertEquals(customer.getName(), retrieved.getName(), "Customer name should match");
+
+        // Modify and update customer information
+        retrieved.setName("Jane Smith");
+        repo.editCustomer(retrieved);
+
+        // Retrieve the updated customer
+        Customer updated = repo.getAvailableCustomer(customerId);
+
+        // Assertions for updated customer
+        assertEquals("Jane Smith", updated.getName(), "Updated name should match");
+
+        // Now, delete (block) the customer
+        repo.deleteCustomer(customerId);
+
+        // It should not be possible to retrieve the blocked customer
+        TmsException assertThrows = assertThrows(TmsException.class, () -> repo.getAvailableCustomer(customerId), "Blocked customer should not be retrievable");
+        assertTrue(assertThrows.getErrorCode() == ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), "Error code is not what we expected");
     }
 
     @AfterAll

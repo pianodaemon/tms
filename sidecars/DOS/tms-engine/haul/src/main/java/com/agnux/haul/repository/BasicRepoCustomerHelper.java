@@ -43,10 +43,10 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             // Set the input parameters
-            if (c.getId() != null) {
+            if (c.getId().isPresent()) {
                 stmt.setObject(1, c.getId().get());
             } else {
-                stmt.setNull(1, Types.OTHER); // _customer_id
+                stmt.setNull(1, Types.OTHER); // _driver_id
             }
 
             stmt.setObject(2, c.getTenantId());           // _tenant_id
