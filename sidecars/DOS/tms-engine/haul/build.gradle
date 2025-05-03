@@ -20,7 +20,7 @@ dependencies {
     implementation "org.postgresql:postgresql:${pg_jdbc_driver_version}"
 
     // Testcontainers for PostgreSQL
-    testImplementation "org.testcontainers:postgresql:${pg_test_container}"
+    testImplementation "org.testcontainers:postgresql:${pg_test_container_version}"
 
     testImplementation 'org.slf4j:slf4j-simple:2.0.9'
 
