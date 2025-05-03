@@ -16,13 +16,13 @@ public class CargoAssignment extends TmsBasicModel {
     private double latitudeLocation;
     private double longitudeLocation;
 
-    public CargoAssignment(final UUID cargoAssignmentId, final String tenantId, Vehicle vehicle, TransLogRecord tlRecord) {
+    public CargoAssignment(final UUID cargoAssignmentId, final UUID tenantId, Vehicle vehicle, TransLogRecord tlRecord) {
         super(cargoAssignmentId, tenantId);
         this.vehicle = vehicle;
         this.tlRecord = tlRecord;
     }
 
-    public CargoAssignment(String tenantId, Vehicle vehicle, TransLogRecord tlRecord) {
+    public CargoAssignment(UUID tenantId, Vehicle vehicle, TransLogRecord tlRecord) {
         this(null, tenantId, vehicle, tlRecord);
     }
 }

@@ -14,11 +14,11 @@ public class Patio extends TmsBasicModel {
     private double latitudeLocation;
     private double longitudeLocation;
 
-    public Patio(final UUID patioId, final String tenantId) {
+    public Patio(final UUID patioId, final UUID tenantId) {
         super(patioId, tenantId);
     }
 
-    public Patio(final String tenantId) {
+    public Patio(final UUID tenantId) {
         this(null, tenantId);
     }
 }

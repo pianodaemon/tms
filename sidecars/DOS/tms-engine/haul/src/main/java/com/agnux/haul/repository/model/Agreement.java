@@ -20,7 +20,7 @@ public class Agreement extends TmsBasicModel {
     private DistUnit distUnit;
     private BigDecimal distScalar;
 
-    public Agreement(UUID agreementId, String tenantId, String customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
+    public Agreement(UUID agreementId, UUID tenantId, String customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
         super(agreementId, tenantId);
         this.customerId = customerId;
         this.latitudeOrigin = latitudeOrigin;
@@ -31,7 +31,7 @@ public class Agreement extends TmsBasicModel {
         this.distScalar = distScalar;
     }
 
-    public Agreement(String tenantId, String customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
+    public Agreement(UUID tenantId, String customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
         this(null, tenantId, customerId, latitudeOrigin, longitudeOrigin, latitudeDestiny, longitudeDestiny, distUnit, distScalar);
     }
 }

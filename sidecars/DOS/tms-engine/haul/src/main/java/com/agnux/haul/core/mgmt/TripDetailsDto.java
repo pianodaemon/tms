@@ -1,5 +1,6 @@
 package com.agnux.haul.core.mgmt;
 
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
@@ -9,8 +10,8 @@ import lombok.NonNull;
 public class TripDetailsDto {
 
     private @NonNull
-    String vehicleId;
+    UUID vehicleId;
 
     private @NonNull
-    String agreementId;
+    UUID agreementId;
 }

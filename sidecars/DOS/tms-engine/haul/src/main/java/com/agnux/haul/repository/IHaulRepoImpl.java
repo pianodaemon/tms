@@ -18,16 +18,16 @@ public class IHaulRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public Vehicle getAvailableVehicule(String vehicleIdRef) {
+    public Vehicle getAvailableVehicule(UUID vehicleId) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public Agreement getAvailableAgreement(String agreementRef) {
+    public Agreement getAvailableAgreement(UUID agreementId) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    public static String updateVehicle(DataSource dataSource, Vehicle v) {
+    public static UUID updateVehicle(DataSource dataSource, Vehicle v) {
         String sql = "SELECT * FROM public.alter_vehicle(?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = dataSource.getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -49,7 +49,7 @@ public class IHaulRepoImpl implements IHaulRepo {
                     throw new RuntimeException("Vehicle update failed: " + errorMsg);
                 }
 
-                return createdId.toString();
+                return createdId;
             }
 
         } catch (SQLException ex) {

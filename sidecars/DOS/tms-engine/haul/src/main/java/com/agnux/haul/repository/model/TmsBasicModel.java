@@ -8,5 +8,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class TmsBasicModel {
     protected UUID Id;
-    protected String tenantId;
+    protected UUID tenantId;
 }

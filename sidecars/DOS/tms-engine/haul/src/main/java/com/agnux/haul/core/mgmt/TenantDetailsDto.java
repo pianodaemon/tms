@@ -1,5 +1,6 @@
 package com.agnux.haul.core.mgmt;
 
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
@@ -8,6 +9,6 @@ import lombok.NonNull;
 @Getter
 public class TenantDetailsDto {
 
-    private @NonNull String tenantId;
+    private @NonNull UUID tenantId;
     private @NonNull String userId;
 }

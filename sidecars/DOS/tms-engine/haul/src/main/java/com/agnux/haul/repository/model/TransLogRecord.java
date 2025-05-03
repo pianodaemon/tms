@@ -12,14 +12,14 @@ public class TransLogRecord extends TmsBasicModel {
     private BigDecimal distScalar;
     private BigDecimal fuelConsumption;
 
-    public TransLogRecord(UUID transLogRecordId, String tenantId, DistUnit distUnit, BigDecimal distScalar, BigDecimal fuelConsumption) {
+    public TransLogRecord(UUID transLogRecordId, UUID tenantId, DistUnit distUnit, BigDecimal distScalar, BigDecimal fuelConsumption) {
         super(transLogRecordId, tenantId);
         this.distUnit = distUnit;
         this.distScalar = distScalar;
         this.fuelConsumption = fuelConsumption;
     }
 
-    public TransLogRecord(String tenantId, DistUnit distUnit, BigDecimal distScalar, BigDecimal fuelConsumption) {
+    public TransLogRecord(UUID tenantId, DistUnit distUnit, BigDecimal distScalar, BigDecimal fuelConsumption) {
         this(null, tenantId, distUnit, distScalar, fuelConsumption);
     }
 }

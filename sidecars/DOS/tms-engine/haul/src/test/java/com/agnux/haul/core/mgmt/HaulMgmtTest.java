@@ -41,18 +41,18 @@ class HaulMgmtTest {
     @BeforeEach
     void setUpData() {
 
-        tenantDetails = new TenantDetailsDto(tenantUuid.toString(), "gerald");
-        customer = new Customer(customerUuid, tenantUuid.toString());
-        tripDetails = new TripDetailsDto(vehicleUuid.toString(), agreementUuid.toString());
-        agreement = new Agreement(agreementUuid, tenantUuid.toString(), customerUuid.toString(), 0, 0, 0, 0, DistUnit.KM, new BigDecimal("100"));
+        tenantDetails = new TenantDetailsDto(tenantUuid, "gerald");
+        customer = new Customer(customerUuid, tenantUuid);
+        tripDetails = new TripDetailsDto(vehicleUuid, agreementUuid);
+        agreement = new Agreement(agreementUuid, tenantUuid, customerUuid.toString(), 0, 0, 0, 0, DistUnit.KM, new BigDecimal("100"));
         ship = new Vehicle(vehicleUuid, tenantDetails.getTenantId(), "GAS9500", VehicleType.CAR);
     }
 
     @Test
     void assignTrip_ShouldReturnCargoId_WhenDataIsValid() throws TmsException {
         // Arrange
-        when(repo.getAvailableVehicule("4a232802-d6e8-458f-9eca-6a8c2b980980")).thenReturn(ship);
-        when(repo.getAvailableAgreement("4a232802-d6e8-458f-9eca-6a8c2b980981")).thenReturn(agreement);
+        when(repo.getAvailableVehicule(vehicleUuid)).thenReturn(ship);
+        when(repo.getAvailableAgreement(agreementUuid)).thenReturn(agreement);
         when(repo.createCargoAssignment(any(CargoAssignment.class))).thenReturn(cargorUuid.toString());
 
         // Act
@@ -62,13 +62,13 @@ class HaulMgmtTest {
         assertEquals(cargorUuid.toString(), cargoId);
 
         // Verify methods called
-        verify(repo).getAvailableVehicule(vehicleUuid.toString());
+        verify(repo).getAvailableVehicule(vehicleUuid);
 
         ArgumentCaptor<CargoAssignment> assignmentCaptor = ArgumentCaptor.forClass(CargoAssignment.class);
         verify(repo).createCargoAssignment(assignmentCaptor.capture());
 
         CargoAssignment capturedAssignment = assignmentCaptor.getValue();
-        assertEquals(tenantUuid.toString(), capturedAssignment.getTenantId());
+        assertEquals(tenantUuid, capturedAssignment.getTenantId());
         assertEquals(ship, capturedAssignment.getVehicle());
         assertNotNull(capturedAssignment.getTlRecord());
     }
@@ -76,8 +76,8 @@ class HaulMgmtTest {
     @Test
     void assignTrip_ShouldThrowTmsException_WhenTenantMismatch() throws TmsException {
         // Arrange
-        Vehicle mismatchedVehicle = new Vehicle(vehicleUuid, "other-tenant", "GAS9500", VehicleType.CAR);
-        when(repo.getAvailableVehicule(vehicleUuid.toString())).thenReturn(mismatchedVehicle);
+        Vehicle mismatchedVehicle = new Vehicle(vehicleUuid, UUID.fromString("0a232802-d6e8-458f-9eca-6a8c2b980900"), "GAS9500", VehicleType.CAR);
+        when(repo.getAvailableVehicule(vehicleUuid)).thenReturn(mismatchedVehicle);
 
         // Act & Assert
         TmsException ex = assertThrows(TmsException.class, ()
