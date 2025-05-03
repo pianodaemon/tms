@@ -94,4 +94,12 @@ class BasicRepoVehiculeHelper extends BasicRepoCommonHelper {
             throw new RuntimeException("DB error during vehicle update", ex);
         }
     }
+
+    public static void block(Connection conn, UUID vehicleId) throws SQLException {
+        String sql = "UPDATE vehicles SET blocked = true WHERE id = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setObject(1, vehicleId);
+            stmt.executeUpdate();
+        }
+    }
 }

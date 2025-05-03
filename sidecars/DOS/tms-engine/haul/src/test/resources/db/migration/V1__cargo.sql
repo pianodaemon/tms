@@ -39,6 +39,7 @@ CREATE TABLE vehicles (
     perf_dist_unit VARCHAR(50),         -- Store as a string (enum values)
     perf_vol_unit VARCHAR(50),          -- Store as a string (enum values)
     perf_scalar NUMERIC(10, 2),
+    blocked boolean DEFAULT false NOT NULL,
     CONSTRAINT vehicle_unique_number_plate UNIQUE (tenant_id, number_plate)
 );
 
@@ -120,7 +121,8 @@ BEGIN
                 vehicle_type,
                 perf_dist_unit,
                 perf_vol_unit,
-                perf_scalar
+                perf_scalar,
+                blocked
             ) VALUES (
                 gen_random_uuid(),
                 _tenant_id,
@@ -128,7 +130,8 @@ BEGIN
                 _vehicle_type,
                 _perf_dist_unit,
                 _perf_vol_unit,
-                _perf_scalar
+                _perf_scalar,
+                false
             ) RETURNING id INTO _vehicle_id;
 
         WHEN _vehicle_id IS NOT NULL THEN

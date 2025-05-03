@@ -62,6 +62,10 @@ public class BasicRepoImpl implements IHaulRepo {
 
     @Override
     public void deleteVehicle(UUID vehicleId) throws TmsException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            BasicRepoVehiculeHelper.block(this.ds.getConnection(), vehicleId);
+        } catch (SQLException ex) {
+            throw new TmsException("Vehicule deletion faced an issue", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
     }
 }
