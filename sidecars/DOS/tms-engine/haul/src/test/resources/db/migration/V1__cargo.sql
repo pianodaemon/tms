@@ -56,6 +56,7 @@ CREATE TABLE agreements (
     longitude_destiny DOUBLE PRECISION NOT NULL,
     dist_unit VARCHAR(5) NOT NULL,
     dist_scalar NUMERIC(15, 6) NOT NULL,
+    blocked boolean DEFAULT false NOT NULL,
     CONSTRAINT unique_route_per_customer UNIQUE (
         customer_id, latitude_origin, longitude_origin, latitude_destiny, longitude_destiny
     )
@@ -329,6 +330,84 @@ BEGIN
     END CASE;
 
     RETURN (_customer_id::UUID, ''::TEXT);
+
+EXCEPTION
+    WHEN OTHERS THEN
+        GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
+        RETURN (NULL::UUID, rmsg::TEXT);
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION alter_agreement(
+    _agreement_id      UUID,
+    _tenant_id         UUID,
+    _customer_id       UUID,
+    _latitude_origin   DOUBLE PRECISION,
+    _longitude_origin  DOUBLE PRECISION,
+    _latitude_destiny  DOUBLE PRECISION,
+    _longitude_destiny DOUBLE PRECISION,
+    _dist_unit         VARCHAR,
+    _dist_scalar       NUMERIC
+) RETURNS RECORD
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit agreement                                       >>
+    -- >> Version:     haul                                                        >>
+    -- >> Date:        03/may/2025                                                 >>
+    -- >> Developer:   Edwin Plauchu for agnux                                     >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    current_moment TIMESTAMP WITH TIME ZONE := now();
+    rmsg TEXT := '';
+BEGIN
+    CASE
+        WHEN _agreement_id IS NULL THEN
+
+            INSERT INTO agreements (
+                id,
+                tenant_id,
+                customer_id,
+                latitude_origin,
+                longitude_origin,
+                latitude_destiny,
+                longitude_destiny,
+                dist_unit,
+                dist_scalar,
+                blocked
+            ) VALUES (
+                gen_random_uuid(),
+                _tenant_id,
+                _customer_id,
+                _latitude_origin,
+                _longitude_origin,
+                _latitude_destiny,
+                _longitude_destiny,
+                _dist_unit,
+                _dist_scalar,
+                false
+            ) RETURNING id INTO _agreement_id;
+
+        WHEN _agreement_id IS NOT NULL THEN
+
+            UPDATE agreements
+            SET
+                tenant_id         = _tenant_id,
+                customer_id       = _customer_id,
+                latitude_origin   = _latitude_origin,
+                longitude_origin  = _longitude_origin,
+                latitude_destiny  = _latitude_destiny,
+                longitude_destiny = _longitude_destiny,
+                dist_unit         = _dist_unit,
+                dist_scalar       = _dist_scalar
+            WHERE id = _agreement_id;
+
+        ELSE
+            RAISE EXCEPTION 'Invalid agreement identifier: %', _agreement_id;
+    END CASE;
+
+    RETURN (_agreement_id::UUID, ''::TEXT);
 
 EXCEPTION
     WHEN OTHERS THEN
