@@ -38,7 +38,7 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE TABLE customers (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
     tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
-    name VARCHAR(128) NOT NULL,
+    name VARCHAR(128) NOT NULL
 );
 
 
