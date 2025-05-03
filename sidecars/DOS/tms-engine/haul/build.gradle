@@ -16,12 +16,11 @@ dependencies {
     // PostgreSQL JDBC Driver
     implementation 'org.postgresql:postgresql:42.2.24'
 
-    // Testcontainers for PostgreSQL
-    implementation 'org.testcontainers:postgresql:1.16.0'
-
     // For working with the PG data source
     implementation 'org.postgresql:postgresql:42.2.24'
 
+    // Testcontainers for PostgreSQL
+    testImplementation 'org.testcontainers:postgresql:1.16.0'
 
     testImplementation 'org.flywaydb:flyway-core:11.8.0'
     testImplementation 'org.flywaydb:flyway-database-postgresql:11.8.0'
