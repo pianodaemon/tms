@@ -6,6 +6,7 @@ import com.agnux.haul.repository.model.Driver;
 import com.agnux.haul.repository.model.Vehicle;
 import com.agnux.haul.repository.model.VehicleType;
 import com.agnux.haul.repository.model.DistUnit;
+import com.agnux.haul.repository.model.Patio;
 import com.agnux.haul.repository.model.VolUnit;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -163,6 +164,46 @@ public class BasicRepoImplTest {
         // It can not retrieve the updated vehicle
         TmsException assertThrows = assertThrows(TmsException.class, () -> repo.getAvailableVehicule(id), "Blocked vehicle should not be retrievable");
         assertTrue(assertThrows.getErrorCode() == ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), "Error code is not what we expected");
+    }
+
+    @Test
+    void testPatio_crud_success() throws SQLException, TmsException {
+        UUID tenantId = UUID.randomUUID();
+
+        Patio patio = new Patio(
+                null,
+                tenantId,
+                "Main Patio",
+                19.4326,
+                -99.1332
+        );
+
+        UUID patioId = repo.createPatio(patio);
+        Patio retrieved = repo.getAvailablePatio(patioId);
+
+        assertNotNull(retrieved, "Retrieved patio should not be null");
+        assertEquals(patioId, retrieved.getId().get(), "Patio ID should match");
+        assertEquals(patio.getTenantId(), retrieved.getTenantId(), "Tenant ID should match");
+        assertEquals(patio.getName(), retrieved.getName(), "Patio name should match");
+        assertEquals(patio.getLatitudeLocation(), retrieved.getLatitudeLocation(), 0.0001, "Latitude should match");
+        assertEquals(patio.getLongitudeLocation(), retrieved.getLongitudeLocation(), 0.0001, "Longitude should match");
+
+        // Modify and update
+        retrieved.setName("Updated Patio");
+        retrieved.setLatitudeLocation(40.7128);
+        retrieved.setLongitudeLocation(-74.0060);
+        repo.editPatio(retrieved);
+
+        Patio updated = repo.getAvailablePatio(patioId);
+        assertEquals("Updated Patio", updated.getName(), "Updated name should match");
+        assertEquals(40.7128, updated.getLatitudeLocation(), 0.0001, "Updated latitude should match");
+        assertEquals(-74.0060, updated.getLongitudeLocation(), 0.0001, "Updated longitude should match");
+
+        // Delete (block) the patio
+        repo.deletePatio(patioId);
+
+        TmsException ex = assertThrows(TmsException.class, () -> repo.getAvailablePatio(patioId));
+        assertEquals(ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), ex.getErrorCode(), "Expected error code on blocked patio");
     }
 
     @AfterAll

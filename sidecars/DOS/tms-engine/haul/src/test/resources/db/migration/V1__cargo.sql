@@ -66,7 +66,8 @@ CREATE TABLE patios (
     tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
     name VARCHAR(128) NOT NULL,
     latitude_location DOUBLE PRECISION NOT NULL,
-    longitude_location DOUBLE PRECISION NOT NULL
+    longitude_location DOUBLE PRECISION NOT NULL,
+    blocked boolean DEFAULT false NOT NULL
 );
 
 
@@ -211,6 +212,68 @@ BEGIN
     END CASE;
 
     RETURN (_driver_id::UUID, ''::TEXT);
+
+EXCEPTION
+    WHEN OTHERS THEN
+        GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
+        RETURN (NULL::UUID, rmsg::TEXT);
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION alter_patio(
+    _patio_id     UUID,
+    _tenant_id    UUID,
+    _name         VARCHAR,
+    _latitude     DOUBLE PRECISION,
+    _longitude    DOUBLE PRECISION
+) RETURNS RECORD
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit patio                                           >>
+    -- >> Version:     haul                                                        >>
+    -- >> Date:        03/may/2025                                                 >>
+    -- >> Developer:   Edwin Plauchu for agnux                                     >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    current_moment TIMESTAMP WITH TIME ZONE := now();
+    rmsg TEXT := '';
+BEGIN
+    CASE
+        WHEN _patio_id IS NULL THEN
+
+            INSERT INTO patios (
+                id,
+                tenant_id,
+                name,
+                latitude_location,
+                longitude_location,
+                blocked
+            ) VALUES (
+                gen_random_uuid(),
+                _tenant_id,
+                _name,
+                _latitude,
+                _longitude,
+                false
+            ) RETURNING id INTO _patio_id;
+
+        WHEN _patio_id IS NOT NULL THEN
+
+            UPDATE patios
+            SET
+                tenant_id         = _tenant_id,
+                name              = _name,
+                latitude_location = _latitude,
+                longitude_location = _longitude
+            WHERE id = _patio_id;
+
+        ELSE
+            RAISE EXCEPTION 'Invalid patio identifier: %', _patio_id;
+    END CASE;
+
+    RETURN (_patio_id::UUID, ''::TEXT);
 
 EXCEPTION
     WHEN OTHERS THEN

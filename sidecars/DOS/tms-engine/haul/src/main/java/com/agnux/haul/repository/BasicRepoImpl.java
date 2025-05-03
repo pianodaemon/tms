@@ -5,6 +5,7 @@ import com.agnux.haul.errors.TmsException;
 import com.agnux.haul.repository.model.Agreement;
 import com.agnux.haul.repository.model.CargoAssignment;
 import com.agnux.haul.repository.model.Driver;
+import com.agnux.haul.repository.model.Patio;
 import com.agnux.haul.repository.model.Vehicle;
 
 import java.sql.SQLException;
@@ -106,4 +107,43 @@ public class BasicRepoImpl implements IHaulRepo {
             throw new TmsException("Driver deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
+
+    @Override
+    public Patio getAvailablePatio(UUID patioId) throws TmsException {
+        try {
+            Optional<Patio> patio = BasicRepoPatioHelper.fetchById(this.ds.getConnection(), patioId);
+            return patio.orElseThrow(()
+                    -> new TmsException("Patio " + patioId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
+        } catch (SQLException ex) {
+            throw new TmsException("Patio lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    @Override
+    public UUID createPatio(Patio p) throws TmsException {
+        try {
+            return BasicRepoPatioHelper.update(this.ds.getConnection(), this.debugMode, p);
+        } catch (SQLException ex) {
+            throw new TmsException("Patio creation failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    @Override
+    public UUID editPatio(Patio p) throws TmsException {
+        try {
+            return BasicRepoPatioHelper.update(this.ds.getConnection(), this.debugMode, p);
+        } catch (SQLException ex) {
+            throw new TmsException("Patio update failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    @Override
+    public void deletePatio(UUID patioId) throws TmsException {
+        try {
+            BasicRepoPatioHelper.block(this.ds.getConnection(), patioId);
+        } catch (SQLException ex) {
+            throw new TmsException("Patio deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
 }
