@@ -28,6 +28,11 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
+    public Agreement getAvailableAgreement(UUID agreementId) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
     public Vehicle getAvailableVehicule(UUID vehicleId) throws TmsException {
         try {
             Optional<Vehicle> v = BasicRepoVehiculeHelper.fetchById(this.ds.getConnection(), vehicleId);
@@ -35,11 +40,6 @@ public class BasicRepoImpl implements IHaulRepo {
         } catch (SQLException ex) {
             throw new TmsException("Vehicule creation faced an issue", ex, ErrorCodes.UNKNOWN_ISSUE);
         }
-    }
-
-    @Override
-    public Agreement getAvailableAgreement(UUID agreementId) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
@@ -58,5 +58,10 @@ public class BasicRepoImpl implements IHaulRepo {
         } catch (SQLException ex) {
             throw new TmsException("Vehicule edition faced an issue", ex, ErrorCodes.UNKNOWN_ISSUE);
         }
+    }
+
+    @Override
+    public void deleteVehicle(UUID vehicleId) throws TmsException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

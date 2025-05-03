@@ -52,6 +52,7 @@ public class BasicRepoImplTest {
         UUID tenantId = UUID.randomUUID(); // Generate a valid tenant_id
 
         Vehicle vehicle = new Vehicle(
+                null,
                 tenantId,
                 "ABC-123",
                 VehicleType.REFRIGERATED_VAN

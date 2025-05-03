@@ -8,6 +8,8 @@ import java.util.UUID;
 
 public interface IHaulRepo {
 
+    Agreement getAvailableAgreement(UUID agreementId);
+
     String createCargoAssignment(CargoAssignment t);
 
     Vehicle getAvailableVehicule(UUID vehicleId) throws TmsException;
@@ -16,5 +18,5 @@ public interface IHaulRepo {
 
     UUID editVehicle(Vehicle v) throws TmsException;
 
-    Agreement getAvailableAgreement(UUID agreementId);
+    void deleteVehicle(UUID vehicleId) throws TmsException;
 }

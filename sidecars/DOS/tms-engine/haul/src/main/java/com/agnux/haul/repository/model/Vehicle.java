@@ -25,8 +25,4 @@ public class Vehicle extends TmsBasicModel {
         this.numberPlate = numberPlate;
         this.vehicleType = vehicleType;
     }
-
-    public Vehicle(final UUID tenantId, String numberPlate, VehicleType vehicleType) {
-        this(null, tenantId, numberPlate, vehicleType);
-    }
 }
