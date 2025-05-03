@@ -52,9 +52,9 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public void editVehicle(Vehicle v) throws TmsException {
+    public UUID editVehicle(Vehicle v) throws TmsException {
         try {
-            BasicRepoVehiculeHelper.update(this.ds.getConnection(), this.debugMode, v);
+            return BasicRepoVehiculeHelper.update(this.ds.getConnection(), this.debugMode, v);
         } catch (SQLException ex) {
             throw new TmsException("Vehicule edition faced an issue", ex, ErrorCodes.UNKNOWN_ISSUE);
         }

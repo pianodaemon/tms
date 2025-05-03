@@ -14,7 +14,7 @@ public interface IHaulRepo {
 
     UUID createVehicle(Vehicle v) throws TmsException;
 
-    void editVehicle(Vehicle v) throws TmsException;
+    UUID editVehicle(Vehicle v) throws TmsException;
 
     Agreement getAvailableAgreement(UUID agreementId);
 }
