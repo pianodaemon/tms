@@ -16,7 +16,7 @@ import java.util.UUID;
 class BasicRepoVehiculeHelper extends BasicRepoCommonHelper {
 
     public static Optional<Vehicle> fetchById(Connection conn, UUID vehicleId) throws SQLException {
-        String sql = "SELECT * FROM vehicles WHERE id = ?";
+        String sql = "SELECT * FROM vehicles WHERE not blocked AND id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setObject(1, vehicleId);
 

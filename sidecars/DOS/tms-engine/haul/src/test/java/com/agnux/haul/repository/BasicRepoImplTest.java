@@ -1,5 +1,6 @@
 package com.agnux.haul.repository;
 
+import com.agnux.haul.errors.ErrorCodes;
 import com.agnux.haul.errors.TmsException;
 import com.agnux.haul.repository.model.Vehicle;
 import com.agnux.haul.repository.model.VehicleType;
@@ -48,7 +49,7 @@ public class BasicRepoImplTest {
     }
 
     @Test
-    void testUpdateVehicle_create_and_edit_success() throws SQLException, TmsException {
+    void testUpdateVehicle_crud_success() throws SQLException, TmsException {
         UUID tenantId = UUID.randomUUID(); // Generate a valid tenant_id
 
         Vehicle vehicle = new Vehicle(
@@ -62,7 +63,7 @@ public class BasicRepoImplTest {
         vehicle.setPerfVolUnit(VolUnit.LT);
         vehicle.setPerfScalar(new BigDecimal("7.50"));
 
-        UUID id = repo.createVehicle(vehicle);
+        final UUID id = repo.createVehicle(vehicle);
         Vehicle retrieved = repo.getAvailableVehicule(id);
 
         assertEquals(id, retrieved.getId().get());
@@ -118,6 +119,13 @@ public class BasicRepoImplTest {
 
         // Compare perfScalar
         assertEquals(retrieved.getPerfScalar(), updated.getPerfScalar(), "Performance scalar should match after update");
+
+        // Now, delete the vehicle (aka block)
+        repo.deleteVehicle(id);
+
+        // It can not retrieve the updated vehicle
+        TmsException assertThrows = assertThrows(TmsException.class, () -> repo.getAvailableVehicule(id), "Blocked vehicle should not be retrievable");
+        assertTrue(assertThrows.getErrorCode() == ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), "Error code is not what we expected");
     }
 
     @AfterAll
