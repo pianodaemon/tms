@@ -63,7 +63,7 @@ class BasicRepoVehiculeHelper {
 
             // Set the input parameters
             if (v.getId().isPresent()) {
-                stmt.setObject(1, v.getId());
+                stmt.setObject(1, v.getId().get());
             } else {
                 stmt.setNull(1, Types.OTHER); // _vehicle_id
             }

@@ -48,7 +48,7 @@ public class BasicRepoImplTest {
     }
 
     @Test
-    void testUpdateVehicle_insert_and_edit_success() throws SQLException, TmsException {
+    void testUpdateVehicle_create_and_edit_success() throws SQLException, TmsException {
         UUID tenantId = UUID.randomUUID(); // Generate a valid tenant_id
 
         Vehicle vehicle = new Vehicle(
@@ -85,6 +85,38 @@ public class BasicRepoImplTest {
 
         // Compare perfScalar
         assertEquals(vehicle.getPerfScalar(), retrieved.getPerfScalar(), "Performance scalar should match");
+
+        // Now, edit the vehicle and update it
+        retrieved.setNumberPlate("XYZ-999");
+        retrieved.setVehicleType(VehicleType.TANDEM_TRUCK);
+        retrieved.setPerfScalar(new BigDecimal("8.00"));
+
+        // Update the vehicle in the database
+        repo.editVehicle(retrieved);
+
+        // Retrieve the updated vehicle
+        Vehicle updated = repo.getAvailableVehicule(id);
+
+        // Assert the updated vehicle matches the modified values
+        assertNotNull(updated, "Updated vehicle should not be null");
+
+        // Compare tenantId
+        assertEquals(retrieved.getTenantId(), updated.getTenantId(), "Tenant ID should match after update");
+
+        // Compare numberPlate
+        assertEquals(retrieved.getNumberPlate(), updated.getNumberPlate(), "Number plate should match after update");
+
+        // Compare vehicleType
+        assertEquals(retrieved.getVehicleType(), updated.getVehicleType(), "Vehicle type should match after update");
+
+        // Compare perfDistUnit
+        assertEquals(retrieved.getPerfDistUnit(), updated.getPerfDistUnit(), "Performance distance unit should match after update");
+
+        // Compare perfVolUnit
+        assertEquals(retrieved.getPerfVolUnit(), updated.getPerfVolUnit(), "Performance volume unit should match after update");
+
+        // Compare perfScalar
+        assertEquals(retrieved.getPerfScalar(), updated.getPerfScalar(), "Performance scalar should match after update");
     }
 
     @AfterAll
