@@ -16,7 +16,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,25 +62,26 @@ public class IHaulRepoImplTest {
         vehicle.setPerfScalar(new BigDecimal("7.50"));
 
         try (Connection conn = dataSource.getConnection()) {
-
-            // Call the function
             UUID id = IHaulRepoImpl.updateVehicle(conn, true, vehicle);
             assertNotNull(id, "Returned vehicle ID should not be null");
 
-            // Query and validate all fields
-            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM vehicles WHERE id = ?")) {
-                ps.setObject(1, id);
-                try (ResultSet rs = ps.executeQuery()) {
-                    assertTrue(rs.next(), "Vehicle record should exist");
+            assertVehicleInDbMatches(conn, id, vehicle);
+        }
+    }
 
-                    assertEquals(id, UUID.fromString(rs.getString("id")));
-                    assertEquals(tenantId, UUID.fromString(rs.getString("tenant_id")));
-                    assertEquals("ABC-123", rs.getString("number_plate"));
-                    assertEquals("REFRIGERATED_VAN", rs.getString("vehicle_type"));
-                    assertEquals("KM", rs.getString("perf_dist_unit"));
-                    assertEquals("LT", rs.getString("perf_vol_unit"));
-                    assertEquals(new BigDecimal("7.50"), rs.getBigDecimal("perf_scalar"));
-                }
+    private static void assertVehicleInDbMatches(Connection conn, UUID id, Vehicle expected) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM vehicles WHERE id = ?")) {
+            ps.setObject(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                assertTrue(rs.next(), "Vehicle record should exist");
+
+                assertEquals(id, UUID.fromString(rs.getString("id")));
+                assertEquals(expected.getTenantId(), UUID.fromString(rs.getString("tenant_id")));
+                assertEquals(expected.getNumberPlate(), rs.getString("number_plate"));
+                assertEquals(expected.getVehicleType().name(), rs.getString("vehicle_type"));
+                assertEquals(expected.getPerfDistUnit().name(), rs.getString("perf_dist_unit"));
+                assertEquals(expected.getPerfVolUnit().name(), rs.getString("perf_vol_unit"));
+                assertEquals(expected.getPerfScalar(), rs.getBigDecimal("perf_scalar"));
             }
         }
     }
