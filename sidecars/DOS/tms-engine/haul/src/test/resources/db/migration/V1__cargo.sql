@@ -27,6 +27,7 @@ CREATE TABLE drivers (
     tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
     name VARCHAR(128) NOT NULL,
     license_number VARCHAR(128) NOT NULL,
+    blocked boolean DEFAULT false NOT NULL,
     CONSTRAINT unique_license_per_tenant UNIQUE (tenant_id, license_number)
 );
 
@@ -157,5 +158,63 @@ EXCEPTION
         GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
         RETURN (NULL::UUID, rmsg::TEXT);
 
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION alter_driver(
+    _driver_id       UUID,
+    _tenant_id       UUID,
+    _name            VARCHAR,
+    _license_number  VARCHAR
+) RETURNS RECORD
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit driver                                          >>
+    -- >> Version:     haul                                                        >>
+    -- >> Date:        03/may/2025                                                 >>
+    -- >> Developer:   Edwin Plauchu for agnux                                     >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    current_moment TIMESTAMP WITH TIME ZONE := now();
+    rmsg TEXT := '';
+BEGIN
+    CASE
+        WHEN _driver_id IS NULL THEN
+
+            INSERT INTO drivers (
+                id,
+                tenant_id,
+                name,
+                license_number,
+                blocked
+            ) VALUES (
+                gen_random_uuid(),
+                _tenant_id,
+                _name,
+                _license_number,
+                false
+            ) RETURNING id INTO _driver_id;
+
+        WHEN _driver_id IS NOT NULL THEN
+
+            UPDATE drivers
+            SET
+                tenant_id      = _tenant_id,
+                name           = _name,
+                license_number = _license_number
+            WHERE id = _driver_id;
+
+        ELSE
+            RAISE EXCEPTION 'Invalid driver identifier: %', _driver_id;
+    END CASE;
+
+    RETURN (_driver_id::UUID, ''::TEXT);
+
+EXCEPTION
+    WHEN OTHERS THEN
+        GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
+        RETURN (NULL::UUID, rmsg::TEXT);
 END;
 $$;
