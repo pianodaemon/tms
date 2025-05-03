@@ -13,7 +13,7 @@ import java.sql.Types;
 import java.util.Optional;
 import java.util.UUID;
 
-class BasicRepoVehiculeHelper {
+class BasicRepoVehiculeHelper extends BasicRepoCommonHelper {
 
     public static Optional<Vehicle> fetchById(Connection conn, UUID vehicleId) throws SQLException {
         String sql = "SELECT * FROM vehicles WHERE id = ?";
@@ -92,17 +92,6 @@ class BasicRepoVehiculeHelper {
             }
         } catch (SQLException ex) {
             throw new RuntimeException("DB error during vehicle update", ex);
-        }
-    }
-
-    private static void verifyPgFunctionExists(Connection conn, String functionName) throws SQLException {
-        try (PreparedStatement stmt = conn.prepareStatement("SELECT 1 FROM pg_proc WHERE proname = ?")) {
-            stmt.setString(1, functionName);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (!rs.next()) {
-                    throw new SQLException("PostgreSQL function '" + functionName + "' should exist");
-                }
-            }
         }
     }
 }
