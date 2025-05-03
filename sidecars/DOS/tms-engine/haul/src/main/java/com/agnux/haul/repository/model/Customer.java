@@ -6,11 +6,10 @@ import lombok.Getter;
 @Getter
 public class Customer extends TmsBasicModel {
 
-    public Customer(final UUID customerId, final UUID tenantId) {
+    private String name;
+    
+    public Customer(final UUID customerId, final UUID tenantId, String name) {
         super(customerId, tenantId);
-    }
-
-    public Customer(final UUID tenantId) {
-        this(null, tenantId);
+        this.name = name;
     }
 }

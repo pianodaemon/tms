@@ -87,7 +87,7 @@ public class BasicRepoImplTest {
     }
 
     @Test
-    void testUpdateVehicle_crud_success() throws SQLException, TmsException {
+    void testVehicle_crud_success() throws SQLException, TmsException {
         UUID tenantId = UUID.randomUUID(); // Generate a valid tenant_id
 
         Vehicle vehicle = new Vehicle(
