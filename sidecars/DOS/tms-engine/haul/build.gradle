@@ -14,10 +14,10 @@ dependencies {
     implementation 'javax.inject:javax.inject:1'
 
     // PostgreSQL JDBC Driver
-    implementation 'org.postgresql:postgresql:42.2.24'
+    implementation "org.postgresql:postgresql:${pg_jdbc_driver_version}"
 
     // For working with the PG data source
-    implementation 'org.postgresql:postgresql:42.2.24'
+    implementation "org.postgresql:postgresql:${pg_jdbc_driver_version}"
 
     // Testcontainers for PostgreSQL
     testImplementation 'org.testcontainers:postgresql:1.16.0'

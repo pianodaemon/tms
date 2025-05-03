@@ -36,9 +36,9 @@ public class BasicRepoImpl implements IHaulRepo {
     public Vehicle getAvailableVehicule(UUID vehicleId) throws TmsException {
         try {
             Optional<Vehicle> v = BasicRepoVehiculeHelper.fetchById(this.ds.getConnection(), vehicleId);
-            return v.orElseThrow(() -> new TmsException("Vehicule " + vehicleId.toString() + " was not found", ErrorCodes.UNKNOWN_ISSUE));
+            return v.orElseThrow(() -> new TmsException("Vehicule " + vehicleId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
         } catch (SQLException ex) {
-            throw new TmsException("Vehicule creation faced an issue", ex, ErrorCodes.UNKNOWN_ISSUE);
+            throw new TmsException("Vehicule creation faced an issue", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
@@ -47,7 +47,7 @@ public class BasicRepoImpl implements IHaulRepo {
         try {
             return BasicRepoVehiculeHelper.update(this.ds.getConnection(), this.debugMode, v);
         } catch (SQLException ex) {
-            throw new TmsException("Vehicule creation faced an issue", ex, ErrorCodes.UNKNOWN_ISSUE);
+            throw new TmsException("Vehicule creation faced an issue", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
@@ -56,7 +56,7 @@ public class BasicRepoImpl implements IHaulRepo {
         try {
             return BasicRepoVehiculeHelper.update(this.ds.getConnection(), this.debugMode, v);
         } catch (SQLException ex) {
-            throw new TmsException("Vehicule edition faced an issue", ex, ErrorCodes.UNKNOWN_ISSUE);
+            throw new TmsException("Vehicule edition faced an issue", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
