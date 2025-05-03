@@ -44,7 +44,7 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
 
             // Set the input parameters
             if (c.getId() != null) {
-                stmt.setObject(1, c.getId());
+                stmt.setObject(1, c.getId().get());
             } else {
                 stmt.setNull(1, Types.OTHER); // _customer_id
             }
