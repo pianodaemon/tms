@@ -13,9 +13,6 @@ import org.postgresql.ds.PGSimpleDataSource;
 import org.flywaydb.core.Flyway;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
@@ -51,7 +48,7 @@ public class BasicRepoImplTest {
     }
 
     @Test
-    void testUpdateVehicle_insert_success() throws SQLException, TmsException {
+    void testUpdateVehicle_insert_and_edit_success() throws SQLException, TmsException {
         UUID tenantId = UUID.randomUUID(); // Generate a valid tenant_id
 
         Vehicle vehicle = new Vehicle(
