@@ -13,6 +13,7 @@ import org.flywaydb.core.Flyway;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -49,22 +50,40 @@ public class IHaulRepoImplTest {
 
     @Test
     void testUpdateVehicle_insert_success() throws SQLException {
-        try (Connection connection = dataSource.getConnection(); Statement stmt = connection.createStatement(); ResultSet rs = stmt.executeQuery("SELECT 1 FROM pg_proc WHERE proname = 'alter_vehicle'")) {
-            boolean functionExists = rs.next();
-            assertTrue(functionExists, "Alter vehicle function should exist before calling updateVehicle");
-        }
+        UUID tenantId = UUID.randomUUID(); // Generate a valid tenant_id
 
         Vehicle vehicle = new Vehicle(
-                UUID.fromString("4a232802-d6e8-458f-9eca-6a8c2b980982"),
+                tenantId,
                 "ABC-123",
                 VehicleType.REFRIGERATED_VAN
         );
+
         vehicle.setPerfDistUnit(DistUnit.KM);
         vehicle.setPerfVolUnit(VolUnit.LT);
         vehicle.setPerfScalar(new BigDecimal("7.50"));
 
-        UUID id = IHaulRepoImpl.updateVehicle(dataSource.getConnection(), vehicle);
-        assertNotNull(id);
+        try (Connection conn = dataSource.getConnection()) {
+
+            // Call the function
+            UUID id = IHaulRepoImpl.updateVehicle(conn, true, vehicle);
+            assertNotNull(id, "Returned vehicle ID should not be null");
+
+            // Query and validate all fields
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM vehicles WHERE id = ?")) {
+                ps.setObject(1, id);
+                try (ResultSet rs = ps.executeQuery()) {
+                    assertTrue(rs.next(), "Vehicle record should exist");
+
+                    assertEquals(id, UUID.fromString(rs.getString("id")));
+                    assertEquals(tenantId, UUID.fromString(rs.getString("tenant_id")));
+                    assertEquals("ABC-123", rs.getString("number_plate"));
+                    assertEquals("REFRIGERATED_VAN", rs.getString("vehicle_type"));
+                    assertEquals("KM", rs.getString("perf_dist_unit"));
+                    assertEquals("LT", rs.getString("perf_vol_unit"));
+                    assertEquals(new BigDecimal("7.50"), rs.getBigDecimal("perf_scalar"));
+                }
+            }
+        }
     }
 
     @AfterAll
