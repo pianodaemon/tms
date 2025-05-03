@@ -1,6 +1,7 @@
 package com.agnux.haul.repository.model;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,7 +20,7 @@ public class Vehicle extends TmsBasicModel {
     private VolUnit perfVolUnit;
     private BigDecimal perfScalar;
 
-    public Vehicle(final String vehicleId, final String tenantId, String numberPlate, VehicleType vehicleType) {
+    public Vehicle(final UUID vehicleId, final String tenantId, String numberPlate, VehicleType vehicleType) {
         super(vehicleId, tenantId);
         this.numberPlate = numberPlate;
         this.vehicleType = vehicleType;

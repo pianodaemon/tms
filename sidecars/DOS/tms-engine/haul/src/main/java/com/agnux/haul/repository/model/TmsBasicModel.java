@@ -1,11 +1,12 @@
 package com.agnux.haul.repository.model;
 
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
 public class TmsBasicModel {
-    protected String Id;
+    protected UUID Id;
     protected String tenantId;
 }

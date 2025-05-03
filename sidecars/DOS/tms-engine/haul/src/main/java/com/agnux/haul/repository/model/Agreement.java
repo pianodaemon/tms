@@ -1,6 +1,7 @@
 package com.agnux.haul.repository.model;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 import lombok.Getter;
 
 @Getter
@@ -19,7 +20,7 @@ public class Agreement extends TmsBasicModel {
     private DistUnit distUnit;
     private BigDecimal distScalar;
 
-    public Agreement(String agreementId, String tenantId, String customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
+    public Agreement(UUID agreementId, String tenantId, String customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
         super(agreementId, tenantId);
         this.customerId = customerId;
         this.latitudeOrigin = latitudeOrigin;

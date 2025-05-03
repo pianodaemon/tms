@@ -22,12 +22,18 @@ SET row_security = off;
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
-
 --
 -- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
 --
 
 COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+--
+-- Enable pgcrypto extension (needed for gen_random_uuid)
+--
+
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 
 CREATE TABLE customers (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id

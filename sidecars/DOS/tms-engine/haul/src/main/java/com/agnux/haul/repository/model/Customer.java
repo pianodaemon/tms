@@ -1,11 +1,12 @@
 package com.agnux.haul.repository.model;
 
+import java.util.UUID;
 import lombok.Getter;
 
 @Getter
 public class Customer extends TmsBasicModel {
 
-    public Customer(final String customerId, final String tenantId) {
+    public Customer(final UUID customerId, final String tenantId) {
         super(customerId, tenantId);
     }
 

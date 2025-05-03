@@ -1,5 +1,6 @@
 package com.agnux.haul.repository.model;
 
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +11,7 @@ public class Driver extends TmsBasicModel {
     private String name;
     private String licenseNumber;
     
-    public Driver(final String DriverId, final String tenantId) {
+    public Driver(final UUID DriverId, final String tenantId) {
         super(DriverId, tenantId);
     }
 

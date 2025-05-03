@@ -1,5 +1,6 @@
 package com.agnux.haul.repository.model;
 
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,7 +14,7 @@ public class Patio extends TmsBasicModel {
     private double latitudeLocation;
     private double longitudeLocation;
 
-    public Patio(final String patioId, final String tenantId) {
+    public Patio(final UUID patioId, final String tenantId) {
         super(patioId, tenantId);
     }
 

@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import java.math.BigDecimal;
+import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -31,37 +32,43 @@ class HaulMgmtTest {
     private Vehicle ship;
     private Agreement agreement;
     private Customer customer;
+    private final UUID vehicleUuid = UUID.fromString("4a232802-d6e8-458f-9eca-6a8c2b980980");
+    private final UUID agreementUuid = UUID.fromString("4a232802-d6e8-458f-9eca-6a8c2b980981");
+    private final UUID tenantUuid = UUID.fromString("4a232802-d6e8-458f-9eca-6a8c2b980982");
+    private final UUID customerUuid = UUID.fromString("4a232802-d6e8-458f-9eca-6a8c2b980983");
+    private final UUID cargorUuid = UUID.fromString("4a232802-d6e8-458f-9eca-6a8c2b980984");
 
     @BeforeEach
     void setUpData() {
-        tenantDetails = new TenantDetailsDto("tenant001", "gerald");
-        customer = new Customer("customer001", "tenant001");
-        tripDetails = new TripDetailsDto("ship001", "agreement001");
-        agreement = new Agreement("agreement001", "tenant001", "customer001", 0, 0, 0, 0, DistUnit.KM, new BigDecimal("100"));
-        ship = new Vehicle("ship001", tenantDetails.getTenantId(), "GAS9500", VehicleType.CAR);
+
+        tenantDetails = new TenantDetailsDto(tenantUuid.toString(), "gerald");
+        customer = new Customer(customerUuid, tenantUuid.toString());
+        tripDetails = new TripDetailsDto(vehicleUuid.toString(), agreementUuid.toString());
+        agreement = new Agreement(agreementUuid, tenantUuid.toString(), customerUuid.toString(), 0, 0, 0, 0, DistUnit.KM, new BigDecimal("100"));
+        ship = new Vehicle(vehicleUuid, tenantDetails.getTenantId(), "GAS9500", VehicleType.CAR);
     }
 
     @Test
     void assignTrip_ShouldReturnCargoId_WhenDataIsValid() throws TmsException {
         // Arrange
-        when(repo.getAvailableVehicule("ship001")).thenReturn(ship);
-        when(repo.getAvailableAgreement("agreement001")).thenReturn(agreement);
-        when(repo.createCargoAssignment(any(CargoAssignment.class))).thenReturn("cargo001");
+        when(repo.getAvailableVehicule("4a232802-d6e8-458f-9eca-6a8c2b980980")).thenReturn(ship);
+        when(repo.getAvailableAgreement("4a232802-d6e8-458f-9eca-6a8c2b980981")).thenReturn(agreement);
+        when(repo.createCargoAssignment(any(CargoAssignment.class))).thenReturn(cargorUuid.toString());
 
         // Act
         String cargoId = haulMgmt.assignTrip(tenantDetails, tripDetails);
 
         // Assert
-        assertEquals("cargo001", cargoId);
+        assertEquals(cargorUuid.toString(), cargoId);
 
         // Verify methods called
-        verify(repo).getAvailableVehicule("ship001");
+        verify(repo).getAvailableVehicule(vehicleUuid.toString());
 
         ArgumentCaptor<CargoAssignment> assignmentCaptor = ArgumentCaptor.forClass(CargoAssignment.class);
         verify(repo).createCargoAssignment(assignmentCaptor.capture());
 
         CargoAssignment capturedAssignment = assignmentCaptor.getValue();
-        assertEquals("tenant001", capturedAssignment.getTenantId());
+        assertEquals(tenantUuid.toString(), capturedAssignment.getTenantId());
         assertEquals(ship, capturedAssignment.getVehicle());
         assertNotNull(capturedAssignment.getTlRecord());
     }
@@ -69,8 +76,8 @@ class HaulMgmtTest {
     @Test
     void assignTrip_ShouldThrowTmsException_WhenTenantMismatch() throws TmsException {
         // Arrange
-        Vehicle mismatchedVehicle = new Vehicle("ship001", "other-tenant", "GAS9500", VehicleType.CAR);
-        when(repo.getAvailableVehicule("ship001")).thenReturn(mismatchedVehicle);
+        Vehicle mismatchedVehicle = new Vehicle(vehicleUuid, "other-tenant", "GAS9500", VehicleType.CAR);
+        when(repo.getAvailableVehicule(vehicleUuid.toString())).thenReturn(mismatchedVehicle);
 
         // Act & Assert
         TmsException ex = assertThrows(TmsException.class, ()

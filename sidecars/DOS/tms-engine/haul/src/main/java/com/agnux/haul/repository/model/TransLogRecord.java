@@ -1,6 +1,7 @@
 package com.agnux.haul.repository.model;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import lombok.Getter;
 
@@ -11,7 +12,7 @@ public class TransLogRecord extends TmsBasicModel {
     private BigDecimal distScalar;
     private BigDecimal fuelConsumption;
 
-    public TransLogRecord(String transLogRecordId, String tenantId, DistUnit distUnit, BigDecimal distScalar, BigDecimal fuelConsumption) {
+    public TransLogRecord(UUID transLogRecordId, String tenantId, DistUnit distUnit, BigDecimal distScalar, BigDecimal fuelConsumption) {
         super(transLogRecordId, tenantId);
         this.distUnit = distUnit;
         this.distScalar = distScalar;

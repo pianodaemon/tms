@@ -1,5 +1,6 @@
 package com.agnux.haul.repository.model;
 
+import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +16,7 @@ public class CargoAssignment extends TmsBasicModel {
     private double latitudeLocation;
     private double longitudeLocation;
 
-    public CargoAssignment(final String cargoAssignmentId, final String tenantId, Vehicle vehicle, TransLogRecord tlRecord) {
+    public CargoAssignment(final UUID cargoAssignmentId, final String tenantId, Vehicle vehicle, TransLogRecord tlRecord) {
         super(cargoAssignmentId, tenantId);
         this.vehicle = vehicle;
         this.tlRecord = tlRecord;
