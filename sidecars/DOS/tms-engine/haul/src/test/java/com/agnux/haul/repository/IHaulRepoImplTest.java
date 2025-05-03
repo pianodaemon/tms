@@ -1,5 +1,6 @@
 package com.agnux.haul.repository;
 
+import com.agnux.haul.errors.TmsException;
 import com.agnux.haul.repository.model.Vehicle;
 import com.agnux.haul.repository.model.VehicleType;
 import com.agnux.haul.repository.model.DistUnit;
@@ -28,6 +29,7 @@ public class IHaulRepoImplTest {
             .withPassword("test");
 
     static DataSource dataSource;
+    static IHaulRepoImpl repo;
 
     @BeforeAll
     static void setUp() throws Exception {
@@ -45,10 +47,11 @@ public class IHaulRepoImplTest {
         ds.setPassword(postgresContainer.getPassword());
 
         dataSource = ds;
+        repo = new IHaulRepoImpl(dataSource, true);
     }
 
     @Test
-    void testUpdateVehicle_insert_success() throws SQLException {
+    void testUpdateVehicle_insert_success() throws SQLException, TmsException {
         UUID tenantId = UUID.randomUUID(); // Generate a valid tenant_id
 
         Vehicle vehicle = new Vehicle(
@@ -62,7 +65,7 @@ public class IHaulRepoImplTest {
         vehicle.setPerfScalar(new BigDecimal("7.50"));
 
         try (Connection conn = dataSource.getConnection()) {
-            UUID id = IHaulRepoImpl.updateVehicle(conn, true, vehicle);
+            UUID id = repo.createVehicle(vehicle);
             assertNotNull(id, "Returned vehicle ID should not be null");
 
             assertVehicleInDbMatches(conn, id, vehicle);

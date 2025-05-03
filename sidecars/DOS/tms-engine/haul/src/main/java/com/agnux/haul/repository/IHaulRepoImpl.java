@@ -1,17 +1,25 @@
 package com.agnux.haul.repository;
 
+import com.agnux.haul.errors.ErrorCodes;
+import com.agnux.haul.errors.TmsException;
 import com.agnux.haul.repository.model.Agreement;
 import com.agnux.haul.repository.model.CargoAssignment;
 import com.agnux.haul.repository.model.Vehicle;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import javax.sql.DataSource;
 
+@AllArgsConstructor
 public class IHaulRepoImpl implements IHaulRepo {
+
+    @NonNull
+    private DataSource ds;
+
+    @NonNull
+    private Boolean debugMode;
 
     @Override
     public String createCargoAssignment(CargoAssignment t) {
@@ -28,63 +36,21 @@ public class IHaulRepoImpl implements IHaulRepo {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
-    public static UUID updateVehicle(Connection conn, boolean debugMode, Vehicle v) throws SQLException {
-
-        if (debugMode) {
-            verifyPgFunctionExists(conn, "alter_vehicle");
-        }
-
-        String sql = "SELECT * FROM alter_vehicle(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::NUMERIC) AS (vehicle_id UUID, message TEXT)";
-
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            // Set the input parameters
-            if (v.getId().isPresent()) {
-                stmt.setObject(1, v.getId());
-            } else {
-                stmt.setNull(1, Types.OTHER); // _vehicle_id
-            }
-
-            stmt.setObject(2, v.getTenantId());                   // _tenant_id
-            stmt.setString(3, v.getNumberPlate());                // _number_plate
-            stmt.setString(4, v.getVehicleType().toString());     // _vehicle_type
-            stmt.setString(5, v.getPerfDistUnit().toString());    // _perf_dist_unit
-            stmt.setString(6, v.getPerfVolUnit().toString());     // _perf_vol_unit
-            stmt.setBigDecimal(7, v.getPerfScalar());             // _perf_scalar
-
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    UUID returnedVehicleId = (UUID) rs.getObject(1);
-                    String returnedMessage = rs.getString(2);
-
-                    if (returnedVehicleId != null) {
-                        return returnedVehicleId;
-                    }
-
-                    throw new RuntimeException("Vehicle update failed: " + returnedMessage);
-
-                } else {
-                    throw new RuntimeException("Function returned no result");
-                }
-            }
+    @Override
+    public UUID createVehicle(Vehicle v) throws TmsException {
+        try {
+            return VehiculeRepoPgHelper.update(this.ds.getConnection(), this.debugMode, v);
         } catch (SQLException ex) {
-            throw new RuntimeException("DB error during vehicle update", ex);
-        }
-    }
-
-    private static void verifyPgFunctionExists(Connection conn, String functionName) throws SQLException {
-        try (PreparedStatement stmt = conn.prepareStatement("SELECT 1 FROM pg_proc WHERE proname = ?")) {
-            stmt.setString(1, functionName);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (!rs.next()) {
-                    throw new SQLException("PostgreSQL function '" + functionName + "' should exist");
-                }
-            }
+            throw new TmsException("Vehicule creation faced an issue", ex, ErrorCodes.UNKNOWN_ISSUE);
         }
     }
 
     @Override
-    public Vehicle createVehicle() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void editVehicle(Vehicle v) throws TmsException {
+        try {
+            VehiculeRepoPgHelper.update(this.ds.getConnection(), this.debugMode, v);
+        } catch (SQLException ex) {
+            throw new TmsException("Vehicule edition faced an issue", ex, ErrorCodes.UNKNOWN_ISSUE);
+        }
     }
 }
