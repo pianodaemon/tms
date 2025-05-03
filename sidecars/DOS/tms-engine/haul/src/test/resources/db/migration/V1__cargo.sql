@@ -1,10 +1,3 @@
---
--- PostgreSQL database dump
---
-
--- Dumped from database version 9.6.5
--- Dumped by pg_dump version 9.6.20
-
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -16,22 +9,9 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
---
+SET search_path TO public;
 
 CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
-
---
--- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: -
---
-
-COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
-
---
--- Enable pgcrypto extension (needed for gen_random_uuid)
---
-
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 
@@ -107,3 +87,72 @@ CREATE TABLE cargo_assignment (
     latitude_location DOUBLE PRECISION,
     longitude_location DOUBLE PRECISION
 );
+
+
+CREATE OR REPLACE FUNCTION alter_vehicle(
+    _vehicle_id        UUID,
+    _tenant_id         UUID,
+    _number_plate      VARCHAR,
+    _vehicle_type      VARCHAR,
+    _perf_dist_unit    VARCHAR,
+    _perf_vol_unit     VARCHAR,
+    _perf_scalar       NUMERIC
+) RETURNS RECORD
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit vehicle                                          >>
+    -- >> Version:     haul                                                         >>
+    -- >> Date:        02/may/2025                                                  >>
+    -- >> Developer:   Edwin Plauchu for agnux                                      >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    current_moment TIMESTAMP WITH TIME ZONE := now();
+    rmsg TEXT := '';
+BEGIN
+    CASE
+        WHEN _vehicle_id IS NULL THEN
+
+            INSERT INTO vehicles (
+                id,
+                tenant_id,
+                number_plate,
+                vehicle_type,
+                perf_dist_unit,
+                perf_vol_unit,
+                perf_scalar
+            ) VALUES (
+                gen_random_uuid(),
+                _tenant_id,
+                _number_plate,
+                _vehicle_type,
+                _perf_dist_unit,
+                _perf_vol_unit,
+                _perf_scalar
+            ) RETURNING id INTO _vehicle_id;
+
+        WHEN _vehicle_id IS NOT NULL THEN
+
+            UPDATE vehicles
+            SET
+                tenant_id      = _tenant_id,
+                number_plate   = _number_plate,
+                vehicle_type   = _vehicle_type,
+                perf_dist_unit = _perf_dist_unit,
+                perf_vol_unit  = _perf_vol_unit,
+                perf_scalar    = _perf_scalar
+            WHERE id = _vehicle_id;
+
+        ELSE
+            RAISE EXCEPTION 'Invalid vehicle identifier: %', _vehicle_id;
+    END CASE;
+
+    RETURN (_vehicle_id::UUID, ''::TEXT);
+
+EXCEPTION
+    WHEN OTHERS THEN
+        GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
+        RETURN (NULL::UUID, rmsg::TEXT);
+
+END;
+$$;

@@ -22,6 +22,8 @@ dependencies {
     // Testcontainers for PostgreSQL
     testImplementation 'org.testcontainers:postgresql:1.16.0'
 
+    testImplementation 'org.slf4j:slf4j-simple:2.0.9'
+
     testImplementation 'org.flywaydb:flyway-core:11.8.0'
     testImplementation 'org.flywaydb:flyway-database-postgresql:11.8.0'
 
@@ -30,7 +32,6 @@ dependencies {
 
     // Testcontainers LocalStack Module
     testImplementation "org.testcontainers:localstack:${localstack_version}"
-
 }
 
 tasks.named('test') {
