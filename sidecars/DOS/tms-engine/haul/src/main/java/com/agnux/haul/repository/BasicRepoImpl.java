@@ -4,6 +4,7 @@ import com.agnux.haul.errors.ErrorCodes;
 import com.agnux.haul.errors.TmsException;
 import com.agnux.haul.repository.model.Agreement;
 import com.agnux.haul.repository.model.CargoAssignment;
+import com.agnux.haul.repository.model.Customer;
 import com.agnux.haul.repository.model.Driver;
 import com.agnux.haul.repository.model.Patio;
 import com.agnux.haul.repository.model.Vehicle;
@@ -32,6 +33,44 @@ public class BasicRepoImpl implements IHaulRepo {
     @Override
     public Agreement getAvailableAgreement(UUID agreementId) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public Customer getAvailableCustomer(UUID customerId) throws TmsException {
+        try {
+            Optional<Customer> customer = BasicRepoCustomerHelper.fetchById(this.ds.getConnection(), customerId);
+            return customer.orElseThrow(()
+                    -> new TmsException("Customer " + customerId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
+        } catch (SQLException ex) {
+            throw new TmsException("Customer lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    @Override
+    public UUID createCustomer(Customer p) throws TmsException {
+        try {
+            return BasicRepoCustomerHelper.update(this.ds.getConnection(), this.debugMode, p);
+        } catch (SQLException ex) {
+            throw new TmsException("Customer creation failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    @Override
+    public UUID editCustomer(Customer p) throws TmsException {
+        try {
+            return BasicRepoCustomerHelper.update(this.ds.getConnection(), this.debugMode, p);
+        } catch (SQLException ex) {
+            throw new TmsException("Customer update failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    @Override
+    public void deleteCustomer(UUID customerId) throws TmsException {
+        try {
+            BasicRepoCustomerHelper.block(this.ds.getConnection(), customerId);
+        } catch (SQLException ex) {
+            throw new TmsException("Customer deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
     }
 
     @Override
@@ -145,5 +184,4 @@ public class BasicRepoImpl implements IHaulRepo {
             throw new TmsException("Patio deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
-
 }

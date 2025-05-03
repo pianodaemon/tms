@@ -4,6 +4,7 @@ import com.agnux.haul.errors.TmsException;
 import com.agnux.haul.repository.model.CargoAssignment;
 import com.agnux.haul.repository.model.Vehicle;
 import com.agnux.haul.repository.model.Agreement;
+import com.agnux.haul.repository.model.Customer;
 import com.agnux.haul.repository.model.Driver;
 import com.agnux.haul.repository.model.Patio;
 import java.util.UUID;
@@ -38,4 +39,11 @@ public interface IHaulRepo {
 
     public void deletePatio(UUID patioId) throws TmsException;
 
+    public Customer getAvailableCustomer(UUID customerId) throws TmsException;
+
+    public UUID createCustomer(Customer c) throws TmsException;
+
+    public UUID editCustomer(Customer c) throws TmsException;
+
+    public void deleteCustomer(UUID customerId) throws TmsException;
 }
