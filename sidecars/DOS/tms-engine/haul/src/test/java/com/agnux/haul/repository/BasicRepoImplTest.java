@@ -2,6 +2,7 @@ package com.agnux.haul.repository;
 
 import com.agnux.haul.errors.ErrorCodes;
 import com.agnux.haul.errors.TmsException;
+import com.agnux.haul.repository.model.Driver;
 import com.agnux.haul.repository.model.Vehicle;
 import com.agnux.haul.repository.model.VehicleType;
 import com.agnux.haul.repository.model.DistUnit;
@@ -46,6 +47,42 @@ public class BasicRepoImplTest {
 
         dataSource = ds;
         repo = new BasicRepoImpl(dataSource, true);
+    }
+
+    @Test
+    void testDriver_crud_success() throws SQLException, TmsException {
+        UUID tenantId = UUID.randomUUID();
+
+        Driver driver = new Driver(
+                null,
+                tenantId,
+                "Juan Pérez",
+                "D123456789"
+        );
+
+        UUID driverId = repo.createDriver(driver);
+        Driver retrieved = repo.getAvailableDriver(driverId);
+
+        assertEquals(driverId, retrieved.getId().get(), "Driver ID should match");
+        assertNotNull(retrieved, "Retrieved driver should not be null");
+        assertEquals(driver.getTenantId(), retrieved.getTenantId(), "Tenant ID should match");
+        assertEquals(driver.getName(), retrieved.getName(), "Driver name should match");
+        assertEquals(driver.getLicenseNumber(), retrieved.getLicenseNumber(), "License number should match");
+
+        // Modify and update
+        retrieved.setName("Carlos García");
+        retrieved.setLicenseNumber("D987654321");
+        repo.editDriver(retrieved);
+
+        Driver updated = repo.getAvailableDriver(driverId);
+        assertEquals("Carlos García", updated.getName(), "Updated name should match");
+        assertEquals("D987654321", updated.getLicenseNumber(), "Updated license number should match");
+
+        // Delete (block) the driver
+        repo.deleteDriver(driverId);
+
+        TmsException ex = assertThrows(TmsException.class, () -> repo.getAvailableDriver(driverId));
+        assertEquals(ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), ex.getErrorCode(), "Expected error code on deleted driver");
     }
 
     @Test

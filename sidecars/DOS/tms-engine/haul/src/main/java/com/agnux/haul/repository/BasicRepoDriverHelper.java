@@ -26,9 +26,7 @@ class BasicRepoDriverHelper extends BasicRepoCommonHelper {
                 String name = rs.getString("name");
                 String licenseNumber = rs.getString("license_number");
 
-                Driver driver = new Driver(driverId, tenantId);
-                driver.setName(name);
-                driver.setLicenseNumber(licenseNumber);
+                Driver driver = new Driver(driverId, tenantId, name, licenseNumber);
 
                 return Optional.of(driver);
             }

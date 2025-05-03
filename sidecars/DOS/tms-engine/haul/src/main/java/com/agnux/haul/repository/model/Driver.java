@@ -11,11 +11,9 @@ public class Driver extends TmsBasicModel {
     private String name;
     private String licenseNumber;
 
-    public Driver(final UUID driverId, final UUID tenantId) {
+    public Driver(final UUID driverId, final UUID tenantId, String name, String licenseNumber) {
         super(driverId, tenantId);
-    }
-
-    public Driver(final UUID tenantId) {
-        this(null, tenantId);
+        this.name = name;
+        this.licenseNumber = licenseNumber;
     }
 }
