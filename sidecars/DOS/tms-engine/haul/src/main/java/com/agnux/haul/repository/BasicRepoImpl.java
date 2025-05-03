@@ -7,6 +7,7 @@ import com.agnux.haul.repository.model.CargoAssignment;
 import com.agnux.haul.repository.model.Vehicle;
 
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.NonNull;
@@ -27,8 +28,13 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public Vehicle getAvailableVehicule(UUID vehicleId) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Vehicle getAvailableVehicule(UUID vehicleId) throws TmsException {
+        try {
+            Optional<Vehicle> v = BasicRepoVehiculeHelper.fetchById(this.ds.getConnection(), vehicleId);
+            return v.orElseThrow(() -> new TmsException("Vehicule " + vehicleId.toString() + " was not found", ErrorCodes.UNKNOWN_ISSUE));
+        } catch (SQLException ex) {
+            throw new TmsException("Vehicule creation faced an issue", ex, ErrorCodes.UNKNOWN_ISSUE);
+        }
     }
 
     @Override

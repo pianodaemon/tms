@@ -64,29 +64,30 @@ public class BasicRepoImplTest {
         vehicle.setPerfVolUnit(VolUnit.LT);
         vehicle.setPerfScalar(new BigDecimal("7.50"));
 
-        try (Connection conn = dataSource.getConnection()) {
-            UUID id = repo.createVehicle(vehicle);
-            assertNotNull(id, "Returned vehicle ID should not be null");
+        UUID id = repo.createVehicle(vehicle);
+        Vehicle retrieved = repo.getAvailableVehicule(id);
 
-            assertVehicleInDbMatches(conn, id, vehicle);
-        }
-    }
+        assertEquals(id, retrieved.getId().get());
+        assertNotNull(vehicle, "vehicle created should not be null");
+        assertNotNull(retrieved, "vehicle retrieved should not be null");
 
-    private static void assertVehicleInDbMatches(Connection conn, UUID id, Vehicle expected) throws SQLException {
-        try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM vehicles WHERE id = ?")) {
-            ps.setObject(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                assertTrue(rs.next(), "Vehicle record should exist");
+        // Compare tenantId
+        assertEquals(vehicle.getTenantId(), retrieved.getTenantId(), "Tenant ID should match");
 
-                assertEquals(id, UUID.fromString(rs.getString("id")));
-                assertEquals(expected.getTenantId(), UUID.fromString(rs.getString("tenant_id")));
-                assertEquals(expected.getNumberPlate(), rs.getString("number_plate"));
-                assertEquals(expected.getVehicleType().name(), rs.getString("vehicle_type"));
-                assertEquals(expected.getPerfDistUnit().name(), rs.getString("perf_dist_unit"));
-                assertEquals(expected.getPerfVolUnit().name(), rs.getString("perf_vol_unit"));
-                assertEquals(expected.getPerfScalar(), rs.getBigDecimal("perf_scalar"));
-            }
-        }
+        // Compare numberPlate
+        assertEquals(vehicle.getNumberPlate(), retrieved.getNumberPlate(), "Number plate should match");
+
+        // Compare vehicleType
+        assertEquals(vehicle.getVehicleType(), retrieved.getVehicleType(), "Vehicle type should match");
+
+        // Compare perfDistUnit
+        assertEquals(vehicle.getPerfDistUnit(), retrieved.getPerfDistUnit(), "Performance distance unit should match");
+
+        // Compare perfVolUnit
+        assertEquals(vehicle.getPerfVolUnit(), retrieved.getPerfVolUnit(), "Performance volume unit should match");
+
+        // Compare perfScalar
+        assertEquals(vehicle.getPerfScalar(), retrieved.getPerfScalar(), "Performance scalar should match");
     }
 
     @AfterAll

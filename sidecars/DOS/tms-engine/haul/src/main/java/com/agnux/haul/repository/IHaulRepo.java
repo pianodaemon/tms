@@ -10,7 +10,7 @@ public interface IHaulRepo {
 
     String createCargoAssignment(CargoAssignment t);
 
-    Vehicle getAvailableVehicule(UUID vehicleId);
+    Vehicle getAvailableVehicule(UUID vehicleId) throws TmsException;
 
     UUID createVehicle(Vehicle v) throws TmsException;
 
