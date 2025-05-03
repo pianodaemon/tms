@@ -24,8 +24,8 @@ dependencies {
 
     testImplementation 'org.slf4j:slf4j-simple:2.0.9'
 
-    testImplementation 'org.flywaydb:flyway-core:11.8.0'
-    testImplementation 'org.flywaydb:flyway-database-postgresql:11.8.0'
+    testImplementation "org.flywaydb:flyway-core:${pg_flyway_version}"
+    testImplementation "org.flywaydb:flyway-database-postgresql:${pg_flyway_version}"
 
     // Testcontainers Core Dependency
     testImplementation "org.testcontainers:testcontainers:${localstack_version}"
