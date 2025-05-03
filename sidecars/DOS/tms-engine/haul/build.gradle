@@ -14,13 +14,17 @@ dependencies {
     implementation 'javax.inject:javax.inject:1'
 
     // PostgreSQL JDBC Driver
-    testImplementation 'org.postgresql:postgresql:42.2.24'
+    implementation 'org.postgresql:postgresql:42.2.24'
 
     // Testcontainers for PostgreSQL
-    testImplementation 'org.testcontainers:postgresql:1.16.0'
+    implementation 'org.testcontainers:postgresql:1.16.0'
 
     // For working with the PG data source
-    testImplementation 'org.postgresql:postgresql:42.2.24'
+    implementation 'org.postgresql:postgresql:42.2.24'
+
+
+    testImplementation 'org.flywaydb:flyway-core:11.8.0'
+    testImplementation 'org.flywaydb:flyway-database-postgresql:11.8.0'
 
     // Testcontainers Core Dependency
     testImplementation "org.testcontainers:testcontainers:${localstack_version}"
