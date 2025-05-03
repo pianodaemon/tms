@@ -13,7 +13,7 @@ import java.sql.Types;
 import java.util.Optional;
 import java.util.UUID;
 
-class VehiculeRepoPgHelper {
+class BasicRepoVehiculeHelper {
 
     public static Optional<Vehicle> fetchById(Connection conn, UUID vehicleId) throws SQLException {
         String sql = "SELECT * FROM vehicles WHERE id = ?";

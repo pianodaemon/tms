@@ -13,7 +13,7 @@ import lombok.NonNull;
 import javax.sql.DataSource;
 
 @AllArgsConstructor
-public class IHaulRepoImpl implements IHaulRepo {
+public class BasicRepoImpl implements IHaulRepo {
 
     @NonNull
     private DataSource ds;
@@ -39,7 +39,7 @@ public class IHaulRepoImpl implements IHaulRepo {
     @Override
     public UUID createVehicle(Vehicle v) throws TmsException {
         try {
-            return VehiculeRepoPgHelper.update(this.ds.getConnection(), this.debugMode, v);
+            return BasicRepoVehiculeHelper.update(this.ds.getConnection(), this.debugMode, v);
         } catch (SQLException ex) {
             throw new TmsException("Vehicule creation faced an issue", ex, ErrorCodes.UNKNOWN_ISSUE);
         }
@@ -48,7 +48,7 @@ public class IHaulRepoImpl implements IHaulRepo {
     @Override
     public void editVehicle(Vehicle v) throws TmsException {
         try {
-            VehiculeRepoPgHelper.update(this.ds.getConnection(), this.debugMode, v);
+            BasicRepoVehiculeHelper.update(this.ds.getConnection(), this.debugMode, v);
         } catch (SQLException ex) {
             throw new TmsException("Vehicule edition faced an issue", ex, ErrorCodes.UNKNOWN_ISSUE);
         }

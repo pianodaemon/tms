@@ -29,7 +29,7 @@ public class IHaulRepoImplTest {
             .withPassword("test");
 
     static DataSource dataSource;
-    static IHaulRepoImpl repo;
+    static IHaulRepo repo;
 
     @BeforeAll
     static void setUp() throws Exception {
@@ -47,7 +47,7 @@ public class IHaulRepoImplTest {
         ds.setPassword(postgresContainer.getPassword());
 
         dataSource = ds;
-        repo = new IHaulRepoImpl(dataSource, true);
+        repo = new BasicRepoImpl(dataSource, true);
     }
 
     @Test
