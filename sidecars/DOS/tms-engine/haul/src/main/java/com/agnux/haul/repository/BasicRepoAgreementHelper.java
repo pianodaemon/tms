@@ -21,7 +21,7 @@ class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
                 }
 
                 UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
-                String customerId = rs.getString("customer_id");
+                UUID customerId = UUID.fromString(rs.getString("customer_id"));
                 double latitudeOrigin = rs.getDouble("latitude_origin");
                 double longitudeOrigin = rs.getDouble("longitude_origin");
                 double latitudeDestiny = rs.getDouble("latitude_destiny");
@@ -66,7 +66,7 @@ class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
             }
 
             stmt.setObject(2, a.getTenantId());                   // _tenant_id
-            stmt.setString(3, a.getCustomerId());                 // _customer_id
+            stmt.setObject(3, a.getCustomerId());                 // _customer_id
             stmt.setDouble(4, a.getLatitudeOrigin());             // _latitude_origin
             stmt.setDouble(5, a.getLongitudeOrigin());            // _longitude_origin
             stmt.setDouble(6, a.getLatitudeDestiny());            // _latitude_destiny

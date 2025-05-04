@@ -11,7 +11,7 @@ public class Agreement extends TmsBasicModel {
     - No pueden existir dos Convenios con las mismas coordenadas polares (Origen y destino) para un mismo cliente
     - Dicho de otra manera, no puede haber dos convenios para un mismo cliente que tengan la misma ruta
      */
-    private String customerId;
+    private UUID customerId;
     private double latitudeOrigin;
     private double longitudeOrigin;
     private double latitudeDestiny;
@@ -20,7 +20,7 @@ public class Agreement extends TmsBasicModel {
     private DistUnit distUnit;
     private BigDecimal distScalar;
 
-    public Agreement(UUID agreementId, UUID tenantId, String customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
+    public Agreement(UUID agreementId, UUID tenantId, UUID customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
         super(agreementId, tenantId);
         this.customerId = customerId;
         this.latitudeOrigin = latitudeOrigin;
@@ -31,7 +31,7 @@ public class Agreement extends TmsBasicModel {
         this.distScalar = distScalar;
     }
 
-    public Agreement(UUID tenantId, String customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
+    public Agreement(UUID tenantId, UUID customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
         this(null, tenantId, customerId, latitudeOrigin, longitudeOrigin, latitudeDestiny, longitudeDestiny, distUnit, distScalar);
     }
 }
