@@ -42,7 +42,7 @@ class BasicRepoTransLogRecordHelper extends BasicRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_trans_log_record");
         }
 
-        String sql = "SELECT * FROM alter_trans_log_record(?::UUID, ?::UUID, ?::VARCHAR, ?::NUMERIC, ?::NUMERIC, ?::UUID) AS (trans_log_record_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_trans_log_record(?::UUID, ?::UUID, ?::UUID, ?::VARCHAR, ?::NUMERIC, ?::NUMERIC) AS (trans_log_record_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -54,19 +54,14 @@ class BasicRepoTransLogRecordHelper extends BasicRepoCommonHelper {
             }
 
             stmt.setObject(2, record.getTenantId()); // _tenant_id
-            stmt.setString(3, record.getDistUnit().toString()); // _dist_unit
-            stmt.setBigDecimal(4, record.getDistScalar()); // _dist_scalar
+            stmt.setObject(3, record.getCargoAssignmentId()); // _cargo_assignment_id
+            stmt.setString(4, record.getDistUnit().toString()); // _dist_unit
+            stmt.setBigDecimal(5, record.getDistScalar()); // _dist_scalar
 
             if (record.getFuelConsumption() != null) {
-                stmt.setBigDecimal(5, record.getFuelConsumption()); // _fuel_consumption
+                stmt.setBigDecimal(6, record.getFuelConsumption()); // _fuel_consumption
             } else {
-                stmt.setNull(5, Types.NUMERIC);
-            }
-
-            if (record.getCargoAssignmentId() != null) {
-                stmt.setObject(6, record.getCargoAssignmentId()); // _cargo_assignment_id
-            } else {
-                stmt.setNull(6, Types.OTHER);
+                stmt.setNull(6, Types.NUMERIC);
             }
 
             try (ResultSet rs = stmt.executeQuery()) {
