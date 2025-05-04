@@ -10,6 +10,7 @@ import com.agnux.haul.repository.IHaulRepo;
 import com.agnux.haul.repository.model.TransLogRecord;
 import com.agnux.haul.repository.model.Vehicle;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @AllArgsConstructor
 public class HaulMgmt {
@@ -17,7 +18,7 @@ public class HaulMgmt {
     @NonNull
     private IHaulRepo repo;
 
-    public String assignTrip(
+    public UUID assignTrip(
             final @NonNull TenantDetailsDto tenantDetails,
             final @NonNull TripDetailsDto tripDetails) throws TmsException {
 
@@ -26,7 +27,6 @@ public class HaulMgmt {
            y para el user, de esa manera se hacen efectivos los roles
            tambien conocidos como ACLs (access control lists)
          */
-
         // Si el vehiculo no esta disponible 
         // Una exception sera levantada con el respectivo codigo de error
         // para esta situacion
@@ -53,15 +53,16 @@ public class HaulMgmt {
         // Una exception sera levantada con el respectivo codigo de error
         BigDecimal fuelEstimated = estimateFuel(tenantDetails, tripDetails);
 
-        TransLogRecord tlRecord = new TransLogRecord(tenantDetails.getTenantId(),  agreement.getDistUnit(), agreement.getDistScalar(), fuelEstimated);
-
-        CargoAssignment cas = new CargoAssignment(tenantDetails.getTenantId(), ship, tlRecord);
+        CargoAssignment cas = new CargoAssignment(null, tenantDetails.getTenantId(), ship);
 
         // Salva la asignacion sobre la base de datos elegida
         // para este microservicio
         // y retornara una referencia/ID que nos permitira localizar
         // el cargo para otros casos de uso que asi lo requieran
-        String cargoId = repo.createCargoAssignment(cas);
+        UUID cargoId = repo.createCargoAssignment(cas);
+
+        // Aqui necesitamos como siguiente linea salvar a database
+        TransLogRecord tlRecord = new TransLogRecord(null, tenantDetails.getTenantId(), agreement.getDistUnit(), cargoId, agreement.getDistScalar(), fuelEstimated);
 
         // En este punto se puede establecer comunicacion con otros programas distribuidos
         // Que requieran ejecutar acciones relacionadas a la nueva asignacion de cargo

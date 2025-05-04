@@ -10,19 +10,14 @@ public class CargoAssignment extends TmsBasicModel {
 
     private Driver driver;
     private Vehicle vehicle;
-    private TransLogRecord tlRecord;
 
-    // Where is the current global location of this assigment
+    // Where is the latest/current global location of this assigment
     private double latitudeLocation;
     private double longitudeLocation;
 
-    public CargoAssignment(final UUID cargoAssignmentId, final UUID tenantId, Vehicle vehicle, TransLogRecord tlRecord) {
+    public CargoAssignment(final UUID cargoAssignmentId, final UUID tenantId, Vehicle vehicle) {
         super(cargoAssignmentId, tenantId);
         this.vehicle = vehicle;
-        this.tlRecord = tlRecord;
-    }
 
-    public CargoAssignment(UUID tenantId, Vehicle vehicle, TransLogRecord tlRecord) {
-        this(null, tenantId, vehicle, tlRecord);
     }
 }

@@ -26,8 +26,30 @@ public class BasicRepoImpl implements IHaulRepo {
     private Boolean debugMode;
 
     @Override
-    public String createCargoAssignment(CargoAssignment t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public UUID createCargoAssignment(CargoAssignment t) throws TmsException {
+        try {
+            return BasicRepoCargoAssignmentHelper.update(this.ds.getConnection(), this.debugMode, t);
+        } catch (SQLException ex) {
+            throw new TmsException("CargoAssignment creation failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    @Override
+    public UUID editCargoAssignment(CargoAssignment t) throws TmsException {
+        try {
+            return BasicRepoCargoAssignmentHelper.update(this.ds.getConnection(), this.debugMode, t);
+        } catch (SQLException ex) {
+            throw new TmsException("CargoAssignment update failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    @Override
+    public void deleteCargoAssignment(UUID cargoId) throws TmsException {
+        try {
+            BasicRepoCargoAssignmentHelper.block(this.ds.getConnection(), cargoId);
+        } catch (SQLException ex) {
+            throw new TmsException("CargoAssignment deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
     }
 
     @Override

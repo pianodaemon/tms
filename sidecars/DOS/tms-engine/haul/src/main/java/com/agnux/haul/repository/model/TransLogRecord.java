@@ -8,18 +8,16 @@ import lombok.Getter;
 @Getter
 public class TransLogRecord extends TmsBasicModel {
 
-    private DistUnit distUnit;
-    private BigDecimal distScalar;
-    private BigDecimal fuelConsumption;
+    private final UUID cargoId;
+    private final DistUnit distUnit;
+    private final BigDecimal distScalar;
+    private final BigDecimal fuelConsumption;
 
-    public TransLogRecord(UUID transLogRecordId, UUID tenantId, DistUnit distUnit, BigDecimal distScalar, BigDecimal fuelConsumption) {
+    public TransLogRecord(UUID transLogRecordId, UUID tenantId, DistUnit distUnit, UUID cargoId, BigDecimal distScalar, BigDecimal fuelConsumption) {
         super(transLogRecordId, tenantId);
+        this.cargoId = cargoId;
         this.distUnit = distUnit;
         this.distScalar = distScalar;
         this.fuelConsumption = fuelConsumption;
-    }
-
-    public TransLogRecord(UUID tenantId, DistUnit distUnit, BigDecimal distScalar, BigDecimal fuelConsumption) {
-        this(null, tenantId, distUnit, distScalar, fuelConsumption);
     }
 }
