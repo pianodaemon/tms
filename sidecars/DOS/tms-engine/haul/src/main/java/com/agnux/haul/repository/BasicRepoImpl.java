@@ -181,22 +181,43 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public Agreement getAvailableAgreement(UUID agreementId) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public Agreement getAvailableAgreement(UUID agreementId) throws TmsException {
+        try {
+            Optional<Agreement> agreement = BasicRepoAgreementHelper.fetchById(this.ds.getConnection(), agreementId);
+            return agreement.orElseThrow(() -> new TmsException(
+                    "Agreement " + agreementId.toString() + " was not found",
+                    ErrorCodes.REPO_PROVIDEER_ISSUES
+            ));
+        } catch (SQLException ex) {
+            throw new TmsException("Agreement lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
     }
 
     @Override
     public UUID creatAagreement(Agreement c) throws TmsException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            return BasicRepoAgreementHelper.update(this.ds.getConnection(), this.debugMode, c);
+        } catch (SQLException ex) {
+            throw new TmsException("Agreement creation failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
     }
 
     @Override
     public UUID editAgreement(Agreement c) throws TmsException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            return BasicRepoAgreementHelper.update(this.ds.getConnection(), this.debugMode, c);
+        } catch (SQLException ex) {
+            throw new TmsException("Agreement update failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
     }
 
     @Override
     public void deleteAgreement(UUID agreementId) throws TmsException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            BasicRepoAgreementHelper.block(this.ds.getConnection(), agreementId);
+        } catch (SQLException ex) {
+            throw new TmsException("Agreement deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
     }
+
 }
