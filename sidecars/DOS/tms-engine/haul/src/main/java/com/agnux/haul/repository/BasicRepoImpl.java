@@ -28,7 +28,7 @@ public class BasicRepoImpl implements IHaulRepo {
 
     @Override
     public CargoAssignment getAvailableCargoAssignment(UUID cargoAssignmentId) throws TmsException {
-         try {
+        try {
             Optional<CargoAssignment> customer = BasicRepoCargoAssignmentHelper.fetchById(this.ds.getConnection(), cargoAssignmentId);
             return customer.orElseThrow(()
                     -> new TmsException("CargoAssignment " + cargoAssignmentId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
@@ -256,11 +256,23 @@ public class BasicRepoImpl implements IHaulRepo {
 
     @Override
     public TransLogRecord getAvailableTransLogRecord(UUID transLogRecordId) throws TmsException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            Optional<TransLogRecord> agreement = BasicRepoTransLogRecordHelper.fetchById(this.ds.getConnection(), transLogRecordId);
+            return agreement.orElseThrow(() -> new TmsException(
+                    "TransLogRecord " + transLogRecordId.toString() + " was not found",
+                    ErrorCodes.REPO_PROVIDEER_ISSUES
+            ));
+        } catch (SQLException ex) {
+            throw new TmsException("TransLogRecord lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
     }
 
     @Override
     public UUID createTransLogRecord(TransLogRecord tlr) throws TmsException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        try {
+            return BasicRepoTransLogRecordHelper.update(this.ds.getConnection(), this.debugMode, tlr);
+        } catch (SQLException ex) {
+            throw new TmsException("TransLogRecord creation failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
     }
 }
