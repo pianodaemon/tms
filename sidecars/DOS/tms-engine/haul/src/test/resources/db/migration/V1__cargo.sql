@@ -483,3 +483,68 @@ EXCEPTION
         RETURN (NULL::UUID, rmsg::TEXT);
 END;
 $$;
+
+
+CREATE OR REPLACE FUNCTION alter_trans_log_record(
+    _id                   UUID,
+    _tenant_id            UUID,
+    _cargo_assignment_id  UUID,
+    _dist_unit            VARCHAR,
+    _dist_scalar          NUMERIC,
+    _fuel_consumption     NUMERIC
+) RETURNS RECORD
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit trans_log_records                                >>
+    -- >> Version:     haul                                                         >>
+    -- >> Date:        04/may/2025                                                  >>
+    -- >> Developer:   Edwin Plauchu for agnux                                      >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    current_moment TIMESTAMP WITH TIME ZONE := now();
+    rmsg TEXT := '';
+BEGIN
+    CASE
+        WHEN _id IS NULL THEN
+
+            INSERT INTO trans_log_records (
+                id,
+                tenant_id,
+                dist_unit,
+                dist_scalar,
+                fuel_consumption,
+                cargo_assignment_id
+            ) VALUES (
+                gen_random_uuid(),
+                _tenant_id,
+                _dist_unit,
+                _dist_scalar,
+                _fuel_consumption,
+                _cargo_assignment_id
+            ) RETURNING id INTO _id;
+
+        WHEN _id IS NOT NULL THEN
+
+            UPDATE trans_log_records
+            SET
+                tenant_id           = _tenant_id,
+                dist_unit           = _dist_unit,
+                dist_scalar         = _dist_scalar,
+                fuel_consumption    = _fuel_consumption,
+                cargo_assignment_id = _cargo_assignment_id
+            WHERE id = _id;
+
+        ELSE
+            RAISE EXCEPTION 'Invalid transport log record identifier: %', _id;
+    END CASE;
+
+    RETURN (_id::UUID, ''::TEXT);
+
+EXCEPTION
+    WHEN OTHERS THEN
+        GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
+        RETURN (NULL::UUID, rmsg::TEXT);
+
+END;
+$$;
