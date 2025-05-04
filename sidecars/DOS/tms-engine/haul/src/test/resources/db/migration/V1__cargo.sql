@@ -175,10 +175,10 @@ LANGUAGE plpgsql
 AS $$
 DECLARE
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    -- >> Description: Create/Edit driver                                          >>
-    -- >> Version:     haul                                                        >>
-    -- >> Date:        03/may/2025                                                 >>
-    -- >> Developer:   Edwin Plauchu for agnux                                     >>
+    -- >> Description: Create/Edit driver                                           >>
+    -- >> Version:     haul                                                         >>
+    -- >> Date:        03/may/2025                                                  >>
+    -- >> Developer:   Edwin Plauchu for agnux                                      >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     current_moment TIMESTAMP WITH TIME ZONE := now();
     rmsg TEXT := '';
@@ -234,10 +234,10 @@ LANGUAGE plpgsql
 AS $$
 DECLARE
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    -- >> Description: Create/Edit patio                                           >>
-    -- >> Version:     haul                                                        >>
-    -- >> Date:        03/may/2025                                                 >>
-    -- >> Developer:   Edwin Plauchu for agnux                                     >>
+    -- >> Description: Create/Edit patio                                            >>
+    -- >> Version:     haul                                                         >>
+    -- >> Date:        03/may/2025                                                  >>
+    -- >> Developer:   Edwin Plauchu for agnux                                      >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     current_moment TIMESTAMP WITH TIME ZONE := now();
     rmsg TEXT := '';
@@ -294,10 +294,10 @@ LANGUAGE plpgsql
 AS $$
 DECLARE
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    -- >> Description: Create/Edit customer                                        >>
-    -- >> Version:     haul                                                        >>
-    -- >> Date:        03/may/2025                                                 >>
-    -- >> Developer:   Edwin Plauchu for agnux                                     >>
+    -- >> Description: Create/Edit customer                                         >>
+    -- >> Version:     haul                                                         >>
+    -- >> Date:        03/may/2025                                                  >>
+    -- >> Developer:   Edwin Plauchu for agnux                                      >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     current_moment TIMESTAMP WITH TIME ZONE := now();
     rmsg TEXT := '';
@@ -354,10 +354,10 @@ LANGUAGE plpgsql
 AS $$
 DECLARE
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    -- >> Description: Create/Edit agreement                                       >>
-    -- >> Version:     haul                                                        >>
-    -- >> Date:        03/may/2025                                                 >>
-    -- >> Developer:   Edwin Plauchu for agnux                                     >>
+    -- >> Description: Create/Edit agreement                                        >>
+    -- >> Version:     haul                                                         >>
+    -- >> Date:        03/may/2025                                                  >>
+    -- >> Developer:   Edwin Plauchu for agnux                                      >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     current_moment TIMESTAMP WITH TIME ZONE := now();
     rmsg TEXT := '';
