@@ -316,43 +316,65 @@ public class BasicRepoImplTest {
     void testCargoAssignment_crud_success() throws SQLException, TmsException {
         UUID tenantId = UUID.randomUUID();
 
-        // Create a Vehicle object (assuming this constructor and setters exist)
-        Vehicle vehicle = new Vehicle(null, tenantId, "XYZ-999", VehicleType.DELIVERY_TRUCK, 2022);
-        vehicle.setPerfDistUnit(DistUnit.KM);
-        vehicle.setPerfVolUnit(VolUnit.LT);
-        vehicle.setPerfScalar(new BigDecimal("5.5"));
-        final UUID vehicleId = repo.createVehicle(vehicle);
+        // Create the first Vehicle
+        Vehicle vehicle1 = new Vehicle(null, tenantId, "XYZ-999", VehicleType.DELIVERY_TRUCK, 2022);
+        vehicle1.setPerfDistUnit(DistUnit.KM);
+        vehicle1.setPerfVolUnit(VolUnit.LT);
+        vehicle1.setPerfScalar(new BigDecimal("5.5"));
+        final UUID vehicle1Id = repo.createVehicle(vehicle1);
 
-        Driver driver = new Driver(
+        // Create the second Vehicle
+        Vehicle vehicle2 = new Vehicle(null, tenantId, "ABC-123", VehicleType.DELIVERY_TRUCK, 2023);
+        vehicle2.setPerfDistUnit(DistUnit.KM);
+        vehicle2.setPerfVolUnit(VolUnit.LT);
+        vehicle2.setPerfScalar(new BigDecimal("6.5"));
+        final UUID vehicle2Id = repo.createVehicle(vehicle2);
+
+        // Create the first Driver
+        Driver driver1 = new Driver(
                 null,
                 tenantId,
                 "John Smith",
                 "D123456789"
         );
+        final UUID driver1Id = repo.createDriver(driver1);
 
-        final UUID driverId = repo.createDriver(driver);
+        // Create the second Driver
+        Driver driver2 = new Driver(
+                null,
+                tenantId,
+                "Jane Doe",
+                "D987654321"
+        );
+        final UUID driver2Id = repo.createDriver(driver2);
 
-        // Construct CargoAssignment (driver can be null if not needed)
-        CargoAssignment cargoAssignment = new CargoAssignment(null, tenantId, driverId, vehicleId);
+        // Construct CargoAssignment (using the first driver and vehicle)
+        CargoAssignment cargoAssignment = new CargoAssignment(null, tenantId, driver1Id, vehicle1Id);
         cargoAssignment.setLatitudeLocation(19.5);
         cargoAssignment.setLongitudeLocation(-99.3);
 
-        // Act - Create
+        // Act - Create CargoAssignment
         UUID createdId = repo.createCargoAssignment(cargoAssignment);
         assertNotNull(createdId, "CargoAssignment ID should not be null");
 
-        // Act - Edit
+        // Act - Edit CargoAssignment (changing to second driver and vehicle)
         cargoAssignment = new CargoAssignment(
                 createdId, // same ID
                 tenantId,
-                driverId,
-                vehicleId
+                driver2Id, // Update to second driver
+                vehicle2Id // Update to second vehicle
         );
         cargoAssignment.setLatitudeLocation(20.0);
 
         UUID updatedId = repo.editCargoAssignment(cargoAssignment);
 
-        // Act - (soft-delete/block) the cargo assignment 
+        CargoAssignment updatedCargoAssignment = repo.getAvailableCargoAssignment(updatedId);
+        assertNotNull(updatedCargoAssignment, "Updated CargoAssignment should not be null");
+        assertEquals(driver2Id, updatedCargoAssignment.getDriverId(), "Driver ID should be updated");
+        assertEquals(vehicle2Id, updatedCargoAssignment.getVehicleId(), "Vehicle ID should be updated");
+        assertEquals(20.0, updatedCargoAssignment.getLatitudeLocation(), "Latitude should be updated to 20.0");
+
+        // Act - (soft-delete/block) the cargo assignment
         repo.deleteCargoAssignment(updatedId);
 
         // Verify it's blocked
