@@ -105,7 +105,7 @@ public class BasicRepoImpl implements IHaulRepo {
     @Override
     public Vehicle getAvailableVehicule(UUID vehicleId) throws TmsException {
         try {
-            Optional<Vehicle> v = BasicRepoVehiculeHelper.fetchById(this.ds.getConnection(), vehicleId);
+            Optional<Vehicle> v = BasicRepoVehicleHelper.fetchById(this.ds.getConnection(), vehicleId);
             return v.orElseThrow(() -> new TmsException("Vehicule " + vehicleId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
         } catch (SQLException ex) {
             throw new TmsException("Vehicule lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
@@ -115,7 +115,7 @@ public class BasicRepoImpl implements IHaulRepo {
     @Override
     public UUID createVehicle(Vehicle v) throws TmsException {
         try {
-            return BasicRepoVehiculeHelper.update(this.ds.getConnection(), this.debugMode, v);
+            return BasicRepoVehicleHelper.update(this.ds.getConnection(), this.debugMode, v);
         } catch (SQLException ex) {
             throw new TmsException("Vehicule creation faced an issue", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
@@ -124,7 +124,7 @@ public class BasicRepoImpl implements IHaulRepo {
     @Override
     public UUID editVehicle(Vehicle v) throws TmsException {
         try {
-            return BasicRepoVehiculeHelper.update(this.ds.getConnection(), this.debugMode, v);
+            return BasicRepoVehicleHelper.update(this.ds.getConnection(), this.debugMode, v);
         } catch (SQLException ex) {
             throw new TmsException("Vehicule edition faced an issue", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
@@ -133,7 +133,7 @@ public class BasicRepoImpl implements IHaulRepo {
     @Override
     public void deleteVehicle(UUID vehicleId) throws TmsException {
         try {
-            BasicRepoVehiculeHelper.block(this.ds.getConnection(), vehicleId);
+            BasicRepoVehicleHelper.block(this.ds.getConnection(), vehicleId);
         } catch (SQLException ex) {
             throw new TmsException("Vehicule deletion faced an issue", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
