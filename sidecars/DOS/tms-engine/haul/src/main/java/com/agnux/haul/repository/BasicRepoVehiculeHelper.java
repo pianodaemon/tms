@@ -28,8 +28,9 @@ class BasicRepoVehiculeHelper extends BasicRepoCommonHelper {
                 UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
                 String numberPlate = rs.getString("number_plate");
                 VehicleType vehicleType = VehicleType.valueOf(rs.getString("vehicle_type"));
+                Integer vehicleYear = rs.getInt("vehicle_year");
 
-                Vehicle vehicle = new Vehicle(vehicleId, tenantId, numberPlate, vehicleType);
+                Vehicle vehicle = new Vehicle(vehicleId, tenantId, numberPlate, vehicleType, vehicleYear);
 
                 String distUnitStr = rs.getString("perf_dist_unit");
                 if (distUnitStr != null) {
@@ -57,7 +58,7 @@ class BasicRepoVehiculeHelper extends BasicRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_vehicle");
         }
 
-        String sql = "SELECT * FROM alter_vehicle(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::NUMERIC) AS (vehicle_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_vehicle(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::INT, ?::VARCHAR, ?::VARCHAR, ?::NUMERIC) AS (vehicle_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -71,9 +72,10 @@ class BasicRepoVehiculeHelper extends BasicRepoCommonHelper {
             stmt.setObject(2, v.getTenantId());                   // _tenant_id
             stmt.setString(3, v.getNumberPlate());                // _number_plate
             stmt.setString(4, v.getVehicleType().toString());     // _vehicle_type
-            stmt.setString(5, v.getPerfDistUnit().toString());    // _perf_dist_unit
-            stmt.setString(6, v.getPerfVolUnit().toString());     // _perf_vol_unit
-            stmt.setBigDecimal(7, v.getPerfScalar());             // _perf_scalar
+            stmt.setInt(5, v.getVehicleYear());                   // _vehicle_year
+            stmt.setString(6, v.getPerfDistUnit().toString());    // _perf_dist_unit
+            stmt.setString(7, v.getPerfVolUnit().toString());     // _perf_vol_unit
+            stmt.setBigDecimal(8, v.getPerfScalar());             // _perf_scalar
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {

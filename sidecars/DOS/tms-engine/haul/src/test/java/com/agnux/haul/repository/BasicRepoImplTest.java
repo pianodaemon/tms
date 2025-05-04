@@ -96,7 +96,8 @@ public class BasicRepoImplTest {
                 null,
                 tenantId,
                 "ABC-123",
-                VehicleType.REFRIGERATED_VAN
+                VehicleType.REFRIGERATED_VAN,
+                1970
         );
 
         vehicle.setPerfDistUnit(DistUnit.KM);

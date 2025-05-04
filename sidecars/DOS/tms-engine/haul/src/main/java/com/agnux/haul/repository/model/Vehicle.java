@@ -11,6 +11,7 @@ public class Vehicle extends TmsBasicModel {
 
     private String numberPlate;
     private VehicleType vehicleType;
+    public int vehicleYear;
 
     // El rendimiento es una media de los históricos
     // Algunos vehiculos caracterizan una interface electronica
@@ -20,9 +21,10 @@ public class Vehicle extends TmsBasicModel {
     private VolUnit perfVolUnit;
     private BigDecimal perfScalar;
 
-    public Vehicle(final UUID vehicleId, final UUID tenantId, String numberPlate, VehicleType vehicleType) {
+    public Vehicle(final UUID vehicleId, final UUID tenantId, String numberPlate, VehicleType vehicleType, int vehicleYear) {
         super(vehicleId, tenantId);
         this.numberPlate = numberPlate;
         this.vehicleType = vehicleType;
+        this.vehicleYear = vehicleYear;
     }
 }

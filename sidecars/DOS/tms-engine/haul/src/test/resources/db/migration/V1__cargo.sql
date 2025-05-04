@@ -100,7 +100,7 @@ CREATE OR REPLACE FUNCTION alter_vehicle(
     _tenant_id         UUID,
     _number_plate      VARCHAR,
     _vehicle_type      VARCHAR,
-    _vehicle_year      INT
+    _vehicle_year      INT,
     _perf_dist_unit    VARCHAR,
     _perf_vol_unit     VARCHAR,
     _perf_scalar       NUMERIC
