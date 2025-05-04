@@ -2,6 +2,7 @@ package com.agnux.haul.repository;
 
 import com.agnux.haul.errors.ErrorCodes;
 import com.agnux.haul.errors.TmsException;
+import com.agnux.haul.repository.model.Agreement;
 import com.agnux.haul.repository.model.Customer;
 import com.agnux.haul.repository.model.Driver;
 import com.agnux.haul.repository.model.Vehicle;
@@ -244,6 +245,69 @@ public class BasicRepoImplTest {
         // It should not be possible to retrieve the blocked customer
         TmsException assertThrows = assertThrows(TmsException.class, () -> repo.getAvailableCustomer(customerId), "Blocked customer should not be retrievable");
         assertTrue(assertThrows.getErrorCode() == ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), "Error code is not what we expected");
+    }
+
+    @Test
+    void testAgreement_crud_success() throws SQLException, TmsException {
+        UUID tenantId = UUID.randomUUID();
+
+        // Create valid customer first (Agreement depends on Customer ID)
+        Customer customer = new Customer(null, tenantId, "Test Agreement Customer");
+        UUID customerId = repo.createCustomer(customer);
+
+        // Create valid Agreement
+        Agreement agreement = new Agreement(
+                tenantId,
+                customerId,
+                19.4326, // latitudeOrigin (CDMX)
+                -99.1332, // longitudeOrigin
+                40.7128, // latitudeDestiny (NYC)
+                -74.0060, // longitudeDestiny
+                DistUnit.KM, // Distance unit
+                new BigDecimal("4376.23") // Distance scalar
+        );
+
+        // Create in DB
+        UUID agreementId = repo.createAgreement(agreement);
+        Agreement retrieved = repo.getAvailableAgreement(agreementId);
+
+        // Validate created data
+        assertNotNull(retrieved, "Agreement should be retrievable");
+        assertEquals(agreementId, retrieved.getId().get(), "Agreement ID should match");
+        assertEquals(tenantId, retrieved.getTenantId(), "Tenant ID should match");
+        assertEquals(customerId, retrieved.getCustomerId(), "Customer ID should match");
+        assertEquals(DistUnit.KM, retrieved.getDistUnit(), "Distance unit should match");
+        assertEquals(0, retrieved.getDistScalar().compareTo(new BigDecimal("4376.23")), "Distance scalar should match");
+
+        // Modify agreement
+        retrieved = new Agreement(
+                retrieved.getId().get(), // same ID
+                tenantId,
+                customerId,
+                34.0522, // New origin (Los Angeles)
+                -118.2437,
+                47.6062, // New destination (Seattle)
+                -122.3321,
+                DistUnit.MI,
+                new BigDecimal("1135.68")
+        );
+
+        UUID updatedId = repo.editAgreement(retrieved);
+        Agreement updated = repo.getAvailableAgreement(updatedId);
+
+        // Validate updated data
+        assertEquals(updatedId, updated.getId().get(), "Updated ID should match");
+        assertEquals(DistUnit.MI, updated.getDistUnit(), "Updated distance unit should match");
+        assertEquals(0, updated.getDistScalar().compareTo(new BigDecimal("1135.68")), "Updated distance scalar should match");
+        assertEquals(34.0522, updated.getLatitudeOrigin(), 0.0001, "Latitude origin should match after update");
+        assertEquals(47.6062, updated.getLatitudeDestiny(), 0.0001, "Latitude destiny should match after update");
+
+        // Delete (soft-delete/block) the agreement
+        repo.deleteAgreement(updatedId);
+
+        // Verify it's blocked
+        TmsException ex = assertThrows(TmsException.class, () -> repo.getAvailableAgreement(updatedId));
+        assertEquals(ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), ex.getErrorCode(), "Blocked agreement should not be retrievable");
     }
 
     @AfterAll

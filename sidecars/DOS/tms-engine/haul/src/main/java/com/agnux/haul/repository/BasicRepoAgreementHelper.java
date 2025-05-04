@@ -53,31 +53,33 @@ class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
 
         String sql = """
             SELECT * FROM alter_agreement(
-                ?::UUID, ?::UUID, ?::VARCHAR, ?::DOUBLE PRECISION, ?::DOUBLE PRECISION,
-                ?::DOUBLE PRECISION, ?::DOUBLE PRECISION, ?::VARCHAR, ?::NUMERIC
+                ?::UUID, ?::UUID, ?::UUID,
+                ?::DOUBLE PRECISION, ?::DOUBLE PRECISION,
+                ?::DOUBLE PRECISION, ?::DOUBLE PRECISION,
+                ?::VARCHAR, ?::NUMERIC
             ) AS (agreement_id UUID, message TEXT)
         """;
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             if (a.getId().isPresent()) {
-                stmt.setObject(1, a.getId().get());               // _agreement_id
+                stmt.setObject(1, a.getId().get());
             } else {
                 stmt.setNull(1, Types.OTHER);
             }
 
-            stmt.setObject(2, a.getTenantId());                   // _tenant_id
-            stmt.setObject(3, a.getCustomerId());                 // _customer_id
-            stmt.setDouble(4, a.getLatitudeOrigin());             // _latitude_origin
-            stmt.setDouble(5, a.getLongitudeOrigin());            // _longitude_origin
-            stmt.setDouble(6, a.getLatitudeDestiny());            // _latitude_destiny
-            stmt.setDouble(7, a.getLongitudeDestiny());           // _longitude_destiny
-            stmt.setString(8, a.getDistUnit().name());            // _dist_unit
-            stmt.setBigDecimal(9, a.getDistScalar());             // _dist_scalar
+            stmt.setObject(2, a.getTenantId());
+            stmt.setObject(3, a.getCustomerId());
+            stmt.setDouble(4, a.getLatitudeOrigin());
+            stmt.setDouble(5, a.getLongitudeOrigin());
+            stmt.setDouble(6, a.getLatitudeDestiny());
+            stmt.setDouble(7, a.getLongitudeDestiny());
+            stmt.setString(8, a.getDistUnit().name());
+            stmt.setBigDecimal(9, a.getDistScalar());
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
-                    UUID returnedId = (UUID) rs.getObject(1);
-                    String message = rs.getString(2);
+                    UUID returnedId = rs.getObject("agreement_id", UUID.class);
+                    String message = rs.getString("message");
 
                     if (returnedId != null) {
                         return returnedId;
