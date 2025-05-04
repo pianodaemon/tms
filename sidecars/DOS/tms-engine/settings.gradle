@@ -1,3 +1,4 @@
 rootProject.name = 'tms'
 
+include ':elemental'
 include ':haul'

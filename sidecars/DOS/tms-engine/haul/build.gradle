@@ -5,6 +5,8 @@ compileTestJava.options.encoding = "UTF-8"
 
 dependencies {
 
+    implementation project(':elemental')
+
     implementation "software.amazon.awssdk:s3:${aws_sdk_s3_version}"
     implementation "software.amazon.awssdk:sqs:${aws_sdk_s3_version}"
 
