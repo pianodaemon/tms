@@ -7,6 +7,7 @@ import com.agnux.haul.repository.model.Agreement;
 import com.agnux.haul.repository.model.Customer;
 import com.agnux.haul.repository.model.Driver;
 import com.agnux.haul.repository.model.Patio;
+import com.agnux.haul.repository.model.TransLogRecord;
 import java.util.UUID;
 
 public interface IHaulRepo {
@@ -27,6 +28,10 @@ public interface IHaulRepo {
 
     public void deleteCargoAssignment(UUID cargoAssignmentId) throws TmsException;
 
+    public TransLogRecord getAvailableTransLogRecord(UUID transLogRecordId) throws TmsException;
+
+    public UUID createTransLogRecord(TransLogRecord tlr) throws TmsException;
+
     public Vehicle getAvailableVehicule(UUID vehicleId) throws TmsException;
 
     public UUID createVehicle(Vehicle v) throws TmsException;
@@ -41,7 +46,7 @@ public interface IHaulRepo {
 
     public UUID editDriver(Driver v) throws TmsException;
 
-    void deleteDriver(UUID driverId) throws TmsException;
+    public void deleteDriver(UUID driverId) throws TmsException;
 
     public Patio getAvailablePatio(UUID patioId) throws TmsException;
 

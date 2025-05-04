@@ -7,6 +7,7 @@ import com.agnux.haul.repository.model.CargoAssignment;
 import com.agnux.haul.repository.model.Customer;
 import com.agnux.haul.repository.model.Driver;
 import com.agnux.haul.repository.model.Patio;
+import com.agnux.haul.repository.model.TransLogRecord;
 import com.agnux.haul.repository.model.Vehicle;
 
 import java.sql.SQLException;
@@ -251,5 +252,15 @@ public class BasicRepoImpl implements IHaulRepo {
         } catch (SQLException ex) {
             throw new TmsException("Agreement deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
+    }
+
+    @Override
+    public TransLogRecord getAvailableTransLogRecord(UUID transLogRecordId) throws TmsException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public UUID createTransLogRecord(TransLogRecord tlr) throws TmsException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
