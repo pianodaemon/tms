@@ -3,6 +3,7 @@ package com.agnux.haul.repository;
 import com.agnux.haul.errors.ErrorCodes;
 import com.agnux.haul.errors.TmsException;
 import com.agnux.haul.repository.model.Agreement;
+import com.agnux.haul.repository.model.CargoAssignment;
 import com.agnux.haul.repository.model.Customer;
 import com.agnux.haul.repository.model.Driver;
 import com.agnux.haul.repository.model.Vehicle;
@@ -309,6 +310,76 @@ public class BasicRepoImplTest {
         // Verify it's blocked
         TmsException ex = assertThrows(TmsException.class, () -> repo.getAvailableAgreement(updatedId));
         assertEquals(ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), ex.getErrorCode(), "Blocked agreement should not be retrievable");
+    }
+
+    @Test
+    void testCargoAssignment_crud_success() throws SQLException, TmsException {
+        UUID tenantId = UUID.randomUUID();
+
+        // Create the first Vehicle
+        Vehicle vehicle1 = new Vehicle(null, tenantId, "XYZ-999", VehicleType.DELIVERY_TRUCK, 2022);
+        vehicle1.setPerfDistUnit(DistUnit.KM);
+        vehicle1.setPerfVolUnit(VolUnit.LT);
+        vehicle1.setPerfScalar(new BigDecimal("5.5"));
+        final UUID vehicle1Id = repo.createVehicle(vehicle1);
+
+        // Create the second Vehicle
+        Vehicle vehicle2 = new Vehicle(null, tenantId, "ABC-123", VehicleType.DELIVERY_TRUCK, 2023);
+        vehicle2.setPerfDistUnit(DistUnit.KM);
+        vehicle2.setPerfVolUnit(VolUnit.LT);
+        vehicle2.setPerfScalar(new BigDecimal("6.5"));
+        final UUID vehicle2Id = repo.createVehicle(vehicle2);
+
+        // Create the first Driver
+        Driver driver1 = new Driver(
+                null,
+                tenantId,
+                "John Smith",
+                "D123456789"
+        );
+        final UUID driver1Id = repo.createDriver(driver1);
+
+        // Create the second Driver
+        Driver driver2 = new Driver(
+                null,
+                tenantId,
+                "Jane Doe",
+                "D987654321"
+        );
+        final UUID driver2Id = repo.createDriver(driver2);
+
+        // Construct CargoAssignment (using the first driver and vehicle)
+        CargoAssignment cargoAssignment = new CargoAssignment(null, tenantId, driver1Id, vehicle1Id);
+        cargoAssignment.setLatitudeLocation(19.5);
+        cargoAssignment.setLongitudeLocation(-99.3);
+
+        // Act - Create CargoAssignment
+        UUID createdId = repo.createCargoAssignment(cargoAssignment);
+        assertNotNull(createdId, "CargoAssignment ID should not be null");
+
+        // Act - Edit CargoAssignment (changing to second driver and vehicle)
+        cargoAssignment = new CargoAssignment(
+                createdId, // same ID
+                tenantId,
+                driver2Id, // Update to second driver
+                vehicle2Id // Update to second vehicle
+        );
+        cargoAssignment.setLatitudeLocation(20.0);
+
+        UUID updatedId = repo.editCargoAssignment(cargoAssignment);
+
+        CargoAssignment updatedCargoAssignment = repo.getAvailableCargoAssignment(updatedId);
+        assertNotNull(updatedCargoAssignment, "Updated CargoAssignment should not be null");
+        assertEquals(driver2Id, updatedCargoAssignment.getDriverId(), "Driver ID should be updated");
+        assertEquals(vehicle2Id, updatedCargoAssignment.getVehicleId(), "Vehicle ID should be updated");
+        assertEquals(20.0, updatedCargoAssignment.getLatitudeLocation(), "Latitude should be updated to 20.0");
+
+        // Act - (soft-delete/block) the cargo assignment
+        repo.deleteCargoAssignment(updatedId);
+
+        // Verify it's blocked
+        TmsException ex = assertThrows(TmsException.class, () -> repo.getAvailableCargoAssignment(updatedId));
+        assertEquals(ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), ex.getErrorCode(), "Blocked cargo assignment should not be retrievable");
     }
 
     @AfterAll

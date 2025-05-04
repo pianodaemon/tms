@@ -2,27 +2,28 @@ package com.agnux.haul.repository.model;
 
 import java.util.UUID;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class CargoAssignment extends TmsBasicModel {
 
-    private Driver driver;
-    private Vehicle vehicle;
-    private TransLogRecord tlRecord;
+    private final UUID driverId;
+    private final UUID vehicleId;
 
-    // Where is the current global location of this assigment
+    // Where is the latest/current global location of this assigment
     private double latitudeLocation;
     private double longitudeLocation;
 
-    public CargoAssignment(final UUID cargoAssignmentId, final UUID tenantId, Vehicle vehicle, TransLogRecord tlRecord) {
+    public CargoAssignment(final UUID cargoAssignmentId, final UUID tenantId, UUID driverId, UUID vehicleId) {
         super(cargoAssignmentId, tenantId);
-        this.vehicle = vehicle;
-        this.tlRecord = tlRecord;
+        this.driverId = driverId;
+        this.vehicleId = vehicleId;
     }
 
-    public CargoAssignment(UUID tenantId, Vehicle vehicle, TransLogRecord tlRecord) {
-        this(null, tenantId, vehicle, tlRecord);
+    public void setLatitudeLocation(double latitudeLocation) {
+        this.latitudeLocation = latitudeLocation;
+    }
+
+    public void setLongitudeLocation(double longitudeLocation) {
+        this.longitudeLocation = longitudeLocation;
     }
 }

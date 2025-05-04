@@ -74,24 +74,23 @@ CREATE TABLE patios (
 );
 
 
-CREATE TABLE trans_log_records (
-    id UUID PRIMARY KEY,
-    tenant_id VARCHAR(255) NOT NULL,
-    trans_log_record_id VARCHAR(255),  -- corresponds to TmsBasicModel.Id
-    dist_unit VARCHAR(5) NOT NULL,
-    dist_scalar NUMERIC(15, 6) NOT NULL,
-    fuel_consumption NUMERIC(10, 2)
-);
-
-
-CREATE TABLE cargo_assignment (
-    id SERIAL PRIMARY KEY,
+CREATE TABLE cargo_assignments (
+    id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
     tenant_id VARCHAR(255) NOT NULL,
     driver_id UUID REFERENCES drivers(id),
     vehicle_id UUID REFERENCES vehicles(id),
-    trans_log_record_id UUID REFERENCES trans_log_records(id),
     latitude_location DOUBLE PRECISION,
     longitude_location DOUBLE PRECISION
+);
+
+
+CREATE TABLE trans_log_records (
+    id UUID PRIMARY KEY,
+    tenant_id VARCHAR(255) NOT NULL,
+    dist_unit VARCHAR(5) NOT NULL,
+    dist_scalar NUMERIC(15, 6) NOT NULL,
+    fuel_consumption NUMERIC(10, 2),
+    cargo_assignment_id UUID REFERENCES cargo_assignments(id)
 );
 
 
@@ -418,5 +417,134 @@ EXCEPTION
     WHEN OTHERS THEN
         GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
         RETURN (NULL::UUID, rmsg::TEXT);
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION alter_cargo_assignment(
+    _assignment_id     UUID,
+    _tenant_id         UUID,
+    _driver_id         UUID,
+    _vehicle_id        UUID,
+    _latitude          DOUBLE PRECISION,
+    _longitude         DOUBLE PRECISION
+) RETURNS RECORD
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit cargo assignment                                 >>
+    -- >> Version:     haul                                                         >>
+    -- >> Date:        04/may/2025                                                  >>
+    -- >> Developer:   Edwin Plauchu for agnux                                      >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    current_moment TIMESTAMP WITH TIME ZONE := now();
+    rmsg TEXT := '';
+BEGIN
+    CASE
+        WHEN _assignment_id IS NULL THEN
+
+            INSERT INTO cargo_assignments (
+                id,
+                tenant_id,
+                driver_id,
+                vehicle_id,
+                latitude_location,
+                longitude_location
+            ) VALUES (
+                gen_random_uuid(),
+                _tenant_id,
+                _driver_id,
+                _vehicle_id,
+                _latitude,
+                _longitude
+            ) RETURNING id INTO _assignment_id;
+
+        WHEN _assignment_id IS NOT NULL THEN
+
+            UPDATE cargo_assignments
+            SET
+                tenant_id         = _tenant_id,
+                driver_id         = _driver_id,
+                vehicle_id        = _vehicle_id,
+                latitude_location = _latitude,
+                longitude_location = _longitude
+            WHERE id = _assignment_id;
+
+        ELSE
+            RAISE EXCEPTION 'Invalid cargo_assignment identifier: %', _assignment_id;
+    END CASE;
+
+    RETURN (_assignment_id::UUID, ''::TEXT);
+
+EXCEPTION
+    WHEN OTHERS THEN
+        GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
+        RETURN (NULL::UUID, rmsg::TEXT);
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION alter_trans_log_record(
+    _id                   UUID,
+    _tenant_id            UUID,
+    _cargo_assignment_id  UUID,
+    _dist_unit            VARCHAR,
+    _dist_scalar          NUMERIC,
+    _fuel_consumption     NUMERIC
+) RETURNS RECORD
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit trans_log_records                                >>
+    -- >> Version:     haul                                                         >>
+    -- >> Date:        04/may/2025                                                  >>
+    -- >> Developer:   Edwin Plauchu for agnux                                      >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    current_moment TIMESTAMP WITH TIME ZONE := now();
+    rmsg TEXT := '';
+BEGIN
+    CASE
+        WHEN _id IS NULL THEN
+
+            INSERT INTO trans_log_records (
+                id,
+                tenant_id,
+                dist_unit,
+                dist_scalar,
+                fuel_consumption,
+                cargo_assignment_id
+            ) VALUES (
+                gen_random_uuid(),
+                _tenant_id,
+                _dist_unit,
+                _dist_scalar,
+                _fuel_consumption,
+                _cargo_assignment_id
+            ) RETURNING id INTO _id;
+
+        WHEN _id IS NOT NULL THEN
+
+            UPDATE trans_log_records
+            SET
+                tenant_id           = _tenant_id,
+                dist_unit           = _dist_unit,
+                dist_scalar         = _dist_scalar,
+                fuel_consumption    = _fuel_consumption,
+                cargo_assignment_id = _cargo_assignment_id
+            WHERE id = _id;
+
+        ELSE
+            RAISE EXCEPTION 'Invalid transport log record identifier: %', _id;
+    END CASE;
+
+    RETURN (_id::UUID, ''::TEXT);
+
+EXCEPTION
+    WHEN OTHERS THEN
+        GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
+        RETURN (NULL::UUID, rmsg::TEXT);
+
 END;
 $$;

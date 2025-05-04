@@ -7,6 +7,7 @@ import com.agnux.haul.repository.model.CargoAssignment;
 import com.agnux.haul.repository.model.Customer;
 import com.agnux.haul.repository.model.Driver;
 import com.agnux.haul.repository.model.Patio;
+import com.agnux.haul.repository.model.TransLogRecord;
 import com.agnux.haul.repository.model.Vehicle;
 
 import java.sql.SQLException;
@@ -26,8 +27,41 @@ public class BasicRepoImpl implements IHaulRepo {
     private Boolean debugMode;
 
     @Override
-    public String createCargoAssignment(CargoAssignment t) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public CargoAssignment getAvailableCargoAssignment(UUID cargoAssignmentId) throws TmsException {
+        try {
+            Optional<CargoAssignment> customer = BasicRepoCargoAssignmentHelper.fetchById(this.ds.getConnection(), cargoAssignmentId);
+            return customer.orElseThrow(()
+                    -> new TmsException("CargoAssignment " + cargoAssignmentId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
+        } catch (SQLException ex) {
+            throw new TmsException("CargoAssignment lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    @Override
+    public UUID createCargoAssignment(CargoAssignment t) throws TmsException {
+        try {
+            return BasicRepoCargoAssignmentHelper.update(this.ds.getConnection(), this.debugMode, t);
+        } catch (SQLException ex) {
+            throw new TmsException("CargoAssignment creation failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    @Override
+    public UUID editCargoAssignment(CargoAssignment t) throws TmsException {
+        try {
+            return BasicRepoCargoAssignmentHelper.update(this.ds.getConnection(), this.debugMode, t);
+        } catch (SQLException ex) {
+            throw new TmsException("CargoAssignment update failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    @Override
+    public void deleteCargoAssignment(UUID cargoId) throws TmsException {
+        try {
+            BasicRepoCargoAssignmentHelper.block(this.ds.getConnection(), cargoId);
+        } catch (SQLException ex) {
+            throw new TmsException("CargoAssignment deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
     }
 
     @Override
@@ -71,7 +105,7 @@ public class BasicRepoImpl implements IHaulRepo {
     @Override
     public Vehicle getAvailableVehicule(UUID vehicleId) throws TmsException {
         try {
-            Optional<Vehicle> v = BasicRepoVehiculeHelper.fetchById(this.ds.getConnection(), vehicleId);
+            Optional<Vehicle> v = BasicRepoVehicleHelper.fetchById(this.ds.getConnection(), vehicleId);
             return v.orElseThrow(() -> new TmsException("Vehicule " + vehicleId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
         } catch (SQLException ex) {
             throw new TmsException("Vehicule lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
@@ -81,7 +115,7 @@ public class BasicRepoImpl implements IHaulRepo {
     @Override
     public UUID createVehicle(Vehicle v) throws TmsException {
         try {
-            return BasicRepoVehiculeHelper.update(this.ds.getConnection(), this.debugMode, v);
+            return BasicRepoVehicleHelper.update(this.ds.getConnection(), this.debugMode, v);
         } catch (SQLException ex) {
             throw new TmsException("Vehicule creation faced an issue", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
@@ -90,7 +124,7 @@ public class BasicRepoImpl implements IHaulRepo {
     @Override
     public UUID editVehicle(Vehicle v) throws TmsException {
         try {
-            return BasicRepoVehiculeHelper.update(this.ds.getConnection(), this.debugMode, v);
+            return BasicRepoVehicleHelper.update(this.ds.getConnection(), this.debugMode, v);
         } catch (SQLException ex) {
             throw new TmsException("Vehicule edition faced an issue", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
@@ -99,7 +133,7 @@ public class BasicRepoImpl implements IHaulRepo {
     @Override
     public void deleteVehicle(UUID vehicleId) throws TmsException {
         try {
-            BasicRepoVehiculeHelper.block(this.ds.getConnection(), vehicleId);
+            BasicRepoVehicleHelper.block(this.ds.getConnection(), vehicleId);
         } catch (SQLException ex) {
             throw new TmsException("Vehicule deletion faced an issue", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
@@ -217,6 +251,28 @@ public class BasicRepoImpl implements IHaulRepo {
             BasicRepoAgreementHelper.block(this.ds.getConnection(), agreementId);
         } catch (SQLException ex) {
             throw new TmsException("Agreement deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    @Override
+    public TransLogRecord getAvailableTransLogRecord(UUID transLogRecordId) throws TmsException {
+        try {
+            Optional<TransLogRecord> agreement = BasicRepoTransLogRecordHelper.fetchById(this.ds.getConnection(), transLogRecordId);
+            return agreement.orElseThrow(() -> new TmsException(
+                    "TransLogRecord " + transLogRecordId.toString() + " was not found",
+                    ErrorCodes.REPO_PROVIDEER_ISSUES
+            ));
+        } catch (SQLException ex) {
+            throw new TmsException("TransLogRecord lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    @Override
+    public UUID createTransLogRecord(TransLogRecord tlr) throws TmsException {
+        try {
+            return BasicRepoTransLogRecordHelper.update(this.ds.getConnection(), this.debugMode, tlr);
+        } catch (SQLException ex) {
+            throw new TmsException("TransLogRecord creation failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 }

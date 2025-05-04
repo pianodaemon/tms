@@ -13,7 +13,7 @@ import java.sql.Types;
 import java.util.Optional;
 import java.util.UUID;
 
-class BasicRepoVehiculeHelper extends BasicRepoCommonHelper {
+class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
 
     public static Optional<Vehicle> fetchById(Connection conn, UUID vehicleId) throws SQLException {
         String sql = "SELECT * FROM vehicles WHERE not blocked AND id = ?";
