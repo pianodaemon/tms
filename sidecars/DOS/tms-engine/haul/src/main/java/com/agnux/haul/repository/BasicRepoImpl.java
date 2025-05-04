@@ -31,11 +31,6 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public Agreement getAvailableAgreement(UUID agreementId) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
     public Customer getAvailableCustomer(UUID customerId) throws TmsException {
         try {
             Optional<Customer> customer = BasicRepoCustomerHelper.fetchById(this.ds.getConnection(), customerId);
@@ -183,5 +178,25 @@ public class BasicRepoImpl implements IHaulRepo {
         } catch (SQLException ex) {
             throw new TmsException("Patio deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
+    }
+
+    @Override
+    public Agreement getAvailableAgreement(UUID agreementId) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public UUID creatAagreement(Agreement c) throws TmsException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public UUID editAgreement(Agreement c) throws TmsException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void deleteAgreement(UUID agreementId) throws TmsException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

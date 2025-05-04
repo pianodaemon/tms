@@ -11,7 +11,13 @@ import java.util.UUID;
 
 public interface IHaulRepo {
 
-    Agreement getAvailableAgreement(UUID agreementId);
+    Agreement getAvailableAgreement(UUID agreementId) throws TmsException;
+
+    public UUID creatAagreement(Agreement c) throws TmsException;
+
+    public UUID editAgreement(Agreement c) throws TmsException;
+
+    public void deleteAgreement(UUID agreementId) throws TmsException;
 
     String createCargoAssignment(CargoAssignment t);
 
