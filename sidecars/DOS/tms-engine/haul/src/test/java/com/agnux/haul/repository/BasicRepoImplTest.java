@@ -10,6 +10,7 @@ import com.agnux.haul.repository.model.Vehicle;
 import com.agnux.haul.repository.model.VehicleType;
 import com.agnux.haul.repository.model.DistUnit;
 import com.agnux.haul.repository.model.Patio;
+import com.agnux.haul.repository.model.TransLogRecord;
 import com.agnux.haul.repository.model.VolUnit;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -356,6 +357,11 @@ public class BasicRepoImplTest {
         // Act - Create CargoAssignment
         UUID createdId = repo.createCargoAssignment(cargoAssignment);
         assertNotNull(createdId, "CargoAssignment ID should not be null");
+
+        TransLogRecord tlr = new TransLogRecord(null, tenantId, DistUnit.KM, createdId, new BigDecimal("100.0"), new BigDecimal("100.0"));
+        UUID tlrId = repo.createTransLogRecord(tlr);
+        TransLogRecord tlrRetrieved = repo.getAvailableTransLogRecord(tlrId);
+        assertEquals(tlrId, tlrRetrieved.getId().get(), "TransLogRecord should be equals");
 
         // Act - Edit CargoAssignment (changing to second driver and vehicle)
         cargoAssignment = new CargoAssignment(

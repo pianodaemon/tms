@@ -80,7 +80,8 @@ CREATE TABLE cargo_assignments (
     driver_id UUID REFERENCES drivers(id),
     vehicle_id UUID REFERENCES vehicles(id),
     latitude_location DOUBLE PRECISION,
-    longitude_location DOUBLE PRECISION
+    longitude_location DOUBLE PRECISION,
+    blocked boolean DEFAULT false NOT NULL
 );
 
 
@@ -450,14 +451,16 @@ BEGIN
                 driver_id,
                 vehicle_id,
                 latitude_location,
-                longitude_location
+                longitude_location,
+                blocked
             ) VALUES (
                 gen_random_uuid(),
                 _tenant_id,
                 _driver_id,
                 _vehicle_id,
                 _latitude,
-                _longitude
+                _longitude,
+                false
             ) RETURNING id INTO _assignment_id;
 
         WHEN _assignment_id IS NOT NULL THEN

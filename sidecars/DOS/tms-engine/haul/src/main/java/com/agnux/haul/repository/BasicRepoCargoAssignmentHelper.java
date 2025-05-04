@@ -1,8 +1,6 @@
 package com.agnux.haul.repository;
 
 import com.agnux.haul.repository.model.CargoAssignment;
-import com.agnux.haul.repository.model.Driver;
-import com.agnux.haul.repository.model.Vehicle;
 
 import java.sql.*;
 import java.util.Optional;
@@ -11,7 +9,7 @@ import java.util.UUID;
 class BasicRepoCargoAssignmentHelper extends BasicRepoCommonHelper {
 
     public static Optional<CargoAssignment> fetchById(Connection conn, UUID assignmentId) throws SQLException {
-        String sql = "SELECT * FROM cargo_assignments WHERE id = ?";
+        String sql = "SELECT * FROM cargo_assignments WHERE not blocked AND id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setObject(1, assignmentId);
 
@@ -78,7 +76,8 @@ class BasicRepoCargoAssignmentHelper extends BasicRepoCommonHelper {
     }
 
     public static void block(Connection conn, UUID assignmentId) throws SQLException {
-        String sql = "DELETE FROM cargo_assignments WHERE id = ?";
+
+        String sql = "UPDATE cargo_assignments SET blocked = true WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setObject(1, assignmentId);
             stmt.executeUpdate();
