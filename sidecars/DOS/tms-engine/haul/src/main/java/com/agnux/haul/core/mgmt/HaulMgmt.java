@@ -53,7 +53,8 @@ public class HaulMgmt {
         // Una exception sera levantada con el respectivo codigo de error
         BigDecimal fuelEstimated = estimateFuel(tenantDetails, tripDetails);
 
-        CargoAssignment cas = new CargoAssignment(null, tenantDetails.getTenantId(), ship);
+        UUID driverId =  ship.getId().get();
+        CargoAssignment cas = new CargoAssignment(null, tenantDetails.getTenantId(), UUID.fromString("0a232802-d6e8-458f-9eca-6a8c2b980900") , driverId);
 
         // Salva la asignacion sobre la base de datos elegida
         // para este microservicio

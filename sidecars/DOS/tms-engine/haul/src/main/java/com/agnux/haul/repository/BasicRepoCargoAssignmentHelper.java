@@ -26,11 +26,7 @@ class BasicRepoCargoAssignmentHelper extends BasicRepoCommonHelper {
                 double latitude = rs.getDouble("latitude_location");
                 double longitude = rs.getDouble("longitude_location");
 
-                Driver driver = BasicRepoDriverHelper.fetchById(conn, driverId).orElse(null);
-                Vehicle vehicle = BasicRepoVehiculeHelper.fetchById(conn, vehicleId).orElse(null);
-
-                CargoAssignment assignment = new CargoAssignment(assignmentId, tenantId, vehicle);
-                assignment.setDriver(driver);
+                CargoAssignment assignment = new CargoAssignment(assignmentId, tenantId, driverId, vehicleId);
                 assignment.setLatitudeLocation(latitude);
                 assignment.setLongitudeLocation(longitude);
 
@@ -45,8 +41,8 @@ class BasicRepoCargoAssignmentHelper extends BasicRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_cargo_assignment");
         }
 
-        String sql = "SELECT * FROM alter_cargo_assignment(?::UUID, ?::UUID, ?::UUID, ?::UUID, ?::DOUBLE PRECISION, ?::DOUBLE PRECISION) " +
-                     "AS (assignment_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_cargo_assignment(?::UUID, ?::UUID, ?::UUID, ?::UUID, ?::DOUBLE PRECISION, ?::DOUBLE PRECISION) "
+                + "AS (assignment_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -57,8 +53,8 @@ class BasicRepoCargoAssignmentHelper extends BasicRepoCommonHelper {
             }
 
             stmt.setObject(2, ca.getTenantId());                            // _tenant_id
-            stmt.setObject(3, ca.getDriver().getId().orElse(null));         // _driver_id
-            stmt.setObject(4, ca.getVehicle().getId().orElse(null));        // _vehicle_id
+            stmt.setObject(3, ca.getDriverId());                            // _driver_id
+            stmt.setObject(4, ca.getVehicleId());                           // _vehicle_id
             stmt.setDouble(5, ca.getLatitudeLocation());                    // _latitude
             stmt.setDouble(6, ca.getLongitudeLocation());                   // _longitude
 

@@ -3,6 +3,7 @@ package com.agnux.haul.repository;
 import com.agnux.haul.errors.ErrorCodes;
 import com.agnux.haul.errors.TmsException;
 import com.agnux.haul.repository.model.Agreement;
+import com.agnux.haul.repository.model.CargoAssignment;
 import com.agnux.haul.repository.model.Customer;
 import com.agnux.haul.repository.model.Driver;
 import com.agnux.haul.repository.model.Vehicle;
@@ -309,6 +310,45 @@ public class BasicRepoImplTest {
         // Verify it's blocked
         TmsException ex = assertThrows(TmsException.class, () -> repo.getAvailableAgreement(updatedId));
         assertEquals(ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), ex.getErrorCode(), "Blocked agreement should not be retrievable");
+    }
+
+    @Test
+    void testCargo_create_success() throws SQLException, TmsException {
+        UUID tenantId = UUID.randomUUID();
+
+        // Create a Vehicle object (assuming this constructor and setters exist)
+        Vehicle vehicle = new Vehicle(null, tenantId, "XYZ-999", VehicleType.DELIVERY_TRUCK, 2022);
+        vehicle.setPerfDistUnit(DistUnit.KM);
+        vehicle.setPerfVolUnit(VolUnit.LT);
+        vehicle.setPerfScalar(new BigDecimal("5.5"));
+        final UUID vehicleId = repo.createVehicle(vehicle);
+
+        Driver driver = new Driver(
+                null,
+                tenantId,
+                "John Smith",
+                "D123456789"
+        );
+
+        final UUID driverId = repo.createDriver(driver);
+
+        // Construct CargoAssignment (driver can be null if not needed)
+        CargoAssignment cargoAssignment = new CargoAssignment(null, tenantId, driverId, vehicleId);
+        cargoAssignment.setLatitudeLocation(19.5);
+        cargoAssignment.setLongitudeLocation(-99.3);
+
+        // Act - Create
+        UUID createdId = repo.createCargoAssignment(cargoAssignment);
+        assertNotNull(createdId, "CargoAssignment ID should not be null");
+
+        // Act - Edit
+        /*       cargoAssignment.setId(createdId);
+        cargoAssignment.setLatitudeLocation(20.0); // simulate update
+        UUID updatedId = repo.editCargoAssignment(cargoAssignment);
+        assertEquals(createdId, updatedId, "Edited CargoAssignment ID should match original");
+
+        // Act - Delete
+        assertDoesNotThrow(() -> repo.deleteCargoAssignment(createdId), "Deleting cargo assignment should not throw");*/
     }
 
     @AfterAll
