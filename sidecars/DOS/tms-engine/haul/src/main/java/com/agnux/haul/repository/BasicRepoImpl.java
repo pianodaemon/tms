@@ -194,7 +194,7 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public UUID creatAagreement(Agreement c) throws TmsException {
+    public UUID createAgreement(Agreement c) throws TmsException {
         try {
             return BasicRepoAgreementHelper.update(this.ds.getConnection(), this.debugMode, c);
         } catch (SQLException ex) {
@@ -219,5 +219,4 @@ public class BasicRepoImpl implements IHaulRepo {
             throw new TmsException("Agreement deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
-
 }

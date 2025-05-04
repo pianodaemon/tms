@@ -11,29 +11,29 @@ import java.util.UUID;
 
 public interface IHaulRepo {
 
-    Agreement getAvailableAgreement(UUID agreementId) throws TmsException;
+    public Agreement getAvailableAgreement(UUID agreementId) throws TmsException;
 
-    public UUID creatAagreement(Agreement c) throws TmsException;
+    public UUID createAgreement(Agreement c) throws TmsException;
 
     public UUID editAgreement(Agreement c) throws TmsException;
 
     public void deleteAgreement(UUID agreementId) throws TmsException;
 
-    String createCargoAssignment(CargoAssignment t);
+    public String createCargoAssignment(CargoAssignment t);
 
-    Vehicle getAvailableVehicule(UUID vehicleId) throws TmsException;
+    public Vehicle getAvailableVehicule(UUID vehicleId) throws TmsException;
 
-    UUID createVehicle(Vehicle v) throws TmsException;
+    public UUID createVehicle(Vehicle v) throws TmsException;
 
-    UUID editVehicle(Vehicle v) throws TmsException;
+    public UUID editVehicle(Vehicle v) throws TmsException;
 
-    void deleteVehicle(UUID vehicleId) throws TmsException;
+    public void deleteVehicle(UUID vehicleId) throws TmsException;
 
-    Driver getAvailableDriver(UUID driverId) throws TmsException;
+    public Driver getAvailableDriver(UUID driverId) throws TmsException;
 
-    UUID createDriver(Driver v) throws TmsException;
+    public UUID createDriver(Driver v) throws TmsException;
 
-    UUID editDriver(Driver v) throws TmsException;
+    public UUID editDriver(Driver v) throws TmsException;
 
     void deleteDriver(UUID driverId) throws TmsException;
 
