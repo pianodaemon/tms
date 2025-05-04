@@ -313,7 +313,7 @@ public class BasicRepoImplTest {
     }
 
     @Test
-    void testCargo_create_success() throws SQLException, TmsException {
+    void testCargoAssignment_crud_success() throws SQLException, TmsException {
         UUID tenantId = UUID.randomUUID();
 
         // Create a Vehicle object (assuming this constructor and setters exist)
@@ -342,13 +342,22 @@ public class BasicRepoImplTest {
         assertNotNull(createdId, "CargoAssignment ID should not be null");
 
         // Act - Edit
-        /*       cargoAssignment.setId(createdId);
-        cargoAssignment.setLatitudeLocation(20.0); // simulate update
-        UUID updatedId = repo.editCargoAssignment(cargoAssignment);
-        assertEquals(createdId, updatedId, "Edited CargoAssignment ID should match original");
+        cargoAssignment = new CargoAssignment(
+                createdId, // same ID
+                tenantId,
+                driverId,
+                vehicleId
+        );
+        cargoAssignment.setLatitudeLocation(20.0);
 
-        // Act - Delete
-        assertDoesNotThrow(() -> repo.deleteCargoAssignment(createdId), "Deleting cargo assignment should not throw");*/
+        UUID updatedId = repo.editCargoAssignment(cargoAssignment);
+
+        // Act - (soft-delete/block) the cargo assignment 
+        repo.deleteCargoAssignment(updatedId);
+
+        // Verify it's blocked
+        TmsException ex = assertThrows(TmsException.class, () -> repo.getAvailableCargoAssignment(updatedId));
+        assertEquals(ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), ex.getErrorCode(), "Blocked cargo assignment should not be retrievable");
     }
 
     @AfterAll

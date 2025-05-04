@@ -19,11 +19,13 @@ public interface IHaulRepo {
 
     public void deleteAgreement(UUID agreementId) throws TmsException;
 
+    public CargoAssignment getAvailableCargoAssignment(UUID cargoAssignmentId) throws TmsException;
+
     public UUID createCargoAssignment(CargoAssignment t) throws TmsException;
 
     public UUID editCargoAssignment(CargoAssignment t) throws TmsException;
 
-    public void deleteCargoAssignment(UUID cargoId) throws TmsException;
+    public void deleteCargoAssignment(UUID cargoAssignmentId) throws TmsException;
 
     public Vehicle getAvailableVehicule(UUID vehicleId) throws TmsException;
 

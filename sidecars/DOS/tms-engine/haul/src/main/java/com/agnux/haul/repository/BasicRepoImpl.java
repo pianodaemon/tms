@@ -26,6 +26,17 @@ public class BasicRepoImpl implements IHaulRepo {
     private Boolean debugMode;
 
     @Override
+    public CargoAssignment getAvailableCargoAssignment(UUID cargoAssignmentId) throws TmsException {
+         try {
+            Optional<CargoAssignment> customer = BasicRepoCargoAssignmentHelper.fetchById(this.ds.getConnection(), cargoAssignmentId);
+            return customer.orElseThrow(()
+                    -> new TmsException("CargoAssignment " + cargoAssignmentId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
+        } catch (SQLException ex) {
+            throw new TmsException("CargoAssignment lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    @Override
     public UUID createCargoAssignment(CargoAssignment t) throws TmsException {
         try {
             return BasicRepoCargoAssignmentHelper.update(this.ds.getConnection(), this.debugMode, t);
