@@ -21,10 +21,17 @@ public class Vehicle extends TmsBasicModel {
     private VolUnit perfVolUnit;
     private BigDecimal perfScalar;
 
-    public Vehicle(final UUID vehicleId, final UUID tenantId, String numberPlate, VehicleType vehicleType, int vehicleYear) {
-        super(vehicleId, tenantId);
+    public Vehicle(final UUID vehicleId, final UUID tenantId,
+            final String numberPlate, final VehicleType vehicleType,
+            final int vehicleYear, DistUnit perfDistUnit) {
+        this(vehicleId, tenantId);
         this.numberPlate = numberPlate;
         this.vehicleType = vehicleType;
         this.vehicleYear = vehicleYear;
+        this.perfDistUnit = perfDistUnit;
+    }
+
+    public Vehicle(final UUID vehicleId, final UUID tenantId) {
+        super(vehicleId, tenantId);
     }
 }

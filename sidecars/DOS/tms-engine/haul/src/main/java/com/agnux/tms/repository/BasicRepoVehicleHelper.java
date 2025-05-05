@@ -29,13 +29,9 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
                 String numberPlate = rs.getString("number_plate");
                 VehicleType vehicleType = VehicleType.valueOf(rs.getString("vehicle_type"));
                 Integer vehicleYear = rs.getInt("vehicle_year");
-
-                Vehicle vehicle = new Vehicle(vehicleId, tenantId, numberPlate, vehicleType, vehicleYear);
-
                 String distUnitStr = rs.getString("perf_dist_unit");
-                if (distUnitStr != null) {
-                    vehicle.setPerfDistUnit(DistUnit.valueOf(distUnitStr));
-                }
+
+                Vehicle vehicle = new Vehicle(vehicleId, tenantId, numberPlate, vehicleType, vehicleYear, DistUnit.valueOf(distUnitStr));
 
                 String volUnitStr = rs.getString("perf_vol_unit");
                 if (volUnitStr != null) {
