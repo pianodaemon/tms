@@ -1,8 +1,5 @@
 package com.agnux.tms.core.mgmt;
 
-import com.agnux.tms.core.mgmt.TenantDetailsDto;
-import com.agnux.tms.core.mgmt.HaulMgmt;
-import com.agnux.tms.core.mgmt.TripDetailsDto;
 import com.agnux.tms.errors.ErrorCodes;
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.Agreement;
@@ -74,7 +71,7 @@ class HaulMgmtTest {
         CargoAssignment capturedAssignment = assignmentCaptor.getValue();
         assertEquals(tenantUuid, capturedAssignment.getTenantId());
         //assertEquals(ship, capturedAssignment.getVehicle());
-       // assertNotNull(capturedAssignment.getTlRecord());
+        // assertNotNull(capturedAssignment.getTlRecord());
     }
 
     @Test
