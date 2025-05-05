@@ -16,6 +16,12 @@ dependencies {
     implementation project(':elemental')
     implementation project(':haul')
 
+    implementation 'com.google.inject:guice:7.0.0'
+    implementation 'javax.inject:javax.inject:1'
+
+    // For working with the PG data source
+    implementation "org.postgresql:postgresql:${pg_jdbc_driver_version}"
+
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
