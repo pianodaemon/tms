@@ -8,12 +8,16 @@ import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import javax.sql.DataSource;
 import lombok.AllArgsConstructor;
+import lombok.NonNull;
 
 @AllArgsConstructor
 public class HaulModule extends AbstractModule {
 
+    @NonNull
     private final DataSource dataSource;
-    private final boolean debugMode;
+
+    @NonNull
+    private final Boolean debugMode;
 
     @Override
     protected void configure() {
