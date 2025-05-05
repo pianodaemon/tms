@@ -1,10 +1,9 @@
 package com.agnux.tms.core.aipc;
 
-import com.agnux.tms.core.config.HaulModule;
 import com.agnux.tms.core.mgmt.HaulMgmt;
+import com.agnux.tms.repository.BasicRepoImpl;
 import com.agnux.tms.repository.IHaulRepo;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+
 import javax.sql.DataSource;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class HaulBridgeConfig {
 
-    @Value("${debug.mode:true}")
+    @Value("${debug.mode:false}")
     private boolean debugMode;
 
     @Value("${db.url:jdbc:postgresql://localhost:5432/testdb}")
@@ -36,17 +35,12 @@ public class HaulBridgeConfig {
     }
 
     @Bean
-    public Injector guiceInjector(DataSource dataSource) {
-        return Guice.createInjector(new HaulModule(dataSource, debugMode));
+    public IHaulRepo iHaulRepo(DataSource dataSource) {
+        return new BasicRepoImpl(dataSource, debugMode);
     }
 
     @Bean
-    public HaulMgmt haulMgmt(Injector injector) {
-        return injector.getInstance(HaulMgmt.class);
-    }
-
-    @Bean
-    public IHaulRepo iHaulRepo(Injector injector) {
-        return injector.getInstance(IHaulRepo.class);
+    public HaulMgmt haulMgmt(IHaulRepo haulRepo) {
+        return new HaulMgmt(haulRepo);
     }
 }
