@@ -33,6 +33,7 @@ class HaulMgmtTest {
     private Vehicle ship;
     private Agreement agreement;
     private Customer customer;
+    private final UUID driverUuid = UUID.fromString("4a232802-d6e8-458f-9eca-6a8c2b980979");
     private final UUID vehicleUuid = UUID.fromString("4a232802-d6e8-458f-9eca-6a8c2b980980");
     private final UUID agreementUuid = UUID.fromString("4a232802-d6e8-458f-9eca-6a8c2b980981");
     private final UUID tenantUuid = UUID.fromString("4a232802-d6e8-458f-9eca-6a8c2b980982");
@@ -44,7 +45,7 @@ class HaulMgmtTest {
 
         tenantDetails = new TenantDetailsDto(tenantUuid, "gerald");
         customer = new Customer(customerUuid, tenantUuid, "quintanilla");
-        tripDetails = new TripDetailsDto(vehicleUuid, agreementUuid);
+        tripDetails = new TripDetailsDto(vehicleUuid, agreementUuid, driverUuid);
         agreement = new Agreement(agreementUuid, tenantUuid, customerUuid, 0, 0, 0, 0, DistUnit.KM, new BigDecimal("100"));
         ship = new Vehicle(vehicleUuid, tenantDetails.getTenantId(), "GAS9500", VehicleType.CAR, 1980, DistUnit.KM, VolUnit.LT);
     }

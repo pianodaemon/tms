@@ -14,4 +14,7 @@ public class TripDetailsDto {
 
     private @NonNull
     UUID agreementId;
+
+    private @NonNull
+    UUID driverId;
 }

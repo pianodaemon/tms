@@ -54,8 +54,7 @@ public class HaulMgmt {
         BigDecimal fuelEstimated = estimateFuel(tenantDetails, tripDetails);
 
         // A fake on for now
-        UUID driverId =  UUID.fromString("0a232802-d6e8-458f-9eca-6a8c2b980900");
-        CargoAssignment cas = new CargoAssignment(null, tenantDetails.getTenantId(), driverId, ship.getId().get(), 20.0, -99.3);
+        CargoAssignment cas = new CargoAssignment(null, tenantDetails.getTenantId(), tripDetails.getDriverId(), ship.getId().get(), 20.0, -99.3);
 
         // Salva la asignacion sobre la base de datos elegida
         // para este microservicio
@@ -65,6 +64,7 @@ public class HaulMgmt {
 
         // Aqui necesitamos como siguiente linea salvar a database
         TransLogRecord tlRecord = new TransLogRecord(null, tenantDetails.getTenantId(), agreement.getDistUnit(), cargoId, agreement.getDistScalar(), fuelEstimated);
+        UUID createTransLogRecordId = repo.createTransLogRecord(tlRecord);
 
         // En este punto se puede establecer comunicacion con otros programas distribuidos
         // Que requieran ejecutar acciones relacionadas a la nueva asignacion de cargo
