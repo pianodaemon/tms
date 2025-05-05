@@ -1,10 +1,10 @@
-package com.agnux.tms.core.ipc;
+package com.agnux.tms.core.aipc;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class IpcApplicationTests {
+class AsyncIPCAppTests {
 
 	@Test
 	void contextLoads() {
