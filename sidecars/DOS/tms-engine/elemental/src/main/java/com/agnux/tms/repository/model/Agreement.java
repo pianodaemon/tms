@@ -22,7 +22,10 @@ public class Agreement extends TmsBasicModel {
     private DistUnit distUnit;
     private BigDecimal distScalar;
 
-    public Agreement(UUID agreementId, UUID tenantId, UUID customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
+    public Agreement(UUID agreementId, UUID tenantId, UUID customerId,
+            double latitudeOrigin, double longitudeOrigin,
+            double latitudeDestiny, double longitudeDestiny,
+            DistUnit distUnit, BigDecimal distScalar) {
         this(agreementId, tenantId);
         this.customerId = customerId;
         this.latitudeOrigin = latitudeOrigin;
