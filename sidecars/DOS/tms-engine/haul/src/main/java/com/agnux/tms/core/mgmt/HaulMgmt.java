@@ -1,17 +1,21 @@
 package com.agnux.tms.core.mgmt;
 
+import java.math.BigDecimal;
+
 import com.agnux.tms.errors.ErrorCodes;
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.Agreement;
 import com.agnux.tms.repository.model.CargoAssignment;
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
 import com.agnux.tms.repository.IHaulRepo;
 import com.agnux.tms.repository.model.TransLogRecord;
 import com.agnux.tms.repository.model.Vehicle;
-import java.math.BigDecimal;
-import java.util.UUID;
 
+import java.util.UUID;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @AllArgsConstructor
 public class HaulMgmt {
 
@@ -62,10 +66,10 @@ public class HaulMgmt {
         // el cargo para otros casos de uso que asi lo requieran
         UUID cargoId = repo.createCargoAssignment(cas);
 
-        // Aqui necesitamos como siguiente linea salvar a database
         TransLogRecord tlRecord = new TransLogRecord(null, tenantDetails.getTenantId(), agreement.getDistUnit(), cargoId, agreement.getDistScalar(), fuelEstimated);
         UUID createTransLogRecordId = repo.createTransLogRecord(tlRecord);
 
+        log.info("Created cargo assigment ID " + cargoId.toString() + " along with transport log record ID " + createTransLogRecordId.toString());
         // En este punto se puede establecer comunicacion con otros programas distribuidos
         // Que requieran ejecutar acciones relacionadas a la nueva asignacion de cargo
         return cargoId;

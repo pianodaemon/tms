@@ -7,6 +7,7 @@ import com.agnux.tms.repository.model.CargoAssignment;
 import com.agnux.tms.repository.model.Customer;
 import com.agnux.tms.repository.model.DistUnit;
 import com.agnux.tms.repository.IHaulRepo;
+import com.agnux.tms.repository.model.TransLogRecord;
 import com.agnux.tms.repository.model.Vehicle;
 import com.agnux.tms.repository.model.VehicleType;
 import com.agnux.tms.repository.model.VolUnit;
@@ -39,6 +40,7 @@ class HaulMgmtTest {
     private final UUID tenantUuid = UUID.fromString("4a232802-d6e8-458f-9eca-6a8c2b980982");
     private final UUID customerUuid = UUID.fromString("4a232802-d6e8-458f-9eca-6a8c2b980983");
     private final UUID cargorUuid = UUID.fromString("4a232802-d6e8-458f-9eca-6a8c2b980984");
+    private final UUID transLogRecordUuid = UUID.fromString("4a232802-d6e8-458f-9eca-6a8c2b980985");
 
     @BeforeEach
     void setUpData() {
@@ -56,6 +58,7 @@ class HaulMgmtTest {
         when(repo.getAvailableVehicule(vehicleUuid)).thenReturn(ship);
         when(repo.getAvailableAgreement(agreementUuid)).thenReturn(agreement);
         when(repo.createCargoAssignment(any(CargoAssignment.class))).thenReturn(cargorUuid);
+        when(repo.createTransLogRecord(any(TransLogRecord.class))).thenReturn(transLogRecordUuid);
 
         // Act
         UUID cargoId = haulMgmt.assignTrip(tenantDetails, tripDetails);
