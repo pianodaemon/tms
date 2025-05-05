@@ -66,7 +66,7 @@ public class BasicRepoImplTest {
         );
 
         UUID driverId = repo.createDriver(driver);
-        Driver retrieved = repo.getAvailableDriver(driverId);
+        Driver retrieved = repo.getDriver(driverId);
 
         assertEquals(driverId, retrieved.getId().get(), "Driver ID should match");
         assertNotNull(retrieved, "Retrieved driver should not be null");
@@ -79,14 +79,14 @@ public class BasicRepoImplTest {
         retrieved.setLicenseNumber("D987654321");
         repo.editDriver(retrieved);
 
-        Driver updated = repo.getAvailableDriver(driverId);
+        Driver updated = repo.getDriver(driverId);
         assertEquals("Carlos García", updated.getName(), "Updated name should match");
         assertEquals("D987654321", updated.getLicenseNumber(), "Updated license number should match");
 
         // Delete (block) the driver
         repo.deleteDriver(driverId);
 
-        TmsException ex = assertThrows(TmsException.class, () -> repo.getAvailableDriver(driverId));
+        TmsException ex = assertThrows(TmsException.class, () -> repo.getDriver(driverId));
         assertEquals(ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), ex.getErrorCode(), "Expected error code on deleted driver");
     }
 
@@ -105,7 +105,7 @@ public class BasicRepoImplTest {
         vehicle.setPerfScalar(new BigDecimal("7.50"));
 
         final UUID id = repo.createVehicle(vehicle);
-        Vehicle retrieved = repo.getAvailableVehicule(id);
+        Vehicle retrieved = repo.getVehicule(id);
 
         assertEquals(id, retrieved.getId().get());
         assertNotNull(vehicle, "vehicle created should not be null");
@@ -138,7 +138,7 @@ public class BasicRepoImplTest {
         repo.editVehicle(retrieved);
 
         // Retrieve the updated vehicle
-        Vehicle updated = repo.getAvailableVehicule(id);
+        Vehicle updated = repo.getVehicule(id);
 
         // Assert the updated vehicle matches the modified values
         assertNotNull(updated, "Updated vehicle should not be null");
@@ -165,7 +165,7 @@ public class BasicRepoImplTest {
         repo.deleteVehicle(id);
 
         // It can not retrieve the updated vehicle
-        TmsException assertThrows = assertThrows(TmsException.class, () -> repo.getAvailableVehicule(id), "Blocked vehicle should not be retrievable");
+        TmsException assertThrows = assertThrows(TmsException.class, () -> repo.getVehicule(id), "Blocked vehicle should not be retrievable");
         assertTrue(assertThrows.getErrorCode() == ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), "Error code is not what we expected");
     }
 
@@ -182,7 +182,7 @@ public class BasicRepoImplTest {
         );
 
         UUID patioId = repo.createPatio(patio);
-        Patio retrieved = repo.getAvailablePatio(patioId);
+        Patio retrieved = repo.getPatio(patioId);
 
         assertNotNull(retrieved, "Retrieved patio should not be null");
         assertEquals(patioId, retrieved.getId().get(), "Patio ID should match");
@@ -197,7 +197,7 @@ public class BasicRepoImplTest {
         retrieved.setLongitudeLocation(-74.0060);
         repo.editPatio(retrieved);
 
-        Patio updated = repo.getAvailablePatio(patioId);
+        Patio updated = repo.getPatio(patioId);
         assertEquals("Updated Patio", updated.getName(), "Updated name should match");
         assertEquals(40.7128, updated.getLatitudeLocation(), 0.0001, "Updated latitude should match");
         assertEquals(-74.0060, updated.getLongitudeLocation(), 0.0001, "Updated longitude should match");
@@ -205,7 +205,7 @@ public class BasicRepoImplTest {
         // Delete (block) the patio
         repo.deletePatio(patioId);
 
-        TmsException ex = assertThrows(TmsException.class, () -> repo.getAvailablePatio(patioId));
+        TmsException ex = assertThrows(TmsException.class, () -> repo.getPatio(patioId));
         assertEquals(ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), ex.getErrorCode(), "Expected error code on blocked patio");
     }
 
@@ -222,7 +222,7 @@ public class BasicRepoImplTest {
 
         // Create customer in the database
         UUID customerId = repo.createCustomer(customer);
-        Customer retrieved = repo.getAvailableCustomer(customerId);
+        Customer retrieved = repo.getCustomer(customerId);
 
         // Assertions to check if customer was created correctly
         assertNotNull(retrieved, "Retrieved customer should not be null");
@@ -235,7 +235,7 @@ public class BasicRepoImplTest {
         repo.editCustomer(retrieved);
 
         // Retrieve the updated customer
-        Customer updated = repo.getAvailableCustomer(customerId);
+        Customer updated = repo.getCustomer(customerId);
 
         // Assertions for updated customer
         assertEquals("Jane Smith", updated.getName(), "Updated name should match");
@@ -244,7 +244,7 @@ public class BasicRepoImplTest {
         repo.deleteCustomer(customerId);
 
         // It should not be possible to retrieve the blocked customer
-        TmsException assertThrows = assertThrows(TmsException.class, () -> repo.getAvailableCustomer(customerId), "Blocked customer should not be retrievable");
+        TmsException assertThrows = assertThrows(TmsException.class, () -> repo.getCustomer(customerId), "Blocked customer should not be retrievable");
         assertTrue(assertThrows.getErrorCode() == ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), "Error code is not what we expected");
     }
 
@@ -271,7 +271,7 @@ public class BasicRepoImplTest {
 
         // Create in DB
         UUID agreementId = repo.createAgreement(agreement);
-        Agreement retrieved = repo.getAvailableAgreement(agreementId);
+        Agreement retrieved = repo.getAgreement(agreementId);
 
         // Validate created data
         assertNotNull(retrieved, "Agreement should be retrievable");
@@ -295,7 +295,7 @@ public class BasicRepoImplTest {
         );
 
         UUID updatedId = repo.editAgreement(retrieved);
-        Agreement updated = repo.getAvailableAgreement(updatedId);
+        Agreement updated = repo.getAgreement(updatedId);
 
         // Validate updated data
         assertEquals(updatedId, updated.getId().get(), "Updated ID should match");
@@ -308,7 +308,7 @@ public class BasicRepoImplTest {
         repo.deleteAgreement(updatedId);
 
         // Verify it's blocked
-        TmsException ex = assertThrows(TmsException.class, () -> repo.getAvailableAgreement(updatedId));
+        TmsException ex = assertThrows(TmsException.class, () -> repo.getAgreement(updatedId));
         assertEquals(ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), ex.getErrorCode(), "Blocked agreement should not be retrievable");
     }
 
@@ -353,7 +353,7 @@ public class BasicRepoImplTest {
 
         TransLogRecord tlr = new TransLogRecord(null, tenantId, DistUnit.KM, createdId, new BigDecimal("100.0"), new BigDecimal("100.0"));
         UUID tlrId = repo.createTransLogRecord(tlr);
-        TransLogRecord tlrRetrieved = repo.getAvailableTransLogRecord(tlrId);
+        TransLogRecord tlrRetrieved = repo.getTransLogRecord(tlrId);
         assertEquals(tlrId, tlrRetrieved.getId().get(), "TransLogRecord should be equals");
 
         // Act - Edit CargoAssignment (changing to second driver and vehicle)
@@ -368,7 +368,7 @@ public class BasicRepoImplTest {
 
         UUID updatedId = repo.editCargoAssignment(cargoAssignment);
 
-        CargoAssignment updatedCargoAssignment = repo.getAvailableCargoAssignment(updatedId);
+        CargoAssignment updatedCargoAssignment = repo.getCargoAssignment(updatedId);
         assertNotNull(updatedCargoAssignment, "Updated CargoAssignment should not be null");
         assertEquals(driver2Id, updatedCargoAssignment.getDriverId(), "Driver ID should be updated");
         assertEquals(vehicle2Id, updatedCargoAssignment.getVehicleId(), "Vehicle ID should be updated");
@@ -378,7 +378,7 @@ public class BasicRepoImplTest {
         repo.deleteCargoAssignment(updatedId);
 
         // Verify it's blocked
-        TmsException ex = assertThrows(TmsException.class, () -> repo.getAvailableCargoAssignment(updatedId));
+        TmsException ex = assertThrows(TmsException.class, () -> repo.getCargoAssignment(updatedId));
         assertEquals(ErrorCodes.REPO_PROVIDEER_ISSUES.getCode(), ex.getErrorCode(), "Blocked cargo assignment should not be retrievable");
     }
 

@@ -27,7 +27,7 @@ public class BasicRepoImpl implements IHaulRepo {
     private Boolean debugMode;
 
     @Override
-    public CargoAssignment getAvailableCargoAssignment(UUID cargoAssignmentId) throws TmsException {
+    public CargoAssignment getCargoAssignment(UUID cargoAssignmentId) throws TmsException {
         try {
             Optional<CargoAssignment> customer = BasicRepoCargoAssignmentHelper.fetchById(this.ds.getConnection(), cargoAssignmentId);
             return customer.orElseThrow(()
@@ -65,7 +65,7 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public Customer getAvailableCustomer(UUID customerId) throws TmsException {
+    public Customer getCustomer(UUID customerId) throws TmsException {
         try {
             Optional<Customer> customer = BasicRepoCustomerHelper.fetchById(this.ds.getConnection(), customerId);
             return customer.orElseThrow(()
@@ -103,7 +103,7 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public Vehicle getAvailableVehicule(UUID vehicleId) throws TmsException {
+    public Vehicle getVehicule(UUID vehicleId) throws TmsException {
         try {
             Optional<Vehicle> v = BasicRepoVehicleHelper.fetchById(this.ds.getConnection(), vehicleId);
             return v.orElseThrow(() -> new TmsException("Vehicule " + vehicleId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
@@ -140,7 +140,7 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public Driver getAvailableDriver(UUID driverId) throws TmsException {
+    public Driver getDriver(UUID driverId) throws TmsException {
         try {
             Optional<Driver> d = BasicRepoDriverHelper.fetchById(this.ds.getConnection(), driverId);
             return d.orElseThrow(() -> new TmsException("Driver " + driverId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
@@ -177,7 +177,7 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public Patio getAvailablePatio(UUID patioId) throws TmsException {
+    public Patio getPatio(UUID patioId) throws TmsException {
         try {
             Optional<Patio> patio = BasicRepoPatioHelper.fetchById(this.ds.getConnection(), patioId);
             return patio.orElseThrow(()
@@ -215,7 +215,7 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public Agreement getAvailableAgreement(UUID agreementId) throws TmsException {
+    public Agreement getAgreement(UUID agreementId) throws TmsException {
         try {
             Optional<Agreement> agreement = BasicRepoAgreementHelper.fetchById(this.ds.getConnection(), agreementId);
             return agreement.orElseThrow(() -> new TmsException(
@@ -255,7 +255,7 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public TransLogRecord getAvailableTransLogRecord(UUID transLogRecordId) throws TmsException {
+    public TransLogRecord getTransLogRecord(UUID transLogRecordId) throws TmsException {
         try {
             Optional<TransLogRecord> agreement = BasicRepoTransLogRecordHelper.fetchById(this.ds.getConnection(), transLogRecordId);
             return agreement.orElseThrow(() -> new TmsException(

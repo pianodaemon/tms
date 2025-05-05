@@ -34,7 +34,7 @@ public class HaulMgmt {
         // Si el vehiculo no esta disponible 
         // Una exception sera levantada con el respectivo codigo de error
         // para esta situacion
-        Vehicle ship = repo.getAvailableVehicule(tripDetails.getVehicleId());
+        Vehicle ship = repo.getVehicule(tripDetails.getVehicleId());
 
         if (!ship.getTenantId().equals(tenantDetails.getTenantId())) {
             final String emsg = "The assigned vehicle does not pertain to tenant " + tenantDetails.getTenantId();
@@ -44,7 +44,7 @@ public class HaulMgmt {
         // Si el convenio no esta disponible 
         // Una exception sera levantada con el respectivo codigo de error
         // para esta situacion
-        Agreement agreement = repo.getAvailableAgreement(tripDetails.getAgreementId());
+        Agreement agreement = repo.getAgreement(tripDetails.getAgreementId());
 
         if (!agreement.getTenantId().equals(tenantDetails.getTenantId())) {
             final String emsg = "The assigned agreement does not pertain to tenant " + tenantDetails.getTenantId();
