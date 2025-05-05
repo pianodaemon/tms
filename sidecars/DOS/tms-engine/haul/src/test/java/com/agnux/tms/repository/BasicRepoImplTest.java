@@ -258,6 +258,7 @@ public class BasicRepoImplTest {
 
         // Create valid Agreement
         Agreement agreement = new Agreement(
+                null,
                 tenantId,
                 customerId,
                 19.4326, // latitudeOrigin (CDMX)

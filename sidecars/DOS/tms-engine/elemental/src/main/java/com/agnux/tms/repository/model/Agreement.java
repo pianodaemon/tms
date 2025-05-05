@@ -3,8 +3,10 @@ package com.agnux.tms.repository.model;
 import java.math.BigDecimal;
 import java.util.UUID;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class Agreement extends TmsBasicModel {
 
     /*
@@ -21,7 +23,7 @@ public class Agreement extends TmsBasicModel {
     private BigDecimal distScalar;
 
     public Agreement(UUID agreementId, UUID tenantId, UUID customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
-        super(agreementId, tenantId);
+        this(agreementId, tenantId);
         this.customerId = customerId;
         this.latitudeOrigin = latitudeOrigin;
         this.longitudeOrigin = longitudeOrigin;
@@ -31,7 +33,7 @@ public class Agreement extends TmsBasicModel {
         this.distScalar = distScalar;
     }
 
-    public Agreement(UUID tenantId, UUID customerId, double latitudeOrigin, double longitudeOrigin, double latitudeDestiny, double longitudeDestiny, DistUnit distUnit, BigDecimal distScalar) {
-        this(null, tenantId, customerId, latitudeOrigin, longitudeOrigin, latitudeDestiny, longitudeDestiny, distUnit, distScalar);
+    public Agreement(UUID agreementId, UUID tenantId) {
+        super(agreementId, tenantId);
     }
 }
