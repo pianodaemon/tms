@@ -100,9 +100,8 @@ public class BasicRepoImplTest {
                 "ABC-123",
                 VehicleType.REFRIGERATED_VAN,
                 1970,
-                DistUnit.KM);
+                DistUnit.KM, VolUnit.LT);
 
-        vehicle.setPerfVolUnit(VolUnit.LT);
         vehicle.setPerfScalar(new BigDecimal("7.50"));
 
         final UUID id = repo.createVehicle(vehicle);
@@ -317,14 +316,12 @@ public class BasicRepoImplTest {
         UUID tenantId = UUID.randomUUID();
 
         // Create the first Vehicle
-        Vehicle vehicle1 = new Vehicle(null, tenantId, "XYZ-999", VehicleType.DELIVERY_TRUCK, 2022, DistUnit.KM);
-        vehicle1.setPerfVolUnit(VolUnit.LT);
+        Vehicle vehicle1 = new Vehicle(null, tenantId, "XYZ-999", VehicleType.DELIVERY_TRUCK, 2022, DistUnit.KM, VolUnit.LT);
         vehicle1.setPerfScalar(new BigDecimal("5.5"));
         final UUID vehicle1Id = repo.createVehicle(vehicle1);
 
         // Create the second Vehicle
-        Vehicle vehicle2 = new Vehicle(null, tenantId, "ABC-123", VehicleType.DELIVERY_TRUCK, 2023, DistUnit.KM);
-        vehicle2.setPerfVolUnit(VolUnit.LT);
+        Vehicle vehicle2 = new Vehicle(null, tenantId, "ABC-123", VehicleType.DELIVERY_TRUCK, 2023, DistUnit.KM, VolUnit.LT);
         vehicle2.setPerfScalar(new BigDecimal("6.5"));
         final UUID vehicle2Id = repo.createVehicle(vehicle2);
 

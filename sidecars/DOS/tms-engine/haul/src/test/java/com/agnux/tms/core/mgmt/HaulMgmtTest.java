@@ -12,6 +12,7 @@ import com.agnux.tms.repository.model.DistUnit;
 import com.agnux.tms.repository.IHaulRepo;
 import com.agnux.tms.repository.model.Vehicle;
 import com.agnux.tms.repository.model.VehicleType;
+import com.agnux.tms.repository.model.VolUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,7 +49,7 @@ class HaulMgmtTest {
         customer = new Customer(customerUuid, tenantUuid, "quintanilla");
         tripDetails = new TripDetailsDto(vehicleUuid, agreementUuid);
         agreement = new Agreement(agreementUuid, tenantUuid, customerUuid, 0, 0, 0, 0, DistUnit.KM, new BigDecimal("100"));
-        ship = new Vehicle(vehicleUuid, tenantDetails.getTenantId(), "GAS9500", VehicleType.CAR, 1980, DistUnit.KM);
+        ship = new Vehicle(vehicleUuid, tenantDetails.getTenantId(), "GAS9500", VehicleType.CAR, 1980, DistUnit.KM, VolUnit.LT);
     }
 
     @Test
@@ -79,7 +80,7 @@ class HaulMgmtTest {
     @Test
     void assignTrip_ShouldThrowTmsException_WhenTenantMismatch() throws TmsException {
         // Arrange
-        Vehicle mismatchedVehicle = new Vehicle(vehicleUuid, UUID.fromString("0a232802-d6e8-458f-9eca-6a8c2b980900"), "GAS9500", VehicleType.CAR, 1980, DistUnit.KM);
+        Vehicle mismatchedVehicle = new Vehicle(vehicleUuid, UUID.fromString("0a232802-d6e8-458f-9eca-6a8c2b980900"), "GAS9500", VehicleType.CAR, 1980, DistUnit.KM, VolUnit.LT);
         when(repo.getAvailableVehicule(vehicleUuid)).thenReturn(mismatchedVehicle);
 
         // Act & Assert
