@@ -75,7 +75,6 @@ class HaulMgmtTest {
         CargoAssignment capturedAssignment = assignmentCaptor.getValue();
         assertEquals(tenantUuid, capturedAssignment.getTenantId());
         assertEquals(ship.getId().get(), capturedAssignment.getVehicleId());
-        // assertNotNull(capturedAssignment.getTlRecord());
     }
 
     @Test
