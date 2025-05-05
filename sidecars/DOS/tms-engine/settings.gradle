@@ -2,3 +2,4 @@ rootProject.name = 'tms'
 
 include ':elemental'
 include ':haul'
+include ':async-ipc'
