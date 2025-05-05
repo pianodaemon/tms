@@ -9,9 +9,13 @@ import lombok.Setter;
 public class Customer extends TmsBasicModel {
 
     private String name;
-    
+
     public Customer(final UUID customerId, final UUID tenantId, String name) {
-        super(customerId, tenantId);
+        this(customerId, tenantId);
         this.name = name;
+    }
+
+    public Customer(final UUID customerId, final UUID tenantId) {
+        super(customerId, tenantId);
     }
 }
