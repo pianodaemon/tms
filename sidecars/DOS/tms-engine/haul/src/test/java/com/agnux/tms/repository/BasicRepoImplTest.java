@@ -345,9 +345,7 @@ public class BasicRepoImplTest {
         final UUID driver2Id = repo.createDriver(driver2);
 
         // Construct CargoAssignment (using the first driver and vehicle)
-        CargoAssignment cargoAssignment = new CargoAssignment(null, tenantId, driver1Id, vehicle1Id);
-        cargoAssignment.setLatitudeLocation(19.5);
-        cargoAssignment.setLongitudeLocation(-99.3);
+        CargoAssignment cargoAssignment = new CargoAssignment(null, tenantId, driver1Id, vehicle1Id, 19.5, -99.3);
 
         // Act - Create CargoAssignment
         UUID createdId = repo.createCargoAssignment(cargoAssignment);
@@ -363,9 +361,10 @@ public class BasicRepoImplTest {
                 createdId, // same ID
                 tenantId,
                 driver2Id, // Update to second driver
-                vehicle2Id // Update to second vehicle
+                vehicle2Id, // Update to second vehicle
+                20.0,
+                -99.3
         );
-        cargoAssignment.setLatitudeLocation(20.0);
 
         UUID updatedId = repo.editCargoAssignment(cargoAssignment);
 

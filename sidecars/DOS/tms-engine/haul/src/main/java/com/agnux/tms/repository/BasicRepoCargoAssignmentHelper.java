@@ -24,9 +24,7 @@ class BasicRepoCargoAssignmentHelper extends BasicRepoCommonHelper {
                 double latitude = rs.getDouble("latitude_location");
                 double longitude = rs.getDouble("longitude_location");
 
-                CargoAssignment assignment = new CargoAssignment(assignmentId, tenantId, driverId, vehicleId);
-                assignment.setLatitudeLocation(latitude);
-                assignment.setLongitudeLocation(longitude);
+                CargoAssignment assignment = new CargoAssignment(assignmentId, tenantId, driverId, vehicleId, latitude, longitude);
 
                 return Optional.of(assignment);
             }
