@@ -273,7 +273,7 @@ public class BasicRepoImpl implements IHaulRepo {
         try {
             return BasicRepoTransLogRecordHelper.update(this.ds.getConnection(), this.debugMode, tlr);
         } catch (SQLException ex) {
-            throw new TmsException("TransLogRecord creation failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("TransLogRecord" + CREATION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 }
