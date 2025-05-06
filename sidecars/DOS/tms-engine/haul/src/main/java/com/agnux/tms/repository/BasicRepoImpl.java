@@ -22,6 +22,14 @@ import lombok.extern.log4j.Log4j2;
 @AllArgsConstructor
 public class BasicRepoImpl implements IHaulRepo {
 
+    private static final String NOT_FOUND = " was not found";
+    private static final String LOOKUP_FAILED = " lookup failed";
+    private static final String CREATION_FAILED = " creation failed";
+    private static final String UPDATE_FAILED = " update failed";
+    private static final String DELETION_FAILED = " deletion failed";
+    private static final String EDITION_FAILED = " edition faced an issue";
+    private static final String CREATION_ISSUE = " creation faced an issue";
+
     @NonNull
     private DataSource ds;
 
@@ -29,40 +37,39 @@ public class BasicRepoImpl implements IHaulRepo {
     private Boolean debugMode;
 
     @Override
-    public CargoAssignment getCargoAssignment(UUID cargoAssignmentId) throws TmsException {
+    public CargoAssignment getCargoAssignment(UUID id) throws TmsException {
         try {
-            Optional<CargoAssignment> customer = BasicRepoCargoAssignmentHelper.fetchById(this.ds.getConnection(), cargoAssignmentId);
-            return customer.orElseThrow(()
-                    -> new TmsException("CargoAssignment " + cargoAssignmentId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
+            return BasicRepoCargoAssignmentHelper.fetchById(ds.getConnection(), id)
+                    .orElseThrow(() -> new TmsException("CargoAssignment " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
         } catch (SQLException ex) {
-            throw new TmsException("CargoAssignment lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("CargoAssignment" + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
     public UUID createCargoAssignment(CargoAssignment t) throws TmsException {
         try {
-            return BasicRepoCargoAssignmentHelper.update(this.ds.getConnection(), this.debugMode, t);
+            return BasicRepoCargoAssignmentHelper.update(ds.getConnection(), debugMode, t);
         } catch (SQLException ex) {
-            throw new TmsException("CargoAssignment creation failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("CargoAssignment" + CREATION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
     public UUID editCargoAssignment(CargoAssignment t) throws TmsException {
         try {
-            return BasicRepoCargoAssignmentHelper.update(this.ds.getConnection(), this.debugMode, t);
+            return BasicRepoCargoAssignmentHelper.update(ds.getConnection(), debugMode, t);
         } catch (SQLException ex) {
-            throw new TmsException("CargoAssignment update failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("CargoAssignment" + UPDATE_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
-    public void deleteCargoAssignment(UUID cargoId) throws TmsException {
+    public void deleteCargoAssignment(UUID id) throws TmsException {
         try {
-            BasicRepoCargoAssignmentHelper.block(this.ds.getConnection(), cargoId);
+            BasicRepoCargoAssignmentHelper.block(ds.getConnection(), id);
         } catch (SQLException ex) {
-            throw new TmsException("CargoAssignment deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("CargoAssignment" + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
