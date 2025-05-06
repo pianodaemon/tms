@@ -224,20 +224,11 @@ public class BasicRepoImpl implements IHaulRepo {
 
     @Override
     public TransLogRecord getTransLogRecord(UUID id) throws TmsException {
-        try {
-            return BasicRepoTransLogRecordHelper.fetchById(ds.getConnection(), id)
-                    .orElseThrow(() -> new TmsException("TransLogRecord " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
-        } catch (SQLException ex) {
-            throw new TmsException("TransLogRecord" + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return fetchEntity(id, "TransLogRecord", BasicRepoTransLogRecordHelper::fetchById);
     }
 
     @Override
     public UUID createTransLogRecord(TransLogRecord tlr) throws TmsException {
-        try {
-            return BasicRepoTransLogRecordHelper.update(this.ds.getConnection(), this.debugMode, tlr);
-        } catch (SQLException ex) {
-            throw new TmsException("TransLogRecord" + CREATION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return saveOrUpdateEntity(tlr, "TransLogRecord", BasicRepoTransLogRecordHelper::update, true);
     }
 }
