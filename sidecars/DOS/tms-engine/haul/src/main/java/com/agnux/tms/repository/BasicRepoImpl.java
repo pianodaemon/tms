@@ -259,15 +259,12 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public TransLogRecord getTransLogRecord(UUID transLogRecordId) throws TmsException {
+    public TransLogRecord getTransLogRecord(UUID id) throws TmsException {
         try {
-            Optional<TransLogRecord> agreement = BasicRepoTransLogRecordHelper.fetchById(this.ds.getConnection(), transLogRecordId);
-            return agreement.orElseThrow(() -> new TmsException(
-                    "TransLogRecord " + transLogRecordId.toString() + " was not found",
-                    ErrorCodes.REPO_PROVIDEER_ISSUES
-            ));
+            return BasicRepoTransLogRecordHelper.fetchById(ds.getConnection(), id)
+                    .orElseThrow(() -> new TmsException("TransLogRecord " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
         } catch (SQLException ex) {
-            throw new TmsException("TransLogRecord lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("TransLogRecord" + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
