@@ -43,7 +43,7 @@ public class HaulMgmtController {
         TripDetailsDto trip = new TripDetailsDto(vehicleId, agreementId, driverId);
 
         return Mono.fromCallable(()
-                -> haulMgmt.estimateFuel(tenant, trip).toPlainString()
+                -> haulMgmt.estimateFuel(tenant, vehicleId, agreementId).toPlainString()
         ).map(ResponseEntity::ok)
                 .onErrorResume(TmsException.class, ex
                         -> Mono.just(ResponseEntity.badRequest().body("Error: " + ex.getMessage()))

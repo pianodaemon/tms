@@ -55,7 +55,7 @@ public class HaulMgmt {
         // (quizas esto ya paso en la UI, pero se tiene que hacer aqui de nuevo)
         // Si esto require a una recalibracion 
         // Una exception sera levantada con el respectivo codigo de error
-        BigDecimal fuelEstimated = estimateFuel(tenantDetails, tripDetails);
+        BigDecimal fuelEstimated = estimateFuel(tenantDetails, tripDetails.getVehicleId(), tripDetails.getAgreementId());
 
         // A fake on for now
         CargoAssignment cas = new CargoAssignment(null, tenantDetails.getTenantId(), tripDetails.getDriverId(), ship.getId().get(), 20.0, -99.3);
@@ -81,7 +81,8 @@ public class HaulMgmt {
      */
     public BigDecimal estimateFuel(
             final @NonNull TenantDetailsDto tenantDetails,
-            final @NonNull TripDetailsDto tripData) throws TmsException {
+            final @NonNull UUID vehicleId,
+            final @NonNull UUID agreementId) throws TmsException {
 
         // Aqui se tiene que cargar y ejecutar el algoritmo de estimacion 
         // de combustible de el respectivo tenant
