@@ -111,39 +111,39 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public Vehicle getVehicule(UUID vehicleId) throws TmsException {
+    public Vehicle getVehicule(UUID id) throws TmsException {
         try {
-            Optional<Vehicle> v = BasicRepoVehicleHelper.fetchById(this.ds.getConnection(), vehicleId);
-            return v.orElseThrow(() -> new TmsException("Vehicule " + vehicleId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
+            return BasicRepoVehicleHelper.fetchById(ds.getConnection(), id)
+                    .orElseThrow(() -> new TmsException("Vehicule " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
         } catch (SQLException ex) {
-            throw new TmsException("Vehicule lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Vehicule" + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
     public UUID createVehicle(Vehicle v) throws TmsException {
         try {
-            return BasicRepoVehicleHelper.update(this.ds.getConnection(), this.debugMode, v);
+            return BasicRepoVehicleHelper.update(ds.getConnection(), debugMode, v);
         } catch (SQLException ex) {
-            throw new TmsException("Vehicule creation faced an issue", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Vehicule" + CREATION_ISSUE, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
     public UUID editVehicle(Vehicle v) throws TmsException {
         try {
-            return BasicRepoVehicleHelper.update(this.ds.getConnection(), this.debugMode, v);
+            return BasicRepoVehicleHelper.update(ds.getConnection(), debugMode, v);
         } catch (SQLException ex) {
-            throw new TmsException("Vehicule edition faced an issue", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Vehicule" + EDITION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
-    public void deleteVehicle(UUID vehicleId) throws TmsException {
+    public void deleteVehicle(UUID id) throws TmsException {
         try {
-            BasicRepoVehicleHelper.block(this.ds.getConnection(), vehicleId);
+            BasicRepoVehicleHelper.block(ds.getConnection(), id);
         } catch (SQLException ex) {
-            throw new TmsException("Vehicule deletion faced an issue", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Vehicule" + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
