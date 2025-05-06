@@ -28,8 +28,6 @@ public class BasicRepoImpl implements IHaulRepo {
     private static final String CREATION_FAILED = " creation failed";
     private static final String UPDATE_FAILED = " update failed";
     private static final String DELETION_FAILED = " deletion failed";
-    private static final String EDITION_FAILED = " edition faced an issue";
-    private static final String CREATION_ISSUE = " creation faced an issue";
 
     @NonNull
     private DataSource ds;
@@ -145,39 +143,22 @@ public class BasicRepoImpl implements IHaulRepo {
 
     @Override
     public Driver getDriver(UUID id) throws TmsException {
-        try {
-            return BasicRepoDriverHelper.fetchById(ds.getConnection(), id)
-                    .orElseThrow(() -> new TmsException("Driver " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
-        } catch (SQLException ex) {
-            throw new TmsException("Driver" + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return fetchEntity(id, "Driver", BasicRepoDriverHelper::fetchById);
     }
 
     @Override
     public UUID createDriver(Driver d) throws TmsException {
-        try {
-            return BasicRepoDriverHelper.update(ds.getConnection(), debugMode, d);
-        } catch (SQLException ex) {
-            throw new TmsException("Driver" + CREATION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return saveOrUpdateEntity(d, "Driver", BasicRepoDriverHelper::update, true);
     }
 
     @Override
     public UUID editDriver(Driver d) throws TmsException {
-        try {
-            return BasicRepoDriverHelper.update(ds.getConnection(), debugMode, d);
-        } catch (SQLException ex) {
-            throw new TmsException("Driver" + UPDATE_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return saveOrUpdateEntity(d, "Driver", BasicRepoDriverHelper::update, false);
     }
 
     @Override
     public void deleteDriver(UUID id) throws TmsException {
-        try {
-            BasicRepoDriverHelper.block(ds.getConnection(), id);
-        } catch (SQLException ex) {
-            throw new TmsException("Driver" + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        deleteEntity(id, "Driver", BasicRepoDriverHelper::block);
     }
 
     // Patio
