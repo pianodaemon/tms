@@ -9,6 +9,7 @@ import com.agnux.tms.repository.model.Driver;
 import com.agnux.tms.repository.model.Patio;
 import com.agnux.tms.repository.model.TransLogRecord;
 import com.agnux.tms.repository.model.Vehicle;
+import java.sql.Connection;
 
 import java.sql.SQLException;
 import java.util.Optional;
@@ -36,115 +37,110 @@ public class BasicRepoImpl implements IHaulRepo {
     @NonNull
     private Boolean debugMode;
 
+    @FunctionalInterface
+    public interface FetchById<T> {
+
+        Optional<T> fetch(Connection conn, UUID id) throws SQLException;
+    }
+
+    @FunctionalInterface
+    public interface UpdateEntity<T> {
+
+        UUID update(Connection conn, boolean debug, T entity) throws SQLException;
+    }
+
+    @FunctionalInterface
+    public interface BlockById {
+
+        void block(Connection conn, UUID id) throws SQLException;
+    }
+
+    private <T> T fetchEntity(UUID id, String name, FetchById<T> fetcher) throws TmsException {
+        try (var conn = ds.getConnection()) {
+            return fetcher.fetch(conn, id)
+                    .orElseThrow(() -> new TmsException(name + " " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
+        } catch (SQLException ex) {
+            throw new TmsException(name + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    private <T> UUID saveOrUpdateEntity(T entity, String name, UpdateEntity<T> updater, boolean isCreation) throws TmsException {
+        try (var conn = ds.getConnection()) {
+            return updater.update(conn, debugMode, entity);
+        } catch (SQLException ex) {
+            String errorMessage = name + (isCreation ? CREATION_FAILED : UPDATE_FAILED);
+            throw new TmsException(errorMessage, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
+    private void deleteEntity(UUID id, String name, BlockById blocker) throws TmsException {
+        try (var conn = ds.getConnection()) {
+            blocker.block(conn, id);
+        } catch (SQLException ex) {
+            throw new TmsException(name + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+        }
+    }
+
     @Override
     public CargoAssignment getCargoAssignment(UUID id) throws TmsException {
-        try {
-            return BasicRepoCargoAssignmentHelper.fetchById(ds.getConnection(), id)
-                    .orElseThrow(() -> new TmsException("CargoAssignment " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
-        } catch (SQLException ex) {
-            throw new TmsException("CargoAssignment" + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return fetchEntity(id, "CargoAssignment", BasicRepoCargoAssignmentHelper::fetchById);
     }
 
     @Override
     public UUID createCargoAssignment(CargoAssignment t) throws TmsException {
-        try {
-            return BasicRepoCargoAssignmentHelper.update(ds.getConnection(), debugMode, t);
-        } catch (SQLException ex) {
-            throw new TmsException("CargoAssignment" + CREATION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return saveOrUpdateEntity(t, "CargoAssignment", BasicRepoCargoAssignmentHelper::update, true);
     }
 
     @Override
     public UUID editCargoAssignment(CargoAssignment t) throws TmsException {
-        try {
-            return BasicRepoCargoAssignmentHelper.update(ds.getConnection(), debugMode, t);
-        } catch (SQLException ex) {
-            throw new TmsException("CargoAssignment" + UPDATE_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return saveOrUpdateEntity(t, "CargoAssignment", BasicRepoCargoAssignmentHelper::update, false);
     }
 
     @Override
     public void deleteCargoAssignment(UUID id) throws TmsException {
-        try {
-            BasicRepoCargoAssignmentHelper.block(ds.getConnection(), id);
-        } catch (SQLException ex) {
-            throw new TmsException("CargoAssignment" + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        deleteEntity(id, "CargoAssignment", BasicRepoCargoAssignmentHelper::block);
     }
 
+    // Customer
     @Override
     public Customer getCustomer(UUID id) throws TmsException {
-        try {
-            return BasicRepoCustomerHelper.fetchById(ds.getConnection(), id)
-                    .orElseThrow(() -> new TmsException("Customer " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
-        } catch (SQLException ex) {
-            throw new TmsException("Customer" + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return fetchEntity(id, "Customer", BasicRepoCustomerHelper::fetchById);
     }
 
     @Override
     public UUID createCustomer(Customer p) throws TmsException {
-        try {
-            return BasicRepoCustomerHelper.update(ds.getConnection(), debugMode, p);
-        } catch (SQLException ex) {
-            throw new TmsException("Customer" + CREATION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return saveOrUpdateEntity(p, "Customer", BasicRepoCustomerHelper::update, true);
     }
 
     @Override
     public UUID editCustomer(Customer p) throws TmsException {
-        try {
-            return BasicRepoCustomerHelper.update(ds.getConnection(), debugMode, p);
-        } catch (SQLException ex) {
-            throw new TmsException("Customer" + UPDATE_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return saveOrUpdateEntity(p, "Customer", BasicRepoCustomerHelper::update, false);
     }
 
     @Override
     public void deleteCustomer(UUID id) throws TmsException {
-        try {
-            BasicRepoCustomerHelper.block(ds.getConnection(), id);
-        } catch (SQLException ex) {
-            throw new TmsException("Customer" + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        deleteEntity(id, "Customer", BasicRepoCustomerHelper::block);
     }
 
+    // Vehicle
     @Override
     public Vehicle getVehicule(UUID id) throws TmsException {
-        try {
-            return BasicRepoVehicleHelper.fetchById(ds.getConnection(), id)
-                    .orElseThrow(() -> new TmsException("Vehicule " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
-        } catch (SQLException ex) {
-            throw new TmsException("Vehicule" + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return fetchEntity(id, "Vehicule", BasicRepoVehicleHelper::fetchById);
     }
 
     @Override
     public UUID createVehicle(Vehicle v) throws TmsException {
-        try {
-            return BasicRepoVehicleHelper.update(ds.getConnection(), debugMode, v);
-        } catch (SQLException ex) {
-            throw new TmsException("Vehicule" + CREATION_ISSUE, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return saveOrUpdateEntity(v, "Vehicule", BasicRepoVehicleHelper::update, true);
     }
 
     @Override
     public UUID editVehicle(Vehicle v) throws TmsException {
-        try {
-            return BasicRepoVehicleHelper.update(ds.getConnection(), debugMode, v);
-        } catch (SQLException ex) {
-            throw new TmsException("Vehicule" + EDITION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return saveOrUpdateEntity(v, "Vehicule", BasicRepoVehicleHelper::update, false);
     }
 
     @Override
     public void deleteVehicle(UUID id) throws TmsException {
-        try {
-            BasicRepoVehicleHelper.block(ds.getConnection(), id);
-        } catch (SQLException ex) {
-            throw new TmsException("Vehicule" + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        deleteEntity(id, "Vehicule", BasicRepoVehicleHelper::block);
     }
 
     @Override
@@ -184,78 +180,46 @@ public class BasicRepoImpl implements IHaulRepo {
         }
     }
 
+    // Patio
     @Override
     public Patio getPatio(UUID id) throws TmsException {
-        try {
-            return BasicRepoPatioHelper.fetchById(ds.getConnection(), id)
-                    .orElseThrow(() -> new TmsException("Patio " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
-        } catch (SQLException ex) {
-            throw new TmsException("Patio" + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return fetchEntity(id, "Patio", BasicRepoPatioHelper::fetchById);
     }
 
     @Override
     public UUID createPatio(Patio p) throws TmsException {
-        try {
-            return BasicRepoPatioHelper.update(ds.getConnection(), debugMode, p);
-        } catch (SQLException ex) {
-            throw new TmsException("Patio" + CREATION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return saveOrUpdateEntity(p, "Patio", BasicRepoPatioHelper::update, true);
     }
 
     @Override
     public UUID editPatio(Patio p) throws TmsException {
-        try {
-            return BasicRepoPatioHelper.update(ds.getConnection(), debugMode, p);
-        } catch (SQLException ex) {
-            throw new TmsException("Patio" + UPDATE_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return saveOrUpdateEntity(p, "Patio", BasicRepoPatioHelper::update, false);
     }
 
     @Override
     public void deletePatio(UUID id) throws TmsException {
-        try {
-            BasicRepoPatioHelper.block(ds.getConnection(), id);
-        } catch (SQLException ex) {
-            throw new TmsException("Patio" + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        deleteEntity(id, "Patio", BasicRepoPatioHelper::block);
     }
 
+    // Agreement
     @Override
     public Agreement getAgreement(UUID id) throws TmsException {
-        try {
-            return BasicRepoAgreementHelper.fetchById(ds.getConnection(), id)
-                    .orElseThrow(() -> new TmsException("Agreement " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
-        } catch (SQLException ex) {
-            throw new TmsException("Agreement" + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return fetchEntity(id, "Agreement", BasicRepoAgreementHelper::fetchById);
     }
 
     @Override
     public UUID createAgreement(Agreement a) throws TmsException {
-        try {
-            return BasicRepoAgreementHelper.update(ds.getConnection(), debugMode, a);
-        } catch (SQLException ex) {
-            throw new TmsException("Agreement" + CREATION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return saveOrUpdateEntity(a, "Agreement", BasicRepoAgreementHelper::update, true);
     }
 
     @Override
     public UUID editAgreement(Agreement a) throws TmsException {
-        try {
-            return BasicRepoAgreementHelper.update(ds.getConnection(), debugMode, a);
-        } catch (SQLException ex) {
-            throw new TmsException("Agreement" + UPDATE_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        return saveOrUpdateEntity(a, "Agreement", BasicRepoAgreementHelper::update, false);
     }
 
     @Override
     public void deleteAgreement(UUID id) throws TmsException {
-        try {
-            BasicRepoAgreementHelper.block(ds.getConnection(), id);
-        } catch (SQLException ex) {
-            throw new TmsException("Agreement" + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
-        }
+        deleteEntity(id, "Agreement", BasicRepoAgreementHelper::block);
     }
 
     @Override
