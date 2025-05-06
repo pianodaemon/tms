@@ -4,21 +4,22 @@ import com.agnux.tms.core.mgmt.HaulMgmt;
 import com.agnux.tms.core.mgmt.TenantDetailsDto;
 import com.agnux.tms.core.mgmt.TripDetailsDto;
 import com.agnux.tms.errors.TmsException;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/haul")
+@RequestMapping("/haul/{tenantId}/{userId}")
 @RequiredArgsConstructor
 public class HaulMgmtController {
 
     private final HaulMgmt haulMgmt;
 
-    @PostMapping("/{tenantId}/{userId}/assign-trip")
+    @PostMapping("/assign-trip")
     public Mono<ResponseEntity<String>> assignTrip(
             @PathVariable UUID tenantId,
             @PathVariable String userId,
@@ -31,7 +32,7 @@ public class HaulMgmtController {
                         ex -> Mono.just(ResponseEntity.badRequest().body("Error: " + ex.getMessage())));
     }
 
-    @GetMapping("/{tenantId}/{userId}/estimate-fuel")
+    @GetMapping("/estimate-fuel")
     public Mono<ResponseEntity<String>> estimateFuel(
             @PathVariable UUID tenantId,
             @PathVariable String userId,
