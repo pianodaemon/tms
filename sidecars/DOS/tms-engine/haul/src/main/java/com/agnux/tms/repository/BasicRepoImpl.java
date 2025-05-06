@@ -148,39 +148,39 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public Driver getDriver(UUID driverId) throws TmsException {
+    public Driver getDriver(UUID id) throws TmsException {
         try {
-            Optional<Driver> d = BasicRepoDriverHelper.fetchById(this.ds.getConnection(), driverId);
-            return d.orElseThrow(() -> new TmsException("Driver " + driverId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
+            return BasicRepoDriverHelper.fetchById(ds.getConnection(), id)
+                    .orElseThrow(() -> new TmsException("Driver " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
         } catch (SQLException ex) {
-            throw new TmsException("Driver lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Driver" + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
     public UUID createDriver(Driver d) throws TmsException {
         try {
-            return BasicRepoDriverHelper.update(this.ds.getConnection(), this.debugMode, d);
+            return BasicRepoDriverHelper.update(ds.getConnection(), debugMode, d);
         } catch (SQLException ex) {
-            throw new TmsException("Driver creation failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Driver" + CREATION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
     public UUID editDriver(Driver d) throws TmsException {
         try {
-            return BasicRepoDriverHelper.update(this.ds.getConnection(), this.debugMode, d);
+            return BasicRepoDriverHelper.update(ds.getConnection(), debugMode, d);
         } catch (SQLException ex) {
-            throw new TmsException("Driver update failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Driver" + UPDATE_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
-    public void deleteDriver(UUID driverId) throws TmsException {
+    public void deleteDriver(UUID id) throws TmsException {
         try {
-            BasicRepoDriverHelper.block(this.ds.getConnection(), driverId);
+            BasicRepoDriverHelper.block(ds.getConnection(), id);
         } catch (SQLException ex) {
-            throw new TmsException("Driver deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Driver" + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
