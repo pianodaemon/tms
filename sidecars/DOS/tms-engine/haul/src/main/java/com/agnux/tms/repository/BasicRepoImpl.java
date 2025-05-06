@@ -185,40 +185,39 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public Patio getPatio(UUID patioId) throws TmsException {
+    public Patio getPatio(UUID id) throws TmsException {
         try {
-            Optional<Patio> patio = BasicRepoPatioHelper.fetchById(this.ds.getConnection(), patioId);
-            return patio.orElseThrow(()
-                    -> new TmsException("Patio " + patioId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
+            return BasicRepoPatioHelper.fetchById(ds.getConnection(), id)
+                    .orElseThrow(() -> new TmsException("Patio " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
         } catch (SQLException ex) {
-            throw new TmsException("Patio lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Patio" + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
     public UUID createPatio(Patio p) throws TmsException {
         try {
-            return BasicRepoPatioHelper.update(this.ds.getConnection(), this.debugMode, p);
+            return BasicRepoPatioHelper.update(ds.getConnection(), debugMode, p);
         } catch (SQLException ex) {
-            throw new TmsException("Patio creation failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Patio" + CREATION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
     public UUID editPatio(Patio p) throws TmsException {
         try {
-            return BasicRepoPatioHelper.update(this.ds.getConnection(), this.debugMode, p);
+            return BasicRepoPatioHelper.update(ds.getConnection(), debugMode, p);
         } catch (SQLException ex) {
-            throw new TmsException("Patio update failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Patio" + UPDATE_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
-    public void deletePatio(UUID patioId) throws TmsException {
+    public void deletePatio(UUID id) throws TmsException {
         try {
-            BasicRepoPatioHelper.block(this.ds.getConnection(), patioId);
+            BasicRepoPatioHelper.block(ds.getConnection(), id);
         } catch (SQLException ex) {
-            throw new TmsException("Patio deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Patio" + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
