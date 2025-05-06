@@ -41,7 +41,6 @@ public class HaulMgmtController {
             @RequestParam UUID driverId
     ) {
         TenantDetailsDto tenant = new TenantDetailsDto(tenantId, userId);
-        TripDetailsDto trip = new TripDetailsDto(vehicleId, agreementId, driverId);
 
         return Mono.fromCallable(()
                 -> haulMgmt.estimateFuel(tenant, vehicleId, agreementId).toPlainString()
