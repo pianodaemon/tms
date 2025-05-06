@@ -11,10 +11,12 @@ import reactor.core.publisher.Mono;
 
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/haul/{tenantId}/{userId}")
-@RequiredArgsConstructor
 public class HaulMgmtController {
 
     private final HaulMgmt haulMgmt;
