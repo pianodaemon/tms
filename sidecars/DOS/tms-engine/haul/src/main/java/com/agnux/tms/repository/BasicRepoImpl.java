@@ -74,40 +74,39 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public Customer getCustomer(UUID customerId) throws TmsException {
+    public Customer getCustomer(UUID id) throws TmsException {
         try {
-            Optional<Customer> customer = BasicRepoCustomerHelper.fetchById(this.ds.getConnection(), customerId);
-            return customer.orElseThrow(()
-                    -> new TmsException("Customer " + customerId.toString() + " was not found", ErrorCodes.REPO_PROVIDEER_ISSUES));
+            return BasicRepoCustomerHelper.fetchById(ds.getConnection(), id)
+                    .orElseThrow(() -> new TmsException("Customer " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
         } catch (SQLException ex) {
-            throw new TmsException("Customer lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Customer" + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
     public UUID createCustomer(Customer p) throws TmsException {
         try {
-            return BasicRepoCustomerHelper.update(this.ds.getConnection(), this.debugMode, p);
+            return BasicRepoCustomerHelper.update(ds.getConnection(), debugMode, p);
         } catch (SQLException ex) {
-            throw new TmsException("Customer creation failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Customer" + CREATION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
     public UUID editCustomer(Customer p) throws TmsException {
         try {
-            return BasicRepoCustomerHelper.update(this.ds.getConnection(), this.debugMode, p);
+            return BasicRepoCustomerHelper.update(ds.getConnection(), debugMode, p);
         } catch (SQLException ex) {
-            throw new TmsException("Customer update failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Customer" + UPDATE_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
-    public void deleteCustomer(UUID customerId) throws TmsException {
+    public void deleteCustomer(UUID id) throws TmsException {
         try {
-            BasicRepoCustomerHelper.block(this.ds.getConnection(), customerId);
+            BasicRepoCustomerHelper.block(ds.getConnection(), id);
         } catch (SQLException ex) {
-            throw new TmsException("Customer deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Customer" + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
