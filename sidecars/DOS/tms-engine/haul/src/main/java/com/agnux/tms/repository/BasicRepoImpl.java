@@ -222,42 +222,39 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public Agreement getAgreement(UUID agreementId) throws TmsException {
+    public Agreement getAgreement(UUID id) throws TmsException {
         try {
-            Optional<Agreement> agreement = BasicRepoAgreementHelper.fetchById(this.ds.getConnection(), agreementId);
-            return agreement.orElseThrow(() -> new TmsException(
-                    "Agreement " + agreementId.toString() + " was not found",
-                    ErrorCodes.REPO_PROVIDEER_ISSUES
-            ));
+            return BasicRepoAgreementHelper.fetchById(ds.getConnection(), id)
+                    .orElseThrow(() -> new TmsException("Agreement " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
         } catch (SQLException ex) {
-            throw new TmsException("Agreement lookup failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Agreement" + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
-    public UUID createAgreement(Agreement c) throws TmsException {
+    public UUID createAgreement(Agreement a) throws TmsException {
         try {
-            return BasicRepoAgreementHelper.update(this.ds.getConnection(), this.debugMode, c);
+            return BasicRepoAgreementHelper.update(ds.getConnection(), debugMode, a);
         } catch (SQLException ex) {
-            throw new TmsException("Agreement creation failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Agreement" + CREATION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
-    public UUID editAgreement(Agreement c) throws TmsException {
+    public UUID editAgreement(Agreement a) throws TmsException {
         try {
-            return BasicRepoAgreementHelper.update(this.ds.getConnection(), this.debugMode, c);
+            return BasicRepoAgreementHelper.update(ds.getConnection(), debugMode, a);
         } catch (SQLException ex) {
-            throw new TmsException("Agreement update failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Agreement" + UPDATE_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
     @Override
-    public void deleteAgreement(UUID agreementId) throws TmsException {
+    public void deleteAgreement(UUID id) throws TmsException {
         try {
-            BasicRepoAgreementHelper.block(this.ds.getConnection(), agreementId);
+            BasicRepoAgreementHelper.block(ds.getConnection(), id);
         } catch (SQLException ex) {
-            throw new TmsException("Agreement deletion failed", ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException("Agreement" + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
         }
     }
 
