@@ -89,7 +89,7 @@ jobs:
           echo "| **Total** | - | **$TOTAL** |" >> table.md
 
           # Prepare the comment with the markdown table
-          COMMENT=$(printf "🧪 **Test Coverage Report Table**\n<details><summary>Click to expand coverage table</summary>\n\n%s\n\n</details>" "$(cat table.md)")
+          COMMENT=$(printf "🧪 **Test coverage cfdi-engine report**\n<details><summary>Click to expand coverage table</summary>\n\n%s\n\n</details>" "$(cat table.md)")
 
           COMMENT_JSON=$(jq -n --arg body "$COMMENT" '{body: $body}')
 
