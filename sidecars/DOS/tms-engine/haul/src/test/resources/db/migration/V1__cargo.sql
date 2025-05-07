@@ -39,6 +39,7 @@ CREATE TABLE vehicles (
     number_plate VARCHAR(50) NOT NULL,
     vehicle_type VARCHAR(50) NOT NULL,  -- Store as a string (enum values)
     vehicle_year INT NOT NULL,
+    federal_conf VARCHAR(6) NOT NULL,  -- configuración autotransporte federal ( Carta porte )
     perf_dist_unit VARCHAR(50),         -- Store as a string (enum values)
     perf_vol_unit VARCHAR(50),          -- Store as a string (enum values)
     perf_scalar NUMERIC(10, 2),
@@ -102,6 +103,7 @@ CREATE OR REPLACE FUNCTION alter_vehicle(
     _number_plate      VARCHAR,
     _vehicle_type      VARCHAR,
     _vehicle_year      INT,
+    _federal_conf      VARCHAR,
     _perf_dist_unit    VARCHAR,
     _perf_vol_unit     VARCHAR,
     _perf_scalar       NUMERIC
@@ -127,6 +129,7 @@ BEGIN
                 number_plate,
                 vehicle_type,
                 vehicle_year,
+                federal_conf,
                 perf_dist_unit,
                 perf_vol_unit,
                 perf_scalar,
@@ -137,6 +140,7 @@ BEGIN
                 _number_plate,
                 _vehicle_type,
                 _vehicle_year,
+                _federal_conf,
                 _perf_dist_unit,
                 _perf_vol_unit,
                 _perf_scalar,
@@ -151,6 +155,7 @@ BEGIN
                 number_plate   = _number_plate,
                 vehicle_type   = _vehicle_type,
                 vehicle_year   = _vehicle_year,
+                federal_conf   = _federal_conf,
                 perf_dist_unit = _perf_dist_unit,
                 perf_vol_unit  = _perf_vol_unit,
                 perf_scalar    = _perf_scalar

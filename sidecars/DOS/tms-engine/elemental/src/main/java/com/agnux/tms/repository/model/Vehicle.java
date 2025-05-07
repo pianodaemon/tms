@@ -12,6 +12,7 @@ public class Vehicle extends TmsBasicModel {
     private String numberPlate;
     private VehicleType vehicleType;
     public int vehicleYear;
+    private String federalConf;
 
     // El rendimiento es una media de los históricos
     // Algunos vehiculos caracterizan una interface electronica
@@ -23,11 +24,12 @@ public class Vehicle extends TmsBasicModel {
 
     public Vehicle(final UUID vehicleId, final UUID tenantId,
             final String numberPlate, final VehicleType vehicleType,
-            final int vehicleYear, DistUnit perfDistUnit, VolUnit perfVolUnit) {
+            final int vehicleYear, final String federalConf, DistUnit perfDistUnit, VolUnit perfVolUnit) {
         this(vehicleId, tenantId);
         this.numberPlate = numberPlate;
         this.vehicleType = vehicleType;
         this.vehicleYear = vehicleYear;
+        this.federalConf =  federalConf;
         this.perfDistUnit = perfDistUnit;
         this.perfVolUnit = perfVolUnit;
     }
