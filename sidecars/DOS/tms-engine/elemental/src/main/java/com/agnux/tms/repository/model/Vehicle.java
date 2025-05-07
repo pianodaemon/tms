@@ -11,7 +11,7 @@ public class Vehicle extends TmsBasicModel {
 
     private String numberPlate;
     private VehicleType vehicleType;
-    public int vehicleYear;
+    private int vehicleYear;
     private String federalConf;
 
     // El rendimiento es una media de los históricos
