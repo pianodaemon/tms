@@ -29,3 +29,15 @@ jobs:
         run: |
           cd sidecars/DOS/tms-engine
           sh ./gradlew test jacocoTestReport --info
+
+      - name: Install Python dependencies for cfdi-processor
+        run: |
+          cd sidecars/DOS/cfdi-processor
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest testcontainers==3.7.1
+
+      - name: Run Python tests for cfdi-processor
+        run: |
+          cd  sidecars/DOS/cfdi-processor
+          python3 -m unittest test_processor.py
