@@ -37,12 +37,15 @@ jobs:
           python3 -m unittest test_processor.py
 
       - name: Test cfdi-engine
+        run: |
+          cd sidecars/DOS/cfdi-engine
+          make test
+
+      - name: Coverage cfdi-engine
         if: github.event_name == 'pull_request'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          cd sidecars/DOS/cfdi-engine
-          make test
           go tool cover -func=coverage.out > coverage.txt
           set -euo pipefail
           PR_NUMBER=${{ github.event.pull_request.number }}
