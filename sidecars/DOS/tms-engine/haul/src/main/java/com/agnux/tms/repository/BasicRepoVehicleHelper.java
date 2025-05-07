@@ -29,11 +29,12 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
                 String numberPlate = rs.getString("number_plate");
                 VehicleType vehicleType = VehicleType.valueOf(rs.getString("vehicle_type"));
                 Integer vehicleYear = rs.getInt("vehicle_year");
+                String federalConf = rs.getString("federal_conf");
                 String distUnitStr = rs.getString("perf_dist_unit");
                 String volUnitStr = rs.getString("perf_vol_unit");
 
                 Vehicle vehicle = new Vehicle(vehicleId, tenantId, numberPlate,
-                        vehicleType, vehicleYear, DistUnit.valueOf(distUnitStr),
+                        vehicleType, vehicleYear, federalConf, DistUnit.valueOf(distUnitStr),
                         VolUnit.valueOf(volUnitStr));
 
                 BigDecimal scalar = rs.getBigDecimal("perf_scalar");
@@ -52,7 +53,7 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_vehicle");
         }
 
-        String sql = "SELECT * FROM alter_vehicle(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::INT, ?::VARCHAR, ?::VARCHAR, ?::NUMERIC) AS (vehicle_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_vehicle(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::INT, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::NUMERIC) AS (vehicle_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -67,9 +68,10 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
             stmt.setString(3, v.getNumberPlate());                // _number_plate
             stmt.setString(4, v.getVehicleType().toString());     // _vehicle_type
             stmt.setInt(5, v.getVehicleYear());                   // _vehicle_year
-            stmt.setString(6, v.getPerfDistUnit().toString());    // _perf_dist_unit
-            stmt.setString(7, v.getPerfVolUnit().toString());     // _perf_vol_unit
-            stmt.setBigDecimal(8, v.getPerfScalar());             // _perf_scalar
+            stmt.setString(6, v.getFederalConf());                // _federal_conf
+            stmt.setString(7, v.getPerfDistUnit().toString());    // _perf_dist_unit
+            stmt.setString(8, v.getPerfVolUnit().toString());     // _perf_vol_unit
+            stmt.setBigDecimal(9, v.getPerfScalar());             // _perf_scalar
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
