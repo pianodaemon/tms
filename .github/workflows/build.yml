@@ -1,6 +1,14 @@
 name: CI for homeless
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
   build:
@@ -20,7 +28,7 @@ jobs:
           java-version: '17'  # Set your required Java version here
           distribution: 'temurin'
 
-      - name: Setup Java (Build system)
+      - name: Set up Java (Build system)
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
       - name: Test tms-engine
@@ -46,6 +54,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          cd sidecars/DOS/cfdi-engine
           go tool cover -func=coverage.out > coverage.txt
           set -euo pipefail
           PR_NUMBER=${{ github.event.pull_request.number }}
@@ -80,7 +89,7 @@ jobs:
           echo "| **Total** | - | **$TOTAL** |" >> table.md
 
           # Prepare the comment with the markdown table
-          COMMENT=$(printf "🧪 **Test Coverage Report Table**\n<details><summary>Click to expand coverage table</summary>\n\n%s\n\n</details>" "$(cat table.md)")
+          COMMENT=$(printf "🧪 **Test coverage cfdi-engine report**\n<details><summary>Click to expand coverage table</summary>\n\n%s\n\n</details>" "$(cat table.md)")
 
           COMMENT_JSON=$(jq -n --arg body "$COMMENT" '{body: $body}')
 
