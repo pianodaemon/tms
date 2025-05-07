@@ -48,7 +48,7 @@ class HaulMgmtTest {
         tenantDetails = new TenantDetailsDto(tenantUuid, "gerald");
         customer = new Customer(customerUuid, tenantUuid, "quintanilla");
         tripDetails = new TripDetailsDto(vehicleUuid, agreementUuid, driverUuid);
-        agreement = new Agreement(agreementUuid, tenantUuid, customerUuid, 0, 0, 0, 0, DistUnit.KM, new BigDecimal("100"));
+        agreement = new Agreement(agreementUuid, tenantUuid, customerUuid, "Soriana", 0, 0, 0, 0, DistUnit.KM, new BigDecimal("100"));
         ship = new Vehicle(vehicleUuid, tenantDetails.getTenantId(), "GAS9500", VehicleType.CAR, 1980, DistUnit.KM, VolUnit.LT);
     }
 

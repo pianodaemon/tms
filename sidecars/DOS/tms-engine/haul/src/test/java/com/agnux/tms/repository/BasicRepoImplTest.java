@@ -256,11 +256,14 @@ public class BasicRepoImplTest {
         Customer customer = new Customer(null, tenantId, "Test Agreement Customer");
         UUID customerId = repo.createCustomer(customer);
 
+        final String receptor = "Liverpool";
+
         // Create valid Agreement
         Agreement agreement = new Agreement(
                 null,
                 tenantId,
                 customerId,
+                receptor,
                 19.4326, // latitudeOrigin (CDMX)
                 -99.1332, // longitudeOrigin
                 40.7128, // latitudeDestiny (NYC)
@@ -286,6 +289,7 @@ public class BasicRepoImplTest {
                 retrieved.getId().get(), // same ID
                 tenantId,
                 customerId,
+                receptor,
                 34.0522, // New origin (Los Angeles)
                 -118.2437,
                 47.6062, // New destination (Seattle)

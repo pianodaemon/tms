@@ -22,6 +22,7 @@ class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
 
                 UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
                 UUID customerId = UUID.fromString(rs.getString("customer_id"));
+                String receptor = rs.getString("receptor");
                 double latitudeOrigin = rs.getDouble("latitude_origin");
                 double longitudeOrigin = rs.getDouble("longitude_origin");
                 double latitudeDestiny = rs.getDouble("latitude_destiny");
@@ -33,6 +34,7 @@ class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
                         agreementId,
                         tenantId,
                         customerId,
+                        receptor,
                         latitudeOrigin,
                         longitudeOrigin,
                         latitudeDestiny,
@@ -53,7 +55,7 @@ class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
 
         String sql = """
             SELECT * FROM alter_agreement(
-                ?::UUID, ?::UUID, ?::UUID,
+                ?::UUID, ?::UUID, ?::UUID, ?::VARCHAR,
                 ?::DOUBLE PRECISION, ?::DOUBLE PRECISION,
                 ?::DOUBLE PRECISION, ?::DOUBLE PRECISION,
                 ?::VARCHAR, ?::NUMERIC
@@ -69,12 +71,13 @@ class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
 
             stmt.setObject(2, a.getTenantId());
             stmt.setObject(3, a.getCustomerId());
-            stmt.setDouble(4, a.getLatitudeOrigin());
-            stmt.setDouble(5, a.getLongitudeOrigin());
-            stmt.setDouble(6, a.getLatitudeDestiny());
-            stmt.setDouble(7, a.getLongitudeDestiny());
-            stmt.setString(8, a.getDistUnit().name());
-            stmt.setBigDecimal(9, a.getDistScalar());
+            stmt.setString(4, a.getReceptor());
+            stmt.setDouble(5, a.getLatitudeOrigin());
+            stmt.setDouble(6, a.getLongitudeOrigin());
+            stmt.setDouble(7, a.getLatitudeDestiny());
+            stmt.setDouble(8, a.getLongitudeDestiny());
+            stmt.setString(9, a.getDistUnit().name());
+            stmt.setBigDecimal(10, a.getDistScalar());
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
