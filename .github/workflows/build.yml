@@ -1,6 +1,14 @@
 name: CI for homeless
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
 
 jobs:
   build:
