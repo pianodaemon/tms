@@ -14,30 +14,76 @@ jobs:
         with:
           go-version: '1.23.2'
 
-      # Set up Java environment
-      - name: Set up Java
+      - name: Set up Java (Distribution)
         uses: actions/setup-java@v4
         with:
           java-version: '17'  # Set your required Java version here
           distribution: 'temurin'
 
-      - name: Setup Gradle
+      - name: Setup Java (Build system)
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
-      # Run Gradle build
-      - name: Build and Test tms-engine
+      - name: Test tms-engine
         run: |
           cd sidecars/DOS/tms-engine
           sh ./gradlew test jacocoTestReport --info
 
-      - name: Install Python dependencies for cfdi-processor
+      - name: Test cfdi-processor
         run: |
           cd sidecars/DOS/cfdi-processor
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest testcontainers==3.7.1
-
-      - name: Run Python tests for cfdi-processor
-        run: |
-          cd  sidecars/DOS/cfdi-processor
           python3 -m unittest test_processor.py
+
+      - name: Test cfdi-engine
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd sidecars/DOS/cfdi-engine
+          make test
+          go tool cover -func=coverage.out > coverage.txt
+          set -euo pipefail
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          REPO=${{ github.repository }}
+
+          COVERAGE_FILE="coverage.txt"
+
+          if [[ ! -s "$COVERAGE_FILE" ]]; then
+            echo "❌ coverage.txt is missing or empty"
+            exit 1
+          fi
+
+          echo "| File | Function | Coverage |" > table.md
+          echo "|------|----------|----------|" >> table.md
+
+          # Read coverage data from the uploaded coverage.txt
+          while IFS=: read -r file line_num rest; do
+            # Split the rest by the tab to separate function and coverage
+            IFS=$'\t' read -ra parts <<< "$rest"
+            if [[ ${#parts[@]} -ge 2 ]]; then
+              function_name="${parts[-2]}"
+              coverage="${parts[-1]}"
+              # Clean up function name by removing leading/trailing spaces
+              function_name=$(echo "$function_name" | awk '{$1=$1};1')
+              # Add the line to the markdown table
+              echo "| $file | $function_name | $coverage |" >> table.md
+            fi
+          done < "$COVERAGE_FILE"
+
+          # Extract the total coverage from the file
+          TOTAL=$(grep '^total:' "$COVERAGE_FILE" | awk '{print $(NF)}')
+          echo "| **Total** | - | **$TOTAL** |" >> table.md
+
+          # Prepare the comment with the markdown table
+          COMMENT=$(printf "🧪 **Test Coverage Report Table**\n<details><summary>Click to expand coverage table</summary>\n\n%s\n\n</details>" "$(cat table.md)")
+
+          COMMENT_JSON=$(jq -n --arg body "$COMMENT" '{body: $body}')
+
+          # Post the comment to the pull request
+          curl -s -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$COMMENT_JSON" \
+            "https://api.github.com/repos/$REPO/issues/$PR_NUMBER/comments"
