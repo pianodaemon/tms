@@ -14,7 +14,7 @@ public class Agreement extends TmsBasicModel {
     - Dicho de otra manera, no puede haber dos convenios para un mismo cliente que tengan la misma ruta
      */
     private UUID customerId;
-    private String receptor;     // AKA el destinatario
+    private String receiver;     // AKA el destinatario
     private double latitudeOrigin;
     private double longitudeOrigin;
     private double latitudeDestiny;
@@ -24,13 +24,13 @@ public class Agreement extends TmsBasicModel {
     private BigDecimal distScalar;
 
     public Agreement(UUID agreementId, UUID tenantId,
-            UUID customerId, final String receptor,
+            UUID customerId, final String receiver,
             double latitudeOrigin, double longitudeOrigin,
             double latitudeDestiny, double longitudeDestiny,
             DistUnit distUnit, BigDecimal distScalar) {
         this(agreementId, tenantId);
         this.customerId = customerId;
-        this.receptor = receptor;
+        this.receiver = receiver;
         this.latitudeOrigin = latitudeOrigin;
         this.longitudeOrigin = longitudeOrigin;
         this.latitudeDestiny = latitudeDestiny;
