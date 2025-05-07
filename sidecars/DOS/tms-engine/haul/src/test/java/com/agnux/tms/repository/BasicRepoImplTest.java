@@ -256,7 +256,7 @@ public class BasicRepoImplTest {
         Customer customer = new Customer(null, tenantId, "Test Agreement Customer");
         UUID customerId = repo.createCustomer(customer);
 
-        final String receiver = "Liverpool";
+        final String receiver = "UNKNOWN";
 
         // Create valid Agreement
         Agreement agreement = new Agreement(
@@ -289,7 +289,7 @@ public class BasicRepoImplTest {
                 retrieved.getId().get(), // same ID
                 tenantId,
                 customerId,
-                receiver,
+                "LIVERPOOL",
                 34.0522, // New origin (Los Angeles)
                 -118.2437,
                 47.6062, // New destination (Seattle)
@@ -303,6 +303,7 @@ public class BasicRepoImplTest {
 
         // Validate updated data
         assertEquals(updatedId, updated.getId().get(), "Updated ID should match");
+        assertEquals("LIVERPOOL", retrieved.getReceiver(), "Receiver should match");
         assertEquals(DistUnit.MI, updated.getDistUnit(), "Updated distance unit should match");
         assertEquals(0, updated.getDistScalar().compareTo(new BigDecimal("1135.68")), "Updated distance scalar should match");
         assertEquals(34.0522, updated.getLatitudeOrigin(), 0.0001, "Latitude origin should match after update");
