@@ -73,53 +73,45 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(third_party_keys["F-Secret-Key"], "1234qwer")
 
             self.assertEqual(payload['Receptor']['UID'], "6169fc02637e1")
-            self.assertEqual(payload['UsoCFDI'], "P01")
-            self.assertEqual(payload['MetodoPago'], "PUE")
+            self.assertEqual(payload['UsoCFDI'], "S01")
+            self.assertEqual(payload['MetodoPago'], "PPD")
+            self.assertEqual(payload["FormaPago"], "99")
             self.assertEqual(payload['Moneda'], "MXN")
             self.assertEqual(payload['Serie'], "17317")
             self.assertEqual(payload['Comentarios'], "Esta factura es un quilombo")
 
             # Verify the 'Conceptos' array content
             conceptos = payload['Conceptos']
-            self.assertEqual(len(conceptos), 2)  # Expecting two items
+            self.assertEqual(len(conceptos), 1)  # Expecting one item
 
             # First item
             concepto1 = conceptos[0]
-            self.assertEqual(concepto1['ClaveProdServ'], "10101504")
+            self.assertEqual(concepto1['ClaveProdServ'], "78101800")
             self.assertEqual(concepto1['Cantidad'], 1)
-            self.assertEqual(concepto1['ClaveUnidad'], "H87")
-            self.assertEqual(concepto1['Unidad'], "Unidad")
-            self.assertEqual(concepto1['ValorUnitario'], 100.0)
-            self.assertEqual(concepto1['Descripcion'], "Consulting Services")
+            self.assertEqual(concepto1['ClaveUnidad'], "E48")
+            self.assertEqual(concepto1['Unidad'], "Unidad de servicio")
+            self.assertEqual(concepto1['ValorUnitario'], 2200.0)
+            self.assertEqual(concepto1['Descripcion'], "SERVICIO DE FLETE NACAJUCA 1 A 5 REPARTOS NO. DE TRANSPORTE 289822 NO. DE RUTA 310753 SALIO DE CEDIS IXTACOMITAN UNIDAD 3.5 TONELADAS")
 
             # Verify 'Impuestos' -> 'Traslados' for the first item
-            impuestos1 = concepto1['Impuestos']['Traslados']
-            self.assertEqual(len(impuestos1), 1)
-            traslado1 = impuestos1[0]
-            self.assertEqual(traslado1['Base'], 100.0)
+            impuestos_trans = concepto1['Impuestos']['Traslados']
+            self.assertEqual(len(impuestos_trans), 1)
+            traslado1 = impuestos_trans[0]
+            self.assertEqual(traslado1['Base'], 2200.0)
             self.assertEqual(traslado1['Impuesto'], "002")
             self.assertEqual(traslado1['TipoFactor'], "Tasa")
             self.assertEqual(traslado1['TasaOCuota'], "0.16")
-            self.assertEqual(traslado1['Importe'], 16.0)
+            self.assertEqual(traslado1['Importe'], 352.0)
 
-            # Second item
-            concepto2 = conceptos[1]
-            self.assertEqual(concepto2['ClaveProdServ'], "20101010")
-            self.assertEqual(concepto2['Cantidad'], 2)
-            self.assertEqual(concepto2['ClaveUnidad'], "EA")
-            self.assertEqual(concepto2['Unidad'], "Piece")
-            self.assertEqual(concepto2['ValorUnitario'], 200.0)
-            self.assertEqual(concepto2['Descripcion'], "Development Services")
+            impuestos_retens = concepto1['Impuestos']['Retenidos']
+            self.assertEqual(len(impuestos_retens), 1)
+            reten1 = impuestos_retens[0]
+            self.assertEqual(reten1['Base'], 2200.0)
+            self.assertEqual(reten1['Impuesto'], "002")
+            self.assertEqual(reten1['TipoFactor'], "Tasa")
+            self.assertEqual(reten1['TasaOCuota'], "0.04")
+            self.assertEqual(reten1['Importe'], 88.0)
 
-            # Verify 'Impuestos' -> 'Traslados' for the second item
-            impuestos2 = concepto2['Impuestos']['Traslados']
-            self.assertEqual(len(impuestos2), 1)
-            traslado2 = impuestos2[0]
-            self.assertEqual(traslado2['Base'], 200.0)
-            self.assertEqual(traslado2['Impuesto'], "002")
-            self.assertEqual(traslado2['TipoFactor'], "Tasa")
-            self.assertEqual(traslado2['TasaOCuota'], "0.16")
-            self.assertEqual(traslado2['Importe'], 32.0)
             return ["5c06fa8b3bbe6"] # A counterfeit document id from PAC
 
         # Push a message to the input queue
@@ -130,44 +122,36 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             "receptor_data_ref": "6169fc02637e1",
             "items": [
                 {
-                    "fiscal_product_id": "10101504",
+                    "fiscal_product_id": "78101800",
                     "product_quantity": 1,
-                    "fiscal_product_unit": "H87",
-                    "product_unit": "Unidad",
-                    "product_unit_price": 100.0,
-                    "product_desc": "Consulting Services",
+                    "fiscal_product_unit": "E48",
+                    "product_unit": "Unidad de servicio",
+                    "product_unit_price": 2200.0,
+                    "product_desc": "SERVICIO DE FLETE NACAJUCA 1 A 5 REPARTOS NO. DE TRANSPORTE 289822 NO. DE RUTA 310753 SALIO DE CEDIS IXTACOMITAN UNIDAD 3.5 TONELADAS",
                     "product_transfers": [
                         {
-                            "base": 100.0,
+                            "base": 2200.0,
                             "fiscal_type": "002",
                             "fiscal_factor": "Tasa",
                             "rate": 0.16,
-                            "amount": 16.0
+                            "amount": 352.0
                         }
-                    ]
-                },
-                {
-                    "fiscal_product_id": "20101010",
-                    "product_quantity": 2,
-                    "fiscal_product_unit": "EA",
-                    "product_unit": "Piece",
-                    "product_unit_price": 200.0,
-                    "product_desc": "Development Services",
-                    "product_transfers": [
+                    ],
+                    "product_retentions": [
                         {
-                            "base": 200.0,
+                            "base": 2200.0,
                             "fiscal_type": "002",
                             "fiscal_factor": "Tasa",
-                            "rate": 0.16,
-                            "amount": 32.0
+                            "rate": 0.04,
+                            "amount": 88.0
                         }
                     ]
                 }
             ],
             "serie": "17317",
-            "purpose": "P01",
-            "payment_way": "03",
-            "payment_method": "PUE",
+            "purpose": "S01",
+            "payment_way": "99",
+            "payment_method": "PPD",
             "document_currency": "MXN",
             "exchange_rate": 1.0,
             "comments": "Esta factura es un quilombo"
