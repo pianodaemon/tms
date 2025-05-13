@@ -168,7 +168,6 @@ class AbstractProcessor(object):
 
     def handle_message(self, message):
         """Handle processing of a message"""
-        logger.info("Processing message", extra={"msg_content": message})
         path_prefix, third_party_keys, raw_msg, raw_msg_correlation_id, raw_msg_owner, raw_msg_receptor_rfc = self.stages.percolate_msg(message)
         notif_args = [raw_msg_correlation_id]
         try:
@@ -203,6 +202,7 @@ class InvoiceCreationStages(AbstractStages):
 
     def percolate_msg(self, original_msg):
         d = json.loads(original_msg)
+        logger.info("Percolating message", extra={"msg_content": d})
         path_prefix = "{}/fiscal-engine/invoices/{}".format(d['receipt']['owner'], d['receipt']['receptor_rfc'])
         return path_prefix, d['fkeys'], d['receipt'], d['receipt']['_id'], d['receipt']['owner'], d['receipt']['receptor_rfc']
 
@@ -330,6 +330,7 @@ class InvoiceCancelationStages(AbstractStages):
 
     def percolate_msg(self, original_msg):
         d = json.loads(original_msg)
+        logger.info("Percolating message", extra={"msg_content": d})
         path_prefix = None
         owner = None
         receptor_rfc = None
