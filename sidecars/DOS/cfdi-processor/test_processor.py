@@ -154,7 +154,11 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             "payment_method": "PPD",
             "document_currency": "MXN",
             "exchange_rate": 1.0,
-            "comments": "Esta factura es un quilombo"
+            "comments": "Esta factura es un quilombo",
+            "bol": {
+                "ver": "3.1",
+                "is_international": False,
+            },
         }})
 
         self.processor.input_queue.push(test_message)
@@ -226,7 +230,11 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             "payment_method": "PUE",
             "document_currency": "MXN",
             "exchange_rate": 1.0,
-            "comments": "Esta factura es un quilombo"
+            "comments": "Esta factura es un quilombo",
+            "bol": {
+                "ver": "3.1",
+                "is_international": False,
+            },
         }})
 
         self.processor.input_queue.push(test_message)
