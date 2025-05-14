@@ -267,6 +267,15 @@ class InvoiceCreationStages(AbstractStages):
                         }
                         for operator in bol.get("transporters", [])
                     ]
+                },
+                "Ubicaciones" : {
+                    "Ubicacion": [
+                        {
+                            "NombreRemitenteDestinatario": location.get("name"),
+                            "TipoUbicacion": location.get("type")
+                        }
+                        for location in bol.get("locations", [])
+                    ]
                 }
             },
         }
