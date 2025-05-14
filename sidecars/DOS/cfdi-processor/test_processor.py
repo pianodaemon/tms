@@ -127,11 +127,15 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             location1 = locations[0]
             self.assertEqual(location1["NombreRemitenteDestinatario"], "THYSSENKRUPP PRESTA DE MEXICO, S.A. DE C.V. PM1")
             self.assertEqual(location1["TipoUbicacion"], "Origen")
+            self.assertEqual(location1["RFCRemitenteDestinatario"], "TPM9809038X0")
+            self.assertEqual(location1["FechaHoraSalidaLlegada"], "2023-10-05T07:00:00")
 
             # Second item
             location2 = locations[1]
             self.assertEqual(location2["NombreRemitenteDestinatario"], "Nexteer PLANTA 69")
             self.assertEqual(location2["TipoUbicacion"], "Destino")
+            self.assertEqual(location2["FechaHoraSalidaLlegada"], "2023-10-05T13:50:00")
+            self.assertEqual(location2["RFCRemitenteDestinatario"], "STE071214BE7")
 
             # Verify the 'FiguraTransporte -> TiposFigura' array content
             transporters = node_cp["FiguraTransporte"]['TiposFigura']
