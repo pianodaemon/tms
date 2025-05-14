@@ -288,6 +288,11 @@ class InvoiceCreationStages(AbstractStages):
                 "RFCRemitenteDestinatario": location.get("rfc"),
                 "TipoUbicacion": location.get("type"),
                 "FechaHoraSalidaLlegada": location.get("time"),
+                "Domicilio": {
+                    "Estado": location["address"]["state"],
+                    "Pais": location["address"]["country"],
+                    "CodigoPostal": location["address"]["zip"],
+                }
             }
 
             # Optional fields
