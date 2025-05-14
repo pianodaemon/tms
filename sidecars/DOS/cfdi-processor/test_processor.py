@@ -129,6 +129,9 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(location1["TipoUbicacion"], "Origen")
             self.assertEqual(location1["RFCRemitenteDestinatario"], "TPM9809038X0")
             self.assertEqual(location1["FechaHoraSalidaLlegada"], "2023-10-05T07:00:00")
+            self.assertEqual(location1["Domicilio"]["Estado"], "PUE")
+            self.assertEqual(location1["Domicilio"]["Pais"], "MEX")
+            self.assertEqual(location1["Domicilio"]["CodigoPostal"], "74160")
 
             # Second item
             location2 = locations[1]
@@ -137,6 +140,9 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(location2["FechaHoraSalidaLlegada"], "2023-10-05T13:50:00")
             self.assertEqual(location2["RFCRemitenteDestinatario"], "STE071214BE7")
             self.assertEqual(location2["DistanciaRecorrida"], 300)
+            self.assertEqual(location2["Domicilio"]["Estado"], "QUE")
+            self.assertEqual(location2["Domicilio"]["Pais"], "MEX")
+            self.assertEqual(location2["Domicilio"]["CodigoPostal"], "76246")
 
             # Verify the 'FiguraTransporte -> TiposFigura' array content
             transporters = node_cp["FiguraTransporte"]['TiposFigura']
@@ -213,6 +219,11 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                         "rfc": "TPM9809038X0",
                         "type": "Origen",
                         "time": "2023-10-05T07:00:00",
+                        "address": {
+                            "state": "PUE",
+                            "country": "MEX",
+                            "zip": "74160",
+                        }
                     },
                     {
                         "name": "Nexteer PLANTA 69",
@@ -220,6 +231,11 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                         "type": "Destino",
                         "time": "2023-10-05T13:50:00",
                         "distance": 300,
+                        "address": {
+                            "state": "QUE",
+                            "country": "MEX",
+                            "zip": "76246"
+                        }
                     }
                 ]
             },
