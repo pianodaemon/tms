@@ -205,10 +205,12 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                 "locations": [
                     {
                         "name": "THYSSENKRUPP PRESTA DE MEXICO, S.A. DE C.V. PM1",
+                        "rfc": "TPM9809038X0",
                         "type": "Origen",
                     },
                     {
                         "name": "Nexteer PLANTA 69",
+                        "rfc": "STE071214BE7",
                         "type": "Destino",
                     }
                 ]
