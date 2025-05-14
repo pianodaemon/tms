@@ -112,6 +112,11 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(reten1['TasaOCuota'], "0.04")
             self.assertEqual(reten1['Importe'], 88.0)
 
+            self.assertEqual(payload["CartaPorte"]["TranspInternac"], "Si")
+            self.assertEqual(payload["CartaPorte"]["EntradaSalidaMerc"], "Salida")
+            self.assertEqual(payload["CartaPorte"]["PaisOrigenDestino"], "USA")
+            self.assertEqual(payload["CartaPorte"]["ViaEntradaSalida"], "03")
+
             return ["5c06fa8b3bbe6"] # A counterfeit document id from PAC
 
         # Push a message to the input queue
@@ -157,7 +162,10 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             "comments": "Esta factura es un quilombo",
             "bol": {
                 "ver": "3.1",
-                "is_international": False,
+                "is_international": True,
+                "is_step_out": True,
+                "origin_destiny_country": "USA",
+                "in_out_via": "03",
             },
         }})
 
