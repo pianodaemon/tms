@@ -270,7 +270,10 @@ class InvoiceCreationStages(AbstractStages):
                 },
                 "Ubicaciones" : {
                     "Ubicacion": []
-                }
+                },
+                "Mercancias": {
+                    "Mercancia": []
+                },
             },
         }
 
@@ -300,6 +303,13 @@ class InvoiceCreationStages(AbstractStages):
                 ubicacion["DistanciaRecorrida"] = location["distance"]
 
             node_cp["Ubicaciones"]["Ubicacion"].append(ubicacion)
+
+        for good in bol.get("merchandise", []):
+            item = {
+                "BienesTransp": good.get("sku")
+            }
+
+            node_cp["Mercancias"]["Mercancia"].append(item)
 
         return payload
 
