@@ -164,7 +164,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                 "ver": "3.1",
                 "is_international": True,
                 "is_step_out": True,
-                "origin_destiny_country": "USA",
+                "origin_destiny_country": "USA",    # ISO 3166-1 alpha-3 Code
                 "in_out_via": "03",
             },
         }})
