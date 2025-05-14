@@ -169,7 +169,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                             "amount": 352.0
                         }
                     ],
-                    "product_retentions": [
+                    "product_deductions": [
                         {
                             "base": 2200.0,
                             "fiscal_type": "002",
