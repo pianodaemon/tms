@@ -257,6 +257,17 @@ class InvoiceCreationStages(AbstractStages):
                 "Version": bol.get("ver"),
                 "TranspInternac": "Si" if bol.get("is_international") else "No",
                 "TotalDistRec": bol.get("sum_dist_traveled"),
+                "FiguraTransporte" : {
+                    "TiposFigura": [
+                        {
+                            "TipoFigura": operator.get("type"),
+                            "RFCFigura": operator.get("rfc"),
+                            "NumLicencia": operator.get("license"),
+                            "NombreFigura": operator.get("name")
+                        }
+                        for operator in bol.get("transporters", [])
+                    ]
+                }
             },
         }
 

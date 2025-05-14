@@ -112,11 +112,24 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(reten1['TasaOCuota'], "0.04")
             self.assertEqual(reten1['Importe'], 88.0)
 
-            self.assertEqual(payload["CartaPorte"]["TranspInternac"], "Si")
-            self.assertEqual(payload["CartaPorte"]["EntradaSalidaMerc"], "Salida")
-            self.assertEqual(payload["CartaPorte"]["PaisOrigenDestino"], "USA")
-            self.assertEqual(payload["CartaPorte"]["ViaEntradaSalida"], "03")
-            self.assertEqual(payload["CartaPorte"]["TotalDistRec"], 1000.0)
+            node_cp = payload["CartaPorte"]
+            self.assertEqual(node_cp["TranspInternac"], "Si")
+            self.assertEqual(node_cp["EntradaSalidaMerc"], "Salida")
+            self.assertEqual(node_cp["PaisOrigenDestino"], "USA")
+            self.assertEqual(node_cp["ViaEntradaSalida"], "03")
+            self.assertEqual(node_cp["TotalDistRec"], 1000.0)
+
+
+            # Verify the 'FiguraTransporte -> TiposFigura' array content
+            transporters = node_cp["FiguraTransporte"]['TiposFigura']
+            self.assertEqual(len(transporters), 1)  # Expecting one item
+
+            # First item
+            transporter1 = transporters[0]
+            self.assertEqual(transporter1["TipoFigura"], "01")
+            self.assertEqual(transporter1["RFCFigura"], "CALJ741208LN5")
+            self.assertEqual(transporter1["NumLicencia"], "PUE0011259")
+            self.assertEqual(transporter1["NombreFigura"], "JUAN RENE CARRASCO LIZANA")
 
             return ["5c06fa8b3bbe6"] # A counterfeit document id from PAC
 
@@ -168,6 +181,14 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                 "is_step_out": True,
                 "origin_destiny_country": "USA",    # ISO 3166-1 alpha-3 Code
                 "in_out_via": "03",
+                "transporters": [
+                    {
+                        "name": "JUAN RENE CARRASCO LIZANA",
+                        "type": "01",
+                        "rfc": "CALJ741208LN5",
+                        "license": "PUE0011259"
+                    }
+                ],
             },
         }})
 
