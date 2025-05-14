@@ -73,53 +73,77 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(third_party_keys["F-Secret-Key"], "1234qwer")
 
             self.assertEqual(payload['Receptor']['UID'], "6169fc02637e1")
-            self.assertEqual(payload['UsoCFDI'], "P01")
-            self.assertEqual(payload['MetodoPago'], "PUE")
+            self.assertEqual(payload['UsoCFDI'], "S01")
+            self.assertEqual(payload['MetodoPago'], "PPD")
+            self.assertEqual(payload["FormaPago"], "99")
             self.assertEqual(payload['Moneda'], "MXN")
             self.assertEqual(payload['Serie'], "17317")
             self.assertEqual(payload['Comentarios'], "Esta factura es un quilombo")
 
             # Verify the 'Conceptos' array content
             conceptos = payload['Conceptos']
-            self.assertEqual(len(conceptos), 2)  # Expecting two items
+            self.assertEqual(len(conceptos), 1)  # Expecting one item
 
             # First item
             concepto1 = conceptos[0]
-            self.assertEqual(concepto1['ClaveProdServ'], "10101504")
+            self.assertEqual(concepto1['ClaveProdServ'], "78101800")
             self.assertEqual(concepto1['Cantidad'], 1)
-            self.assertEqual(concepto1['ClaveUnidad'], "H87")
-            self.assertEqual(concepto1['Unidad'], "Unidad")
-            self.assertEqual(concepto1['ValorUnitario'], 100.0)
-            self.assertEqual(concepto1['Descripcion'], "Consulting Services")
+            self.assertEqual(concepto1['ClaveUnidad'], "E48")
+            self.assertEqual(concepto1['Unidad'], "Unidad de servicio")
+            self.assertEqual(concepto1['ValorUnitario'], 2200.0)
+            self.assertEqual(concepto1['Descripcion'], "SERVICIO DE FLETE NACAJUCA 1 A 5 REPARTOS NO. DE TRANSPORTE 289822 NO. DE RUTA 310753 SALIO DE CEDIS IXTACOMITAN UNIDAD 3.5 TONELADAS")
 
             # Verify 'Impuestos' -> 'Traslados' for the first item
-            impuestos1 = concepto1['Impuestos']['Traslados']
-            self.assertEqual(len(impuestos1), 1)
-            traslado1 = impuestos1[0]
-            self.assertEqual(traslado1['Base'], 100.0)
+            impuestos_trans = concepto1['Impuestos']['Traslados']
+            self.assertEqual(len(impuestos_trans), 1)
+            traslado1 = impuestos_trans[0]
+            self.assertEqual(traslado1['Base'], 2200.0)
             self.assertEqual(traslado1['Impuesto'], "002")
             self.assertEqual(traslado1['TipoFactor'], "Tasa")
             self.assertEqual(traslado1['TasaOCuota'], "0.16")
-            self.assertEqual(traslado1['Importe'], 16.0)
+            self.assertEqual(traslado1['Importe'], 352.0)
+
+            impuestos_retens = concepto1['Impuestos']['Retenidos']
+            self.assertEqual(len(impuestos_retens), 1)
+            reten1 = impuestos_retens[0]
+            self.assertEqual(reten1['Base'], 2200.0)
+            self.assertEqual(reten1['Impuesto'], "002")
+            self.assertEqual(reten1['TipoFactor'], "Tasa")
+            self.assertEqual(reten1['TasaOCuota'], "0.04")
+            self.assertEqual(reten1['Importe'], 88.0)
+
+            node_cp = payload["CartaPorte"]
+            self.assertEqual(node_cp["TranspInternac"], "Si")
+            self.assertEqual(node_cp["EntradaSalidaMerc"], "Salida")
+            self.assertEqual(node_cp["PaisOrigenDestino"], "USA")
+            self.assertEqual(node_cp["ViaEntradaSalida"], "03")
+            self.assertEqual(node_cp["TotalDistRec"], 1000.0)
+
+            # Verify the 'Ubicaciones -> Ubicacion' array content
+            locations = node_cp["Ubicaciones"]["Ubicacion"]
+            self.assertEqual(len(locations), 2)  # Expecting two item
+
+            # First item
+            location1 = locations[0]
+            self.assertEqual(location1["NombreRemitenteDestinatario"], "THYSSENKRUPP PRESTA DE MEXICO, S.A. DE C.V. PM1")
+            self.assertEqual(location1["TipoUbicacion"], "Origen")
 
             # Second item
-            concepto2 = conceptos[1]
-            self.assertEqual(concepto2['ClaveProdServ'], "20101010")
-            self.assertEqual(concepto2['Cantidad'], 2)
-            self.assertEqual(concepto2['ClaveUnidad'], "EA")
-            self.assertEqual(concepto2['Unidad'], "Piece")
-            self.assertEqual(concepto2['ValorUnitario'], 200.0)
-            self.assertEqual(concepto2['Descripcion'], "Development Services")
+            location2 = locations[1]
+            self.assertEqual(location2["NombreRemitenteDestinatario"], "Nexteer PLANTA 69")
+            self.assertEqual(location2["TipoUbicacion"], "Destino")
 
-            # Verify 'Impuestos' -> 'Traslados' for the second item
-            impuestos2 = concepto2['Impuestos']['Traslados']
-            self.assertEqual(len(impuestos2), 1)
-            traslado2 = impuestos2[0]
-            self.assertEqual(traslado2['Base'], 200.0)
-            self.assertEqual(traslado2['Impuesto'], "002")
-            self.assertEqual(traslado2['TipoFactor'], "Tasa")
-            self.assertEqual(traslado2['TasaOCuota'], "0.16")
-            self.assertEqual(traslado2['Importe'], 32.0)
+            # Verify the 'FiguraTransporte -> TiposFigura' array content
+            transporters = node_cp["FiguraTransporte"]['TiposFigura']
+            self.assertEqual(len(transporters), 1)  # Expecting one item
+
+            # First item
+            transporter1 = transporters[0]
+            self.assertEqual(transporter1["TipoFigura"], "01")
+            self.assertEqual(transporter1["RFCFigura"], "CALJ741208LN5")
+            self.assertEqual(transporter1["NumLicencia"], "PUE0011259")
+            self.assertEqual(transporter1["NombreFigura"], "JUAN RENE CARRASCO LIZANA")
+
             return ["5c06fa8b3bbe6"] # A counterfeit document id from PAC
 
         # Push a message to the input queue
@@ -130,47 +154,65 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             "receptor_data_ref": "6169fc02637e1",
             "items": [
                 {
-                    "fiscal_product_id": "10101504",
+                    "fiscal_product_id": "78101800",
                     "product_quantity": 1,
-                    "fiscal_product_unit": "H87",
-                    "product_unit": "Unidad",
-                    "product_unit_price": 100.0,
-                    "product_desc": "Consulting Services",
+                    "fiscal_product_unit": "E48",
+                    "product_unit": "Unidad de servicio",
+                    "product_unit_price": 2200.0,
+                    "product_desc": "SERVICIO DE FLETE NACAJUCA 1 A 5 REPARTOS NO. DE TRANSPORTE 289822 NO. DE RUTA 310753 SALIO DE CEDIS IXTACOMITAN UNIDAD 3.5 TONELADAS",
                     "product_transfers": [
                         {
-                            "base": 100.0,
+                            "base": 2200.0,
                             "fiscal_type": "002",
                             "fiscal_factor": "Tasa",
                             "rate": 0.16,
-                            "amount": 16.0
+                            "amount": 352.0
                         }
-                    ]
-                },
-                {
-                    "fiscal_product_id": "20101010",
-                    "product_quantity": 2,
-                    "fiscal_product_unit": "EA",
-                    "product_unit": "Piece",
-                    "product_unit_price": 200.0,
-                    "product_desc": "Development Services",
-                    "product_transfers": [
+                    ],
+                    "product_deductions": [
                         {
-                            "base": 200.0,
+                            "base": 2200.0,
                             "fiscal_type": "002",
                             "fiscal_factor": "Tasa",
-                            "rate": 0.16,
-                            "amount": 32.0
+                            "rate": 0.04,
+                            "amount": 88.0
                         }
                     ]
                 }
             ],
             "serie": "17317",
-            "purpose": "P01",
-            "payment_way": "03",
-            "payment_method": "PUE",
+            "purpose": "S01",
+            "payment_way": "99",
+            "payment_method": "PPD",
             "document_currency": "MXN",
             "exchange_rate": 1.0,
-            "comments": "Esta factura es un quilombo"
+            "comments": "Esta factura es un quilombo",
+            "bol": {
+                "ver": "3.1",
+                "is_international": True,
+                "sum_dist_traveled": 1000.0,        # sum of the distances traveled (km)
+                "is_step_out": True,
+                "origin_destiny_country": "USA",    # ISO 3166-1 alpha-3 Code
+                "in_out_via": "03",
+                "transporters": [
+                    {
+                        "name": "JUAN RENE CARRASCO LIZANA",
+                        "type": "01",
+                        "rfc": "CALJ741208LN5",
+                        "license": "PUE0011259"
+                    }
+                ],
+                "locations": [
+                    {
+                        "name": "THYSSENKRUPP PRESTA DE MEXICO, S.A. DE C.V. PM1",
+                        "type": "Origen",
+                    },
+                    {
+                        "name": "Nexteer PLANTA 69",
+                        "type": "Destino",
+                    }
+                ]
+            },
         }})
 
         self.processor.input_queue.push(test_message)
@@ -242,7 +284,11 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             "payment_method": "PUE",
             "document_currency": "MXN",
             "exchange_rate": 1.0,
-            "comments": "Esta factura es un quilombo"
+            "comments": "Esta factura es un quilombo",
+            "bol": {
+                "ver": "3.1",
+                "is_international": False,
+            },
         }})
 
         self.processor.input_queue.push(test_message)

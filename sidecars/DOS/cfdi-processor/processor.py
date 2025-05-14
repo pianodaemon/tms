@@ -168,7 +168,6 @@ class AbstractProcessor(object):
 
     def handle_message(self, message):
         """Handle processing of a message"""
-        logger.info("Processing message", extra={"msg_content": message})
         path_prefix, third_party_keys, raw_msg, raw_msg_correlation_id, raw_msg_owner, raw_msg_receptor_rfc = self.stages.percolate_msg(message)
         notif_args = [raw_msg_correlation_id]
         try:
@@ -203,12 +202,14 @@ class InvoiceCreationStages(AbstractStages):
 
     def percolate_msg(self, original_msg):
         d = json.loads(original_msg)
+        logger.info("Percolating message", extra={"msg_content": d})
         path_prefix = "{}/fiscal-engine/invoices/{}".format(d['receipt']['owner'], d['receipt']['receptor_rfc'])
         return path_prefix, d['fkeys'], d['receipt'], d['receipt']['_id'], d['receipt']['owner'], d['receipt']['receptor_rfc']
 
     def render_payload(self, receipt):
         """Construct the payload for the third-party API"""
-        return {
+        bol = receipt.get("bol")
+        payload = {
             "Receptor": {"UID": receipt.get("receptor_data_ref")},
             "TipoDocumento": "factura",
             "Conceptos": [
@@ -251,8 +252,42 @@ class InvoiceCreationStages(AbstractStages):
             "Moneda": receipt.get("document_currency"),
             "TipoCambio": str(receipt.get("exchange_rate")),
             "Comentarios": receipt.get("comments"),
-            "EnviarCorreo": False
+            "EnviarCorreo": False,
+            "CartaPorte": {
+                "Version": bol.get("ver"),
+                "TranspInternac": "Si" if bol.get("is_international") else "No",
+                "TotalDistRec": bol.get("sum_dist_traveled"),
+                "FiguraTransporte" : {
+                    "TiposFigura": [
+                        {
+                            "TipoFigura": operator.get("type"),
+                            "RFCFigura": operator.get("rfc"),
+                            "NumLicencia": operator.get("license"),
+                            "NombreFigura": operator.get("name")
+                        }
+                        for operator in bol.get("transporters", [])
+                    ]
+                },
+                "Ubicaciones" : {
+                    "Ubicacion": [
+                        {
+                            "NombreRemitenteDestinatario": location.get("name"),
+                            "TipoUbicacion": location.get("type")
+                        }
+                        for location in bol.get("locations", [])
+                    ]
+                }
+            },
         }
+
+        # situational elements for
+        if bol.get("is_international"):
+            node_cp = payload["CartaPorte"]
+            node_cp["EntradaSalidaMerc"] = "Salida" if bol.get("is_step_out") else "Entrada"
+            node_cp["PaisOrigenDestino"] = bol.get("origin_destiny_country")
+            node_cp["ViaEntradaSalida"] = bol.get("in_out_via")
+
+        return payload
 
     def dispatch(self, third_party_keys, payload):
         """
@@ -330,6 +365,7 @@ class InvoiceCancelationStages(AbstractStages):
 
     def percolate_msg(self, original_msg):
         d = json.loads(original_msg)
+        logger.info("Percolating message", extra={"msg_content": d})
         path_prefix = None
         owner = None
         receptor_rfc = None
