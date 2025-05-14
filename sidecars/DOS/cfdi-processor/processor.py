@@ -208,7 +208,8 @@ class InvoiceCreationStages(AbstractStages):
 
     def render_payload(self, receipt):
         """Construct the payload for the third-party API"""
-        return {
+        bol = receipt.get("bol")
+        payload = {
             "Receptor": {"UID": receipt.get("receptor_data_ref")},
             "TipoDocumento": "factura",
             "Conceptos": [
@@ -251,8 +252,18 @@ class InvoiceCreationStages(AbstractStages):
             "Moneda": receipt.get("document_currency"),
             "TipoCambio": str(receipt.get("exchange_rate")),
             "Comentarios": receipt.get("comments"),
-            "EnviarCorreo": False
+            "EnviarCorreo": False,
+            "CartaPorte": {
+                "Version": bol.get("ver"),
+                "TranspInternac": "Si" if bol.get("is_international") else "No",
+            },
         }
+
+        # situational elements for
+        if bol.get("is_international"):
+            payload["CartaPorte"]["EntradaSalidaMerc"] = "Salida" if bol.get("is_step_out") else "Entrada"
+
+        return payload
 
     def dispatch(self, third_party_keys, payload):
         """
