@@ -136,6 +136,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(location2["TipoUbicacion"], "Destino")
             self.assertEqual(location2["FechaHoraSalidaLlegada"], "2023-10-05T13:50:00")
             self.assertEqual(location2["RFCRemitenteDestinatario"], "STE071214BE7")
+            self.assertEqual(location2["DistanciaRecorrida"], 300)
 
             # Verify the 'FiguraTransporte -> TiposFigura' array content
             transporters = node_cp["FiguraTransporte"]['TiposFigura']
@@ -218,6 +219,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                         "rfc": "STE071214BE7",
                         "type": "Destino",
                         "time": "2023-10-05T13:50:00",
+                        "distance": 300,
                     }
                 ]
             },

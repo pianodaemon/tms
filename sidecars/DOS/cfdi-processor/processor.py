@@ -291,8 +291,8 @@ class InvoiceCreationStages(AbstractStages):
             }
 
             # Optional fields
-            if "DistanciaRecorrida" in location and location["DistanciaRecorrida"]:
-                ubicacion["DistanciaRecorrida"] = str(Decimal(location["DistanciaRecorrida"]))
+            if 'distance' in location:
+                ubicacion["DistanciaRecorrida"] = location["distance"]
 
             node_cp["Ubicaciones"]["Ubicacion"].append(ubicacion)
 
