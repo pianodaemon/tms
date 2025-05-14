@@ -287,6 +287,7 @@ class InvoiceCreationStages(AbstractStages):
                 "NombreRemitenteDestinatario": location.get("name"),
                 "RFCRemitenteDestinatario": location.get("rfc"),
                 "TipoUbicacion": location.get("type"),
+                "FechaHoraSalidaLlegada": location.get("time"),
             }
 
             # Optional fields

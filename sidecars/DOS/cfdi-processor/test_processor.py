@@ -207,11 +207,13 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                         "name": "THYSSENKRUPP PRESTA DE MEXICO, S.A. DE C.V. PM1",
                         "rfc": "TPM9809038X0",
                         "type": "Origen",
+                        "time": "2023-10-05T07:00:00",
                     },
                     {
                         "name": "Nexteer PLANTA 69",
                         "rfc": "STE071214BE7",
                         "type": "Destino",
+                        "time": "2023-10-05T13:50:00",
                     }
                 ]
             },
