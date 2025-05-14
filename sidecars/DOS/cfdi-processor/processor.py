@@ -269,23 +269,32 @@ class InvoiceCreationStages(AbstractStages):
                     ]
                 },
                 "Ubicaciones" : {
-                    "Ubicacion": [
-                        {
-                            "NombreRemitenteDestinatario": location.get("name"),
-                            "TipoUbicacion": location.get("type")
-                        }
-                        for location in bol.get("locations", [])
-                    ]
+                    "Ubicacion": []
                 }
             },
         }
 
+        node_cp = payload["CartaPorte"]
+
         # situational elements for
         if bol.get("is_international"):
-            node_cp = payload["CartaPorte"]
             node_cp["EntradaSalidaMerc"] = "Salida" if bol.get("is_step_out") else "Entrada"
             node_cp["PaisOrigenDestino"] = bol.get("origin_destiny_country")
             node_cp["ViaEntradaSalida"] = bol.get("in_out_via")
+
+        for location in bol.get("locations", []):
+            ubicacion = {
+                "NombreRemitenteDestinatario": location.get("name"),
+                "RFCRemitenteDestinatario": location.get("rfc"),
+                "TipoUbicacion": location.get("type"),
+                "FechaHoraSalidaLlegada": location.get("time"),
+            }
+
+            # Optional fields
+            if 'distance' in location:
+                ubicacion["DistanciaRecorrida"] = location["distance"]
+
+            node_cp["Ubicaciones"]["Ubicacion"].append(ubicacion)
 
         return payload
 
