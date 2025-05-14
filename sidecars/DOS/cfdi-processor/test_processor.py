@@ -119,6 +119,19 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(node_cp["ViaEntradaSalida"], "03")
             self.assertEqual(node_cp["TotalDistRec"], 1000.0)
 
+            # Verify the 'Ubicaciones -> Ubicacion' array content
+            locations = node_cp["Ubicaciones"]["Ubicacion"]
+            self.assertEqual(len(locations), 2)  # Expecting two item
+
+            # First item
+            location1 = locations[0]
+            self.assertEqual(location1["NombreRemitenteDestinatario"], "THYSSENKRUPP PRESTA DE MEXICO, S.A. DE C.V. PM1")
+            self.assertEqual(location1["TipoUbicacion"], "Origen")
+
+            # Second item
+            location2 = locations[1]
+            self.assertEqual(location2["NombreRemitenteDestinatario"], "Nexteer PLANTA 69")
+            self.assertEqual(location2["TipoUbicacion"], "Destino")
 
             # Verify the 'FiguraTransporte -> TiposFigura' array content
             transporters = node_cp["FiguraTransporte"]['TiposFigura']
@@ -189,6 +202,16 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                         "license": "PUE0011259"
                     }
                 ],
+                "locations": [
+                    {
+                        "name": "THYSSENKRUPP PRESTA DE MEXICO, S.A. DE C.V. PM1",
+                        "type": "Origen",
+                    },
+                    {
+                        "name": "Nexteer PLANTA 69",
+                        "type": "Destino",
+                    }
+                ]
             },
         }})
 
