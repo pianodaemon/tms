@@ -239,7 +239,7 @@ class InvoiceCreationStages(AbstractStages):
                                 "TasaOCuota": str(retention.get("rate")),
                                 "Importe": retention.get("amount")
                             }
-                            for retention in item.get("product_retentions", [])
+                            for retention in item.get("product_deductions", [])
                         ]
                     }
                 }
