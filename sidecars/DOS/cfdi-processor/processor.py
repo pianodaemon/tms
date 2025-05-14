@@ -256,6 +256,7 @@ class InvoiceCreationStages(AbstractStages):
             "CartaPorte": {
                 "Version": bol.get("ver"),
                 "TranspInternac": "Si" if bol.get("is_international") else "No",
+                "TotalDistRec": bol.get("sum_dist_traveled"),
             },
         }
 
