@@ -261,7 +261,10 @@ class InvoiceCreationStages(AbstractStages):
 
         # situational elements for
         if bol.get("is_international"):
-            payload["CartaPorte"]["EntradaSalidaMerc"] = "Salida" if bol.get("is_step_out") else "Entrada"
+            node_cp = payload["CartaPorte"]
+            node_cp["EntradaSalidaMerc"] = "Salida" if bol.get("is_step_out") else "Entrada"
+            node_cp["PaisOrigenDestino"] = bol.get("origin_destiny_country")
+            node_cp["ViaEntradaSalida"] = bol.get("in_out_via")
 
         return payload
 
