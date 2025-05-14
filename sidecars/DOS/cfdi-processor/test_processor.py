@@ -116,6 +116,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(payload["CartaPorte"]["EntradaSalidaMerc"], "Salida")
             self.assertEqual(payload["CartaPorte"]["PaisOrigenDestino"], "USA")
             self.assertEqual(payload["CartaPorte"]["ViaEntradaSalida"], "03")
+            self.assertEqual(payload["CartaPorte"]["TotalDistRec"], 1000.0)
 
             return ["5c06fa8b3bbe6"] # A counterfeit document id from PAC
 
@@ -163,6 +164,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             "bol": {
                 "ver": "3.1",
                 "is_international": True,
+                "sum_dist_traveled": 1000.0,        # sum of the distances traveled (km)
                 "is_step_out": True,
                 "origin_destiny_country": "USA",    # ISO 3166-1 alpha-3 Code
                 "in_out_via": "03",
