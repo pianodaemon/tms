@@ -308,6 +308,7 @@ class InvoiceCreationStages(AbstractStages):
             item = {
                 "BienesTransp": good.get("sku"),
                 "Descripcion": good.get("desc"),
+                "Cantidad": good.get("quantity"),
             }
 
             node_cp["Mercancias"]["Mercancia"].append(item)
