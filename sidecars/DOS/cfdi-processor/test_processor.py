@@ -166,6 +166,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(good1["ClaveUnidad"], "H87")
             self.assertEqual(good1["Cantidad"], 4224)
             self.assertEqual(good1["PesoEnKg"], 723)
+            self.assertEqual(good1["FraccionArancelaria"], "87089400")
 
             return ["5c06fa8b3bbe6"] # A counterfeit document id from PAC
 
@@ -257,6 +258,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                         "unit": "H87",
                         "quantity": 4224,
                         "kgs": 723,
+                        "tariff_fraction": "87089400",
                     }
                 ],
             },

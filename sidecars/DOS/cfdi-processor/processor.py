@@ -313,6 +313,9 @@ class InvoiceCreationStages(AbstractStages):
                 "Cantidad": good.get("quantity"),
             }
 
+            if bol.get("is_international"):
+                item["FraccionArancelaria"] = good["tariff_fraction"]
+
             node_cp["Mercancias"]["Mercancia"].append(item)
 
         return payload
