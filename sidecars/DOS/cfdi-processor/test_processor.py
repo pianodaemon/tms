@@ -87,17 +87,18 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             # First item
             concepto1 = conceptos[0]
             self.assertEqual(concepto1['ClaveProdServ'], "78101800")
-            self.assertEqual(concepto1['Cantidad'], 1)
+            self.assertEqual(concepto1['Cantidad'], "1")
             self.assertEqual(concepto1['ClaveUnidad'], "E48")
             self.assertEqual(concepto1['Unidad'], "Unidad de servicio")
-            self.assertEqual(concepto1['ValorUnitario'], 2200.0)
+            self.assertEqual(concepto1['ValorUnitario'], "2200.0")
+            self.assertEqual(concepto1['Importe'], "2200.0")
             self.assertEqual(concepto1['Descripcion'], "SERVICIO DE FLETE NACAJUCA 1 A 5 REPARTOS NO. DE TRANSPORTE 289822 NO. DE RUTA 310753 SALIO DE CEDIS IXTACOMITAN UNIDAD 3.5 TONELADAS")
 
             # Verify 'Impuestos' -> 'Traslados' for the first item
             impuestos_trans = concepto1['Impuestos']['Traslados']
             self.assertEqual(len(impuestos_trans), 1)
             traslado1 = impuestos_trans[0]
-            self.assertEqual(traslado1['Base'], 2200.0)
+            self.assertEqual(traslado1['Base'], "2200.0")
             self.assertEqual(traslado1['Impuesto'], "002")
             self.assertEqual(traslado1['TipoFactor'], "Tasa")
             self.assertEqual(traslado1['TasaOCuota'], "0.16")
@@ -106,14 +107,14 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             impuestos_retens = concepto1['Impuestos']['Retenidos']
             self.assertEqual(len(impuestos_retens), 1)
             reten1 = impuestos_retens[0]
-            self.assertEqual(reten1['Base'], 2200.0)
+            self.assertEqual(reten1['Base'], "2200.0")
             self.assertEqual(reten1['Impuesto'], "002")
             self.assertEqual(reten1['TipoFactor'], "Tasa")
             self.assertEqual(reten1['TasaOCuota'], "0.04")
             self.assertEqual(reten1['Importe'], 88.0)
 
             node_cp = payload["CartaPorte"]
-            self.assertEqual(node_cp["TranspInternac"], "Si")
+            self.assertEqual(node_cp["TranspInternac"], "Sí")
             self.assertEqual(node_cp["EntradaSalidaMerc"], "Salida")
             self.assertEqual(node_cp["PaisOrigenDestino"], "USA")
             self.assertEqual(node_cp["ViaEntradaSalida"], "03")
@@ -164,8 +165,9 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(good1["BienesTransp"], "25174200")
             self.assertEqual(good1["Descripcion"], "Sistema de dirección")
             self.assertEqual(good1["ClaveUnidad"], "H87")
-            self.assertEqual(good1["Cantidad"], 4224)
+            self.assertEqual(good1["Cantidad"], "4224")
             self.assertEqual(good1["PesoEnKg"], 723)
+            self.assertEqual(good1["FraccionArancelaria"], "87089400")
 
             return ["5c06fa8b3bbe6"] # A counterfeit document id from PAC
 
@@ -182,6 +184,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                     "fiscal_product_unit": "E48",
                     "product_unit": "Unidad de servicio",
                     "product_unit_price": 2200.0,
+                    "product_amount": 2200.0,
                     "product_desc": "SERVICIO DE FLETE NACAJUCA 1 A 5 REPARTOS NO. DE TRANSPORTE 289822 NO. DE RUTA 310753 SALIO DE CEDIS IXTACOMITAN UNIDAD 3.5 TONELADAS",
                     "product_transfers": [
                         {
@@ -257,6 +260,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                         "unit": "H87",
                         "quantity": 4224,
                         "kgs": 723,
+                        "tariff_fraction": "87089400",
                     }
                 ],
             },

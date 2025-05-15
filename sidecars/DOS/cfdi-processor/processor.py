@@ -211,19 +211,20 @@ class InvoiceCreationStages(AbstractStages):
         bol = receipt.get("bol")
         payload = {
             "Receptor": {"UID": receipt.get("receptor_data_ref")},
-            "TipoDocumento": "factura",
+            "TipoDocumento": "carta_porte_ingreso",
             "Conceptos": [
                 {
                     "ClaveProdServ": item.get("fiscal_product_id"),
-                    "Cantidad": item.get("product_quantity"),
+                    "Cantidad": str(item.get("product_quantity")),
                     "ClaveUnidad": item.get("fiscal_product_unit"),
                     "Unidad": item.get("product_unit"),
-                    "ValorUnitario": item.get("product_unit_price"),
+                    "ValorUnitario": str(item.get("product_unit_price")),
+                    "Importe": str(item.get("product_amount")),
                     "Descripcion": item.get("product_desc"),
                     "Impuestos": {
                         "Traslados": [
                             {
-                                "Base": transfer.get("base"),
+                                "Base": str(transfer.get("base")),
                                 "Impuesto": transfer.get("fiscal_type"),
                                 "TipoFactor": transfer.get("fiscal_factor"),
                                 "TasaOCuota": str(transfer.get("rate")),
@@ -233,7 +234,7 @@ class InvoiceCreationStages(AbstractStages):
                         ],
                         "Retenidos": [
                             {
-                                "Base": retention.get("base"),
+                                "Base": str(retention.get("base")),
                                 "Impuesto": retention.get("fiscal_type"),
                                 "TipoFactor": retention.get("fiscal_factor"),
                                 "TasaOCuota": str(retention.get("rate")),
@@ -255,7 +256,7 @@ class InvoiceCreationStages(AbstractStages):
             "EnviarCorreo": False,
             "CartaPorte": {
                 "Version": bol.get("ver"),
-                "TranspInternac": "Si" if bol.get("is_international") else "No",
+                "TranspInternac": "Sí" if bol.get("is_international") else "No",
                 "TotalDistRec": bol.get("sum_dist_traveled"),
                 "FiguraTransporte" : {
                     "TiposFigura": [
@@ -310,8 +311,11 @@ class InvoiceCreationStages(AbstractStages):
                 "Descripcion": good.get("desc"),
                 "ClaveUnidad": good.get("unit"),
                 "PesoEnKg": good.get("kgs"),
-                "Cantidad": good.get("quantity"),
+                "Cantidad": str(good.get("quantity")),
             }
+
+            if bol.get("is_international"):
+                item["FraccionArancelaria"] = good["tariff_fraction"]
 
             node_cp["Mercancias"]["Mercancia"].append(item)
 
