@@ -237,7 +237,12 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                             "zip": "76246"
                         }
                     }
-                ]
+                ],
+                "merchandise": [
+                    {
+                        "sku": "25174200"
+                    }
+                ],
             },
         }})
 
