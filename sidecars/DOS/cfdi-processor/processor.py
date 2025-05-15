@@ -308,6 +308,7 @@ class InvoiceCreationStages(AbstractStages):
             item = {
                 "BienesTransp": good.get("sku"),
                 "Descripcion": good.get("desc"),
+                "ClaveUnidad": good.get("unit"),
                 "Cantidad": good.get("quantity"),
             }
 
