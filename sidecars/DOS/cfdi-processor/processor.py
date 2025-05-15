@@ -219,6 +219,7 @@ class InvoiceCreationStages(AbstractStages):
                     "ClaveUnidad": item.get("fiscal_product_unit"),
                     "Unidad": item.get("product_unit"),
                     "ValorUnitario": str(item.get("product_unit_price")),
+                    "Importe": str(item.get("product_amount")),
                     "Descripcion": item.get("product_desc"),
                     "Impuestos": {
                         "Traslados": [
