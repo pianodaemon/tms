@@ -223,7 +223,7 @@ class InvoiceCreationStages(AbstractStages):
                     "Impuestos": {
                         "Traslados": [
                             {
-                                "Base": transfer.get("base"),
+                                "Base": str(transfer.get("base")),
                                 "Impuesto": transfer.get("fiscal_type"),
                                 "TipoFactor": transfer.get("fiscal_factor"),
                                 "TasaOCuota": str(transfer.get("rate")),
@@ -233,7 +233,7 @@ class InvoiceCreationStages(AbstractStages):
                         ],
                         "Retenidos": [
                             {
-                                "Base": retention.get("base"),
+                                "Base": str(retention.get("base")),
                                 "Impuesto": retention.get("fiscal_type"),
                                 "TipoFactor": retention.get("fiscal_factor"),
                                 "TasaOCuota": str(retention.get("rate")),
