@@ -155,6 +155,15 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(transporter1["NumLicencia"], "PUE0011259")
             self.assertEqual(transporter1["NombreFigura"], "JUAN RENE CARRASCO LIZANA")
 
+            # Verify the 'Mercancias -> Mercancia' array content
+            goods = node_cp["Mercancias"]['Mercancia']
+            self.assertEqual(len(goods), 1)  # Expecting two item
+
+            # First item
+            good1 = goods[0]
+            self.assertEqual(good1["BienesTransp"], "25174200")
+            self.assertEqual(good1["Descripcion"], "Sistema de dirección")
+
             return ["5c06fa8b3bbe6"] # A counterfeit document id from PAC
 
         # Push a message to the input queue
@@ -240,7 +249,8 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                 ],
                 "merchandise": [
                     {
-                        "sku": "25174200"
+                        "sku": "25174200",
+                        "desc": "Sistema de dirección"
                     }
                 ],
             },

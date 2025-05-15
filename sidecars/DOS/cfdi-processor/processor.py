@@ -306,7 +306,8 @@ class InvoiceCreationStages(AbstractStages):
 
         for good in bol.get("merchandise", []):
             item = {
-                "BienesTransp": good.get("sku")
+                "BienesTransp": good.get("sku"),
+                "Descripcion": good.get("desc"),
             }
 
             node_cp["Mercancias"]["Mercancia"].append(item)
