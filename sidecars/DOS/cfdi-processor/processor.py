@@ -286,7 +286,7 @@ class InvoiceCreationStages(AbstractStages):
             node_cp["ViaEntradaSalida"] = bol.get("in_out_via")
 
         for location in bol.get("locations", []):
-            ubicacion = {
+            item = {
                 "NombreRemitenteDestinatario": location.get("name"),
                 "RFCRemitenteDestinatario": location.get("rfc"),
                 "TipoUbicacion": location.get("type"),
@@ -300,9 +300,9 @@ class InvoiceCreationStages(AbstractStages):
 
             # Optional fields
             if 'distance' in location:
-                ubicacion["DistanciaRecorrida"] = location["distance"]
+                item["DistanciaRecorrida"] = location["distance"]
 
-            node_cp["Ubicaciones"]["Ubicacion"].append(ubicacion)
+            node_cp["Ubicaciones"]["Ubicacion"].append(item)
 
         for good in bol.get("merchandise", []):
             item = {
