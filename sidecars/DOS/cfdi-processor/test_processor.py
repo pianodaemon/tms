@@ -90,7 +90,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(concepto1['Cantidad'], 1)
             self.assertEqual(concepto1['ClaveUnidad'], "E48")
             self.assertEqual(concepto1['Unidad'], "Unidad de servicio")
-            self.assertEqual(concepto1['ValorUnitario'], 2200.0)
+            self.assertEqual(concepto1['ValorUnitario'], "2200.0")
             self.assertEqual(concepto1['Descripcion'], "SERVICIO DE FLETE NACAJUCA 1 A 5 REPARTOS NO. DE TRANSPORTE 289822 NO. DE RUTA 310753 SALIO DE CEDIS IXTACOMITAN UNIDAD 3.5 TONELADAS")
 
             # Verify 'Impuestos' -> 'Traslados' for the first item
