@@ -309,6 +309,7 @@ class InvoiceCreationStages(AbstractStages):
                 "BienesTransp": good.get("sku"),
                 "Descripcion": good.get("desc"),
                 "ClaveUnidad": good.get("unit"),
+                "PesoEnKg": good.get("kgs"),
                 "Cantidad": good.get("quantity"),
             }
 

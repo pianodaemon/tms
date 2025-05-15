@@ -165,6 +165,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(good1["Descripcion"], "Sistema de dirección")
             self.assertEqual(good1["ClaveUnidad"], "H87")
             self.assertEqual(good1["Cantidad"], 4224)
+            self.assertEqual(good1["PesoEnKg"], 723)
 
             return ["5c06fa8b3bbe6"] # A counterfeit document id from PAC
 
@@ -254,7 +255,8 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
                         "sku": "25174200",
                         "desc": "Sistema de dirección",
                         "unit": "H87",
-                        "quantity": 4224
+                        "quantity": 4224,
+                        "kgs": 723,
                     }
                 ],
             },
