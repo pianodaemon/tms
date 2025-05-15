@@ -113,7 +113,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(reten1['Importe'], 88.0)
 
             node_cp = payload["CartaPorte"]
-            self.assertEqual(node_cp["TranspInternac"], "Si")
+            self.assertEqual(node_cp["TranspInternac"], "Sí")
             self.assertEqual(node_cp["EntradaSalidaMerc"], "Salida")
             self.assertEqual(node_cp["PaisOrigenDestino"], "USA")
             self.assertEqual(node_cp["ViaEntradaSalida"], "03")
