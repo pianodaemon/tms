@@ -257,7 +257,7 @@ class InvoiceCreationStages(AbstractStages):
             "CartaPorte": {
                 "Version": bol.get("ver"),
                 "TranspInternac": "Sí" if bol.get("is_international") else "No",
-                "TotalDistRec": bol.get("sum_dist_traveled"),
+                "TotalDistRec": str(bol.get("sum_dist_traveled")),
                 "FiguraTransporte" : {
                     "TiposFigura": [
                         {
@@ -301,7 +301,7 @@ class InvoiceCreationStages(AbstractStages):
 
             # Optional fields
             if 'distance' in location:
-                item["DistanciaRecorrida"] = location["distance"]
+                item["DistanciaRecorrida"] = str(location["distance"])
 
             node_cp["Ubicaciones"]["Ubicacion"].append(item)
 
@@ -310,7 +310,7 @@ class InvoiceCreationStages(AbstractStages):
                 "BienesTransp": good.get("sku"),
                 "Descripcion": good.get("desc"),
                 "ClaveUnidad": good.get("unit"),
-                "PesoEnKg": good.get("kgs"),
+                "PesoEnKg": str(good.get("kgs")),
                 "Cantidad": str(good.get("quantity")),
             }
 
