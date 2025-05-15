@@ -228,7 +228,7 @@ class InvoiceCreationStages(AbstractStages):
                                 "Impuesto": transfer.get("fiscal_type"),
                                 "TipoFactor": transfer.get("fiscal_factor"),
                                 "TasaOCuota": str(transfer.get("rate")),
-                                "Importe": transfer.get("amount")
+                                "Importe": str(transfer.get("amount"))
                             }
                             for transfer in item.get("product_transfers", [])
                         ],
@@ -238,7 +238,7 @@ class InvoiceCreationStages(AbstractStages):
                                 "Impuesto": retention.get("fiscal_type"),
                                 "TipoFactor": retention.get("fiscal_factor"),
                                 "TasaOCuota": str(retention.get("rate")),
-                                "Importe": retention.get("amount")
+                                "Importe": str(retention.get("amount"))
                             }
                             for retention in item.get("product_deductions", [])
                         ]

@@ -102,7 +102,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(traslado1['Impuesto'], "002")
             self.assertEqual(traslado1['TipoFactor'], "Tasa")
             self.assertEqual(traslado1['TasaOCuota'], "0.16")
-            self.assertEqual(traslado1['Importe'], 352.0)
+            self.assertEqual(traslado1['Importe'], "352.0")
 
             impuestos_retens = concepto1['Impuestos']['Retenidos']
             self.assertEqual(len(impuestos_retens), 1)
@@ -111,7 +111,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(reten1['Impuesto'], "002")
             self.assertEqual(reten1['TipoFactor'], "Tasa")
             self.assertEqual(reten1['TasaOCuota'], "0.04")
-            self.assertEqual(reten1['Importe'], 88.0)
+            self.assertEqual(reten1['Importe'], "88.0")
 
             node_cp = payload["CartaPorte"]
             self.assertEqual(node_cp["TranspInternac"], "Sí")
