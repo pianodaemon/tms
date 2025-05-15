@@ -87,7 +87,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             # First item
             concepto1 = conceptos[0]
             self.assertEqual(concepto1['ClaveProdServ'], "78101800")
-            self.assertEqual(concepto1['Cantidad'], 1)
+            self.assertEqual(concepto1['Cantidad'], "1")
             self.assertEqual(concepto1['ClaveUnidad'], "E48")
             self.assertEqual(concepto1['Unidad'], "Unidad de servicio")
             self.assertEqual(concepto1['ValorUnitario'], "2200.0")
@@ -164,7 +164,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(good1["BienesTransp"], "25174200")
             self.assertEqual(good1["Descripcion"], "Sistema de dirección")
             self.assertEqual(good1["ClaveUnidad"], "H87")
-            self.assertEqual(good1["Cantidad"], 4224)
+            self.assertEqual(good1["Cantidad"], "4224")
             self.assertEqual(good1["PesoEnKg"], 723)
             self.assertEqual(good1["FraccionArancelaria"], "87089400")
 

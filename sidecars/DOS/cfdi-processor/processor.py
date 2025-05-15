@@ -215,7 +215,7 @@ class InvoiceCreationStages(AbstractStages):
             "Conceptos": [
                 {
                     "ClaveProdServ": item.get("fiscal_product_id"),
-                    "Cantidad": item.get("product_quantity"),
+                    "Cantidad": str(item.get("product_quantity")),
                     "ClaveUnidad": item.get("fiscal_product_unit"),
                     "Unidad": item.get("product_unit"),
                     "ValorUnitario": str(item.get("product_unit_price")),
@@ -310,7 +310,7 @@ class InvoiceCreationStages(AbstractStages):
                 "Descripcion": good.get("desc"),
                 "ClaveUnidad": good.get("unit"),
                 "PesoEnKg": good.get("kgs"),
-                "Cantidad": good.get("quantity"),
+                "Cantidad": str(good.get("quantity")),
             }
 
             if bol.get("is_international"):
