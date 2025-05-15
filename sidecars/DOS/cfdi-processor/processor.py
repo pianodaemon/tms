@@ -211,7 +211,7 @@ class InvoiceCreationStages(AbstractStages):
         bol = receipt.get("bol")
         payload = {
             "Receptor": {"UID": receipt.get("receptor_data_ref")},
-            "TipoDocumento": "factura",
+            "TipoDocumento": "carta_porte_ingreso",
             "Conceptos": [
                 {
                     "ClaveProdServ": item.get("fiscal_product_id"),
