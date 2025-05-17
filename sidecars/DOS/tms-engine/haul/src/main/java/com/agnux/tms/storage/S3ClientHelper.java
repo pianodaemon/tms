@@ -43,13 +43,13 @@ class S3ClientHelper {
         Optional<String> secret = Optional.ofNullable(System.getenv("AWS_SECRET_ACCESS_KEY"));
 
         // Validate and create AWS credentials
-        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(key.orElseThrow(() -> new TmsException("AWS key was not provided", ErrorCodes.STORAGE_PROVIDEER_ISSUES)),
-                secret.orElseThrow(() -> new TmsException("AWS secret was not provided", ErrorCodes.STORAGE_PROVIDEER_ISSUES))
+        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(key.orElseThrow(() -> new TmsException("AWS key was not provided", ErrorCodes.STORAGE_PROVIDER_ISSUES)),
+                secret.orElseThrow(() -> new TmsException("AWS secret was not provided", ErrorCodes.STORAGE_PROVIDER_ISSUES))
         );
 
         // Configure and build the S3 client
         return S3Client.builder()
-                .region(Region.of(region.orElseThrow(() -> new TmsException("AWS region was not provided", ErrorCodes.STORAGE_PROVIDEER_ISSUES))))
+                .region(Region.of(region.orElseThrow(() -> new TmsException("AWS region was not provided", ErrorCodes.STORAGE_PROVIDER_ISSUES))))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
                 .build();
     }

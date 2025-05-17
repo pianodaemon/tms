@@ -28,14 +28,14 @@ public class DriverHandler {
                 .flatMap(driver -> {
                     try {
                         UUID newId = repo.createDriver(driver);
-                        log.info("Created driver feturing UUID: " + newId.toString());
+                        log.info("created driver featuring UUID: " + newId.toString());
                         driver.setId(newId);
-                        return ResponseHelper.successWithBody(driver);
+                        return ServiceResponseHelper.successWithBody(driver);
                     } catch (TmsException e) {
                         if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
-                            return ResponseHelper.badRequest("data supplied face issues", e);
+                            return ServiceResponseHelper.badRequest("data supplied face issues", e);
                         }
-                        return ResponseHelper.internalServerError(e);
+                        return ServiceResponseHelper.internalServerError(e);
                     }
                 });
     }
@@ -44,12 +44,12 @@ public class DriverHandler {
         UUID driverId = UUID.fromString(request.pathVariable("id"));
         try {
             Driver driver = repo.getDriver(driverId);
-            return ResponseHelper.successWithBody(driver);
+            return ServiceResponseHelper.successWithBody(driver);
         } catch (TmsException e) {
             if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
-                return ResponseHelper.notFound("data is not locatable", e);
+                return ServiceResponseHelper.notFound("data is not locatable", e);
             }
-            return ResponseHelper.internalServerError(e);
+            return ServiceResponseHelper.internalServerError(e);
         }
     }
 
@@ -58,10 +58,13 @@ public class DriverHandler {
                 .flatMap(driver -> {
                     try {
                         UUID updatedId = repo.editDriver(driver);
-                        log.info("Updated driver feturing UUID: " + updatedId.toString());
-                        return ResponseHelper.successWithBody(driver);
+                        log.info("updated driver feturing UUID: " + updatedId.toString());
+                        return ServiceResponseHelper.successWithBody(driver);
                     } catch (TmsException e) {
-                        return ResponseHelper.internalServerError(e);
+                        if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
+                            return ServiceResponseHelper.badRequest("data supplied face issues", e);
+                        }
+                        return ServiceResponseHelper.internalServerError(e);
                     }
                 });
     }
@@ -72,7 +75,10 @@ public class DriverHandler {
             repo.deleteDriver(driverId);
             return ServerResponse.noContent().build();
         } catch (TmsException e) {
-            return ResponseHelper.internalServerError(e);
+            if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
+                return ServiceResponseHelper.badRequest("data supplied face issues", e);
+            }
+            return ServiceResponseHelper.internalServerError(e);
         }
     }
 }
