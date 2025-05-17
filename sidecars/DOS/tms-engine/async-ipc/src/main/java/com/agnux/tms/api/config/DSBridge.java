@@ -11,18 +11,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class HaulBridgeConfig {
+public class DSBridge {
 
     @Value("${debug.mode:false}")
     private boolean debugMode;
 
-    @Value("${db.url:jdbc:postgresql://localhost:5432/testdb}")
+    @Value("${db.url:jdbc:postgresql://localhost:5432/aipctestdb}")
     private String dbUrl;
 
-    @Value("${db.username:test}")
+    @Value("${db.username:aipctestdb}")
     private String dbUsername;
 
-    @Value("${db.password:test}")
+    @Value("${db.password:aipctestdb}")
     private String dbPassword;
 
     @Bean
