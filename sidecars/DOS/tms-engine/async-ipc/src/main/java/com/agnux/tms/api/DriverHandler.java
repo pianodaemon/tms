@@ -1,5 +1,6 @@
 package com.agnux.tms.api;
 
+import com.agnux.tms.errors.ErrorCodes;
 import java.util.UUID;
 
 import com.agnux.tms.repository.BasicRepoImpl;
@@ -28,9 +29,13 @@ public class DriverHandler {
                     try {
                         UUID newId = repo.createDriver(driver);
                         log.info("Created driver feturing UUID: " + newId.toString());
-                        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(driver);
+                        driver.setId(newId);
+                        return ResponseHelper.successWithBody(driver);
                     } catch (TmsException e) {
-                        return ServerResponse.status(500).bodyValue("Creation failed: " + e.getMessage());
+                        if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
+                            return ResponseHelper.badRequest("data supplied face issues", e);
+                        }
+                        return ResponseHelper.internalServerError(e.getMessage(), e);
                     }
                 });
     }
@@ -39,9 +44,12 @@ public class DriverHandler {
         UUID driverId = UUID.fromString(request.pathVariable("id"));
         try {
             Driver driver = repo.getDriver(driverId);
-            return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(driver);
+            return ResponseHelper.successWithBody(driver);
         } catch (TmsException e) {
-            return ServerResponse.notFound().build();
+            if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
+                return ResponseHelper.notFound("data is not locatable", e);
+            }
+            return ResponseHelper.internalServerError(e.getMessage(), e);
         }
     }
 
@@ -51,7 +59,7 @@ public class DriverHandler {
                     try {
                         UUID updatedId = repo.editDriver(driver);
                         log.info("Updated driver feturing UUID: " + updatedId.toString());
-                        return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON).bodyValue(driver);
+                        return ResponseHelper.successWithBody(driver);
                     } catch (TmsException e) {
                         return ServerResponse.status(500).bodyValue("Update failed: " + e.getMessage());
                     }

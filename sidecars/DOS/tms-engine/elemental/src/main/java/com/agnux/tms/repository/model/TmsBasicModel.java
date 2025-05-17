@@ -4,7 +4,9 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class TmsBasicModel {

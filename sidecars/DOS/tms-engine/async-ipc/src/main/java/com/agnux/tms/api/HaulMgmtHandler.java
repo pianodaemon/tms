@@ -33,7 +33,7 @@ public class HaulMgmtHandler {
                 .flatMap(tripDetails
                         -> Mono.fromCallable(() -> haulMgmt.assignTrip(tenant, tripDetails))
                         .flatMap(cargoId -> ServerResponse.ok().bodyValue(cargoId.toString()))
-                        .onErrorResume(TmsException.class, e -> errorResponse("Assignment failed", e))
+                        .onErrorResume(TmsException.class, e -> ResponseHelper.badRequest("Assignment failed", e))
                 );
     }
 
@@ -47,16 +47,6 @@ public class HaulMgmtHandler {
 
         return Mono.fromCallable(() -> haulMgmt.estimateFuel(tenant, vehicleId, agreementId).toPlainString())
                 .flatMap(fuel -> ServerResponse.ok().bodyValue(fuel))
-                .onErrorResume(TmsException.class, e -> errorResponse("Estimation failed", e));
-    }
-
-    private Mono<ServerResponse> errorResponse(String context, TmsException e) {
-        Map<String, Object> error = Map.of(
-                "message", context + ": " + e.getMessage(),
-                "errorCode", e.getErrorCode()
-        );
-        return ServerResponse.badRequest()
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(error);
+                .onErrorResume(TmsException.class, e -> ResponseHelper.badRequest("Estimation failed", e));
     }
 }
