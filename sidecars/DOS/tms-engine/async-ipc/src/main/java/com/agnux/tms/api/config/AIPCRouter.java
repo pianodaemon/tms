@@ -19,7 +19,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 public class AIPCRouter {
 
     private static final String CATALOGS_API_PATH = "adm";
-    private static final String HAUL_API_PATH = "operation";
+    private static final String HAUL_API_PATH = "oper";
 
     public static RouterFunction<ServerResponse> customerRoutes(CustomerHandler handler) {
         return route(GET("/customers/{id}"), handler::read)
