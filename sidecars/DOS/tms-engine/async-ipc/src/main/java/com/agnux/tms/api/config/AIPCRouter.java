@@ -1,8 +1,6 @@
 package com.agnux.tms.api.config;
 
-import com.agnux.tms.api.handler.DriverHandler;
-import com.agnux.tms.api.handler.HaulMgmtHandler;
-import com.agnux.tms.api.handler.PatioHandler;
+import com.agnux.tms.api.handler.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -22,6 +20,13 @@ public class AIPCRouter {
 
     private static final String CATALOGS_API_PATH = "adm";
     private static final String HAUL_API_PATH = "operation";
+
+    public static RouterFunction<ServerResponse> customerRoutes(CustomerHandler handler) {
+        return route(GET("/customers/{id}"), handler::read)
+                .andRoute(POST("/customers"), handler::create)
+                .andRoute(PUT("/customers"), handler::update)
+                .andRoute(DELETE("/customers/{id}"), handler::delete);
+    }
 
     public static RouterFunction<ServerResponse> patioRoutes(PatioHandler handler) {
         return route(GET("/patios/{id}"), handler::read)

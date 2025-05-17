@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentMap;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public abstract class GenCrudHandler<T extends TmsBasicModel> {
+abstract class GenCrudHandler<T extends TmsBasicModel> {
 
     protected final Class<T> clazz;
     private static final ConcurrentMap<Class<?>, Type> typeCache = new ConcurrentHashMap<>();
