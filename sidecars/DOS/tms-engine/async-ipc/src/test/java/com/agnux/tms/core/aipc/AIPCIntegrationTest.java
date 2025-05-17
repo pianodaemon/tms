@@ -95,6 +95,16 @@ class AIPCRouterIntegrationTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                 .jsonPath("$.name").isEqualTo("Integration Test Driver");
+
+        webTestClient.delete()
+                .uri("/adm/drivers/" + newID)
+                .exchange()
+                .expectStatus().isNoContent();
+
+        webTestClient.get()
+                .uri("/adm/drivers/" + newID)
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
     @Test
@@ -172,5 +182,15 @@ class AIPCRouterIntegrationTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                 .jsonPath("$.name").isEqualTo("Integration Test Customer");
+
+        webTestClient.delete()
+                .uri("/adm/customers/" + newID)
+                .exchange()
+                .expectStatus().isNoContent();
+
+        webTestClient.get()
+                .uri("/adm/customers/" + newID)
+                .exchange()
+                .expectStatus().isNotFound();
     }
 }
