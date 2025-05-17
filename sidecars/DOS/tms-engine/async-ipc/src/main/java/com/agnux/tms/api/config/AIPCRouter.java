@@ -42,6 +42,12 @@ public class AIPCRouter {
                 .andRoute(DELETE("/drivers/{id}"), handler::delete);
     }
 
+    public static RouterFunction<ServerResponse> routeHaulMgmt(HaulMgmtHandler handler) {
+        return RouterFunctions
+                .route(POST("/{tenantId}/{userId}/assign-trip"), handler::assignTrip)
+                .andRoute(GET("/{tenantId}/{userId}/estimate-fuel"), handler::estimateFuel);
+    }
+
     @Bean
     public RouterFunction<ServerResponse> admRouter(
             CustomerHandler customerHandler,
@@ -54,15 +60,8 @@ public class AIPCRouter {
                         .and(customerRoutes(customerHandler)));
     }
 
-    public static RouterFunction<ServerResponse> routeHaulMgmt(HaulMgmtHandler handler) {
-        return RouterFunctions
-                .route(POST("/{tenantId}/{userId}/assign-trip"), handler::assignTrip)
-                .andRoute(GET("/{tenantId}/{userId}/estimate-fuel"), handler::estimateFuel);
-    }
-
     @Bean
-    public RouterFunction<ServerResponse> haulRouter(
-            HaulMgmtHandler haulHandler) {
+    public RouterFunction<ServerResponse> haulRouter(HaulMgmtHandler haulHandler) {
 
         return nest(path("/" + HAUL_API_PATH),
                 routeHaulMgmt(haulHandler)
