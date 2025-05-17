@@ -1,5 +1,6 @@
 rootProject.name = 'tms'
 
+include ':shared-test-resources'
 include ':elemental'
 include ':haul'
 include ':async-ipc'
