@@ -102,7 +102,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(traslado1['Impuesto'], "002")
             self.assertEqual(traslado1['TipoFactor'], "Tasa")
             self.assertEqual(traslado1['TasaOCuota'], "0.16")
-            self.assertEqual(traslado1['Importe'], 352.0)
+            self.assertEqual(traslado1['Importe'], "352.0")
 
             impuestos_retens = concepto1['Impuestos']['Retenidos']
             self.assertEqual(len(impuestos_retens), 1)
@@ -111,14 +111,14 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(reten1['Impuesto'], "002")
             self.assertEqual(reten1['TipoFactor'], "Tasa")
             self.assertEqual(reten1['TasaOCuota'], "0.04")
-            self.assertEqual(reten1['Importe'], 88.0)
+            self.assertEqual(reten1['Importe'], "88.0")
 
             node_cp = payload["CartaPorte"]
             self.assertEqual(node_cp["TranspInternac"], "Sí")
             self.assertEqual(node_cp["EntradaSalidaMerc"], "Salida")
             self.assertEqual(node_cp["PaisOrigenDestino"], "USA")
             self.assertEqual(node_cp["ViaEntradaSalida"], "03")
-            self.assertEqual(node_cp["TotalDistRec"], 1000.0)
+            self.assertEqual(node_cp["TotalDistRec"], "1000.0")
 
             # Verify the 'Ubicaciones -> Ubicacion' array content
             locations = node_cp["Ubicaciones"]["Ubicacion"]
@@ -140,7 +140,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(location2["TipoUbicacion"], "Destino")
             self.assertEqual(location2["FechaHoraSalidaLlegada"], "2023-10-05T13:50:00")
             self.assertEqual(location2["RFCRemitenteDestinatario"], "STE071214BE7")
-            self.assertEqual(location2["DistanciaRecorrida"], 300)
+            self.assertEqual(location2["DistanciaRecorrida"], "300")
             self.assertEqual(location2["Domicilio"]["Estado"], "QUE")
             self.assertEqual(location2["Domicilio"]["Pais"], "MEX")
             self.assertEqual(location2["Domicilio"]["CodigoPostal"], "76246")
@@ -166,7 +166,7 @@ class TestInvoiceCreationProcessor(unittest.TestCase):
             self.assertEqual(good1["Descripcion"], "Sistema de dirección")
             self.assertEqual(good1["ClaveUnidad"], "H87")
             self.assertEqual(good1["Cantidad"], "4224")
-            self.assertEqual(good1["PesoEnKg"], 723)
+            self.assertEqual(good1["PesoEnKg"], "723")
             self.assertEqual(good1["FraccionArancelaria"], "87089400")
 
             return ["5c06fa8b3bbe6"] # A counterfeit document id from PAC
