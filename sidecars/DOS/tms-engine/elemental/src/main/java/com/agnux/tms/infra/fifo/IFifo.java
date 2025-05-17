@@ -1,4 +1,4 @@
-package com.agnux.tms.fifo;
+package com.agnux.tms.infra.fifo;
 
 /**
  * The IFifo interface defines the contract for a First-In-First-Out (FIFO)

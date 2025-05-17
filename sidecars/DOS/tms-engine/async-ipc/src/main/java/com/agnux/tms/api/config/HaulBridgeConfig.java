@@ -1,4 +1,4 @@
-package com.agnux.tms.core.aipc;
+package com.agnux.tms.api.config;
 
 import com.agnux.tms.core.mgmt.HaulMgmt;
 import com.agnux.tms.repository.BasicRepoImpl;
@@ -35,7 +35,7 @@ public class HaulBridgeConfig {
     }
 
     @Bean
-    public IHaulRepo iHaulRepo(DataSource dataSource) {
+    public IHaulRepo getRepoImpl(DataSource dataSource) {
         return new BasicRepoImpl(dataSource, debugMode);
     }
 

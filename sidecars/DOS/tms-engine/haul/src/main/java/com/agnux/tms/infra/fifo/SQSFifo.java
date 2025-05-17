@@ -1,6 +1,5 @@
-package com.agnux.tms.fifo;
+package com.agnux.tms.infra.fifo;
 
-import com.agnux.tms.fifo.IFifo;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;

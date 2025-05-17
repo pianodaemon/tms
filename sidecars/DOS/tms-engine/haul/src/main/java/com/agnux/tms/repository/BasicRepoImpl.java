@@ -56,9 +56,9 @@ public class BasicRepoImpl implements IHaulRepo {
     private <T> T fetchEntity(UUID id, String name, FetchById<T> fetcher) throws TmsException {
         try (var conn = ds.getConnection()) {
             return fetcher.fetch(conn, id)
-                    .orElseThrow(() -> new TmsException(name + " " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDEER_ISSUES));
+                    .orElseThrow(() -> new TmsException(name + " " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDER_ISSUES));
         } catch (SQLException ex) {
-            throw new TmsException(name + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException(name + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDER_ISSUES);
         }
     }
 
@@ -67,7 +67,7 @@ public class BasicRepoImpl implements IHaulRepo {
             return updater.update(conn, debugMode, entity);
         } catch (SQLException ex) {
             String errorMessage = name + (isCreation ? CREATION_FAILED : UPDATE_FAILED);
-            throw new TmsException(errorMessage, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException(errorMessage, ex, ErrorCodes.REPO_PROVIDER_ISSUES);
         }
     }
 
@@ -75,7 +75,7 @@ public class BasicRepoImpl implements IHaulRepo {
         try (var conn = ds.getConnection()) {
             blocker.block(conn, id);
         } catch (SQLException ex) {
-            throw new TmsException(name + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDEER_ISSUES);
+            throw new TmsException(name + DELETION_FAILED, ex, ErrorCodes.REPO_PROVIDER_ISSUES);
         }
     }
 

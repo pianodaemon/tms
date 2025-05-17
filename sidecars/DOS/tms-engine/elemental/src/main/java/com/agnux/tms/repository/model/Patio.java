@@ -3,9 +3,11 @@ package com.agnux.tms.repository.model;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
-@Setter
 @Getter
+@Setter
+@NoArgsConstructor
 public class Patio extends TmsBasicModel {
 
     private String name;

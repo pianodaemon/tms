@@ -35,13 +35,13 @@ public enum ErrorCodes {
      * entity. This error occurs when there are problems with operations such
      * as saving or fetching data.
      */
-    REPO_PROVIDEER_ISSUES(1003), // Lack of interaction with storage provider entity
+    REPO_PROVIDER_ISSUES(1003), // Lack of interaction with storage provider entity
     /**
      * Error code indicating issues when interacting with the storage provider
      * entity. This error occurs when there are problems with storage-related
      * operations, such as uploading or downloading data.
      */
-    STORAGE_PROVIDEER_ISSUES(1004), // Lack of interaction with storage provider entity
+    STORAGE_PROVIDER_ISSUES(1004), // Lack of interaction with storage provider entity
 
     /**
      * Error code indicating issues when interacting with the FIFO provider

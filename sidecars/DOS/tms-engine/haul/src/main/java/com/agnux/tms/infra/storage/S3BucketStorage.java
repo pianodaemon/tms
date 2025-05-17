@@ -1,5 +1,6 @@
-package com.agnux.tms.storage;
+package com.agnux.tms.infra.storage;
 
+import com.agnux.tms.infra.storage.IStorage;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -75,7 +76,7 @@ public class S3BucketStorage implements IStorage {
             // Log the error and throw an TmsException if the upload fails
             log.error(String.format("File %s cannot be uploaded: %s", fileName, ex.awsErrorDetails().errorMessage()));
             throw new TmsException("A failure occurred when attempting to write to the bucket storage",
-                    ex, ErrorCodes.STORAGE_PROVIDEER_ISSUES);
+                    ex, ErrorCodes.STORAGE_PROVIDER_ISSUES);
         }
     }
 
@@ -105,7 +106,7 @@ public class S3BucketStorage implements IStorage {
             // Log the error and throw an TmsException if the download fails
             log.error(String.format("Failed to download file %s: %s", fileName, ex.awsErrorDetails().errorMessage()));
             throw new TmsException("Failed to download file from bucket storage",
-                    ex, ErrorCodes.STORAGE_PROVIDEER_ISSUES);
+                    ex, ErrorCodes.STORAGE_PROVIDER_ISSUES);
         }
     }
 
@@ -119,7 +120,7 @@ public class S3BucketStorage implements IStorage {
     @Override
     public String getTargetName() throws TmsException {
         // Ensure the target bucket name is provided
-        return target.orElseThrow(() -> new TmsException("AWS bucket was not provided", ErrorCodes.STORAGE_PROVIDEER_ISSUES));
+        return target.orElseThrow(() -> new TmsException("AWS bucket was not provided", ErrorCodes.STORAGE_PROVIDER_ISSUES));
     }
 
     /**
@@ -137,7 +138,7 @@ public class S3BucketStorage implements IStorage {
 
         // Validate the file name
         if (fileName == null || fileName.trim().isEmpty()) {
-            throw new TmsException("File name cannot be null or empty", ErrorCodes.STORAGE_PROVIDEER_ISSUES);
+            throw new TmsException("File name cannot be null or empty", ErrorCodes.STORAGE_PROVIDER_ISSUES);
         }
 
         // Return the S3 URI for the file

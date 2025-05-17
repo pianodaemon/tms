@@ -2,11 +2,14 @@ package com.agnux.tms.repository.model;
 
 import java.math.BigDecimal;
 import java.util.UUID;
+
 import lombok.Getter;
 import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class Vehicle extends TmsBasicModel {
 
     private String numberPlate;
@@ -29,7 +32,7 @@ public class Vehicle extends TmsBasicModel {
         this.numberPlate = numberPlate;
         this.vehicleType = vehicleType;
         this.vehicleYear = vehicleYear;
-        this.federalConf =  federalConf;
+        this.federalConf = federalConf;
         this.perfDistUnit = perfDistUnit;
         this.perfVolUnit = perfVolUnit;
     }
