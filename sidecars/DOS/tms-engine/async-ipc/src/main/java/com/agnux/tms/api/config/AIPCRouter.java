@@ -43,11 +43,15 @@ public class AIPCRouter {
     }
 
     @Bean
-    public RouterFunction<ServerResponse> admRouter(DriverHandler driverHandler, PatioHandler patioHandler) {
+    public RouterFunction<ServerResponse> admRouter(
+            CustomerHandler customerHandler,
+            DriverHandler driverHandler,
+            PatioHandler patioHandler) {
+
         return nest(path("/" + CATALOGS_API_PATH),
                 driverRoutes(driverHandler)
                         .and(patioRoutes(patioHandler))
-        );
+                        .and(customerRoutes(customerHandler)));
     }
 
     public static RouterFunction<ServerResponse> routeHaulMgmt(HaulMgmtHandler handler) {
