@@ -1,7 +1,7 @@
 package com.agnux.tms.core.aipc;
 
-import com.agnux.tms.repository.model.Customer;
-import com.agnux.tms.repository.model.Driver;
+import com.agnux.tms.repository.model.*;
+
 import java.util.UUID;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
@@ -95,6 +95,42 @@ class AIPCRouterIntegrationTest {
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
                 .jsonPath("$.name").isEqualTo("Integration Test Driver");
+    }
+
+    @Test
+    void testCreateAndGetPatio() {
+        UUID tenantId = UUID.randomUUID();
+        Patio newPatio = new Patio(null, tenantId, "Integration Test Patio", 19.4326, -99.1332);
+
+        var response = webTestClient.post()
+                .uri("/adm/patios")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(newPatio)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(Patio.class)
+                .returnResult();
+
+        Patio createdPatio = response.getResponseBody();
+        assert createdPatio != null : "Created patio should not be null";
+        assert "Integration Test Patio".equals(createdPatio.getName());
+        assert createdPatio.getLatitudeLocation() == 19.4326;
+        assert createdPatio.getLongitudeLocation() == -99.1332;
+
+        final UUID newID = createdPatio.getId().orElseThrow();
+
+        System.out.println("/adm/patios/" + newID);
+
+        webTestClient.get()
+                .uri("/adm/patios/" + newID)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.name").isEqualTo("Integration Test Patio")
+                .jsonPath("$.latitudeLocation").isEqualTo(19.4326)
+                .jsonPath("$.longitudeLocation").isEqualTo(-99.1332);
     }
 
     @Test
