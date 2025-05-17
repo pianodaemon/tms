@@ -1,4 +1,4 @@
-package com.agnux.tms.core.aipc;
+package com.agnux.tms.api.config;
 
 import com.agnux.tms.api.handler.DriverHandler;
 import com.agnux.tms.api.handler.HaulMgmtHandler;
