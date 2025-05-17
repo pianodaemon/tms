@@ -40,9 +40,9 @@ class ResponseHelper {
                 .bodyValue(error);
     }
 
-    public static Mono<ServerResponse> internalServerError(String context, TmsException e) {
+    public static Mono<ServerResponse> internalServerError(TmsException e) {
         Map<String, Object> error = Map.of(
-                "message", context + ": " + e.getMessage(),
+                "message", "Server Error" + ": " + e.getMessage(),
                 "errorCode", e.getErrorCode()
         );
         return ServerResponse.status(500)

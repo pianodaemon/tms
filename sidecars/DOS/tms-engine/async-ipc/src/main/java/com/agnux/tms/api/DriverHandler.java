@@ -35,7 +35,7 @@ public class DriverHandler {
                         if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
                             return ResponseHelper.badRequest("data supplied face issues", e);
                         }
-                        return ResponseHelper.internalServerError(e.getMessage(), e);
+                        return ResponseHelper.internalServerError(e);
                     }
                 });
     }
@@ -49,7 +49,7 @@ public class DriverHandler {
             if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
                 return ResponseHelper.notFound("data is not locatable", e);
             }
-            return ResponseHelper.internalServerError(e.getMessage(), e);
+            return ResponseHelper.internalServerError(e);
         }
     }
 
@@ -61,7 +61,7 @@ public class DriverHandler {
                         log.info("Updated driver feturing UUID: " + updatedId.toString());
                         return ResponseHelper.successWithBody(driver);
                     } catch (TmsException e) {
-                        return ServerResponse.status(500).bodyValue("Update failed: " + e.getMessage());
+                        return ResponseHelper.internalServerError(e);
                     }
                 });
     }
@@ -72,7 +72,7 @@ public class DriverHandler {
             repo.deleteDriver(driverId);
             return ServerResponse.noContent().build();
         } catch (TmsException e) {
-            return ServerResponse.status(500).bodyValue("Deletion failed: " + e.getMessage());
+            return ResponseHelper.internalServerError(e);
         }
     }
 }
