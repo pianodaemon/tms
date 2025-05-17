@@ -22,7 +22,7 @@ public class PatioHandler {
 
     private final BasicRepoImpl repo;
 
-    public Mono<ServerResponse> createPatio(ServerRequest request) {
+    public Mono<ServerResponse> create(ServerRequest request) {
         return request.bodyToMono(Patio.class)
                 .flatMap(patio -> {
                     try {
@@ -39,7 +39,7 @@ public class PatioHandler {
                 });
     }
 
-    public Mono<ServerResponse> readPatio(ServerRequest request) {
+    public Mono<ServerResponse> read(ServerRequest request) {
         UUID patioId = UUID.fromString(request.pathVariable("id"));
         try {
             Patio patio = repo.getPatio(patioId);
@@ -52,7 +52,7 @@ public class PatioHandler {
         }
     }
 
-    public Mono<ServerResponse> updatePatio(ServerRequest request) {
+    public Mono<ServerResponse> update(ServerRequest request) {
         return request.bodyToMono(Patio.class)
                 .flatMap(patio -> {
                     try {
@@ -68,7 +68,7 @@ public class PatioHandler {
                 });
     }
 
-    public Mono<ServerResponse> deletePatio(ServerRequest request) {
+    public Mono<ServerResponse> delete(ServerRequest request) {
         UUID patioId = UUID.fromString(request.pathVariable("id"));
         try {
             repo.deletePatio(patioId);

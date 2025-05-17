@@ -1,6 +1,5 @@
 package com.agnux.tms.api.handler;
 
-import com.agnux.tms.api.handler.ServiceResponseHelper;
 import com.agnux.tms.errors.ErrorCodes;
 import java.util.UUID;
 
@@ -8,7 +7,6 @@ import com.agnux.tms.repository.BasicRepoImpl;
 import com.agnux.tms.repository.model.Driver;
 import com.agnux.tms.errors.TmsException;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -24,7 +22,7 @@ public class DriverHandler {
 
     private final BasicRepoImpl repo;
 
-    public Mono<ServerResponse> createDriver(ServerRequest request) {
+    public Mono<ServerResponse> create(ServerRequest request) {
         return request.bodyToMono(Driver.class)
                 .flatMap(driver -> {
                     try {
@@ -41,7 +39,7 @@ public class DriverHandler {
                 });
     }
 
-    public Mono<ServerResponse> readDriver(ServerRequest request) {
+    public Mono<ServerResponse> read(ServerRequest request) {
         UUID driverId = UUID.fromString(request.pathVariable("id"));
         try {
             Driver driver = repo.getDriver(driverId);
@@ -54,7 +52,7 @@ public class DriverHandler {
         }
     }
 
-    public Mono<ServerResponse> updateDriver(ServerRequest request) {
+    public Mono<ServerResponse> update(ServerRequest request) {
         return request.bodyToMono(Driver.class)
                 .flatMap(driver -> {
                     try {
@@ -70,7 +68,7 @@ public class DriverHandler {
                 });
     }
 
-    public Mono<ServerResponse> deleteDriver(ServerRequest request) {
+    public Mono<ServerResponse> delete(ServerRequest request) {
         UUID driverId = UUID.fromString(request.pathVariable("id"));
         try {
             repo.deleteDriver(driverId);
