@@ -45,6 +45,23 @@ subprojects {
         // Optional: Mockito JUnit 5 integration
         testImplementation "org.mockito:mockito-junit-jupiter:${mockito_version}"
 
+        testImplementation "org.testcontainers:junit-jupiter:${pg_test_container_version}"
+
+        // Testcontainers for PostgreSQL
+        testImplementation "org.testcontainers:postgresql:${pg_test_container_version}"
+
+        testImplementation "org.flywaydb:flyway-core:${pg_flyway_version}"
+        testImplementation "org.flywaydb:flyway-database-postgresql:${pg_flyway_version}"
+
+        // Testcontainers Core Dependency
+        testImplementation "org.testcontainers:testcontainers:${localstack_version}"
+
+        // Testcontainers LocalStack Module
+        testImplementation "org.testcontainers:localstack:${localstack_version}"
+
+        // For working with the PG data source
+        implementation "org.postgresql:postgresql:${pg_jdbc_driver_version}"
+
         implementation "org.apache.logging.log4j:log4j-core:${log4j_version}"
         implementation "org.apache.logging.log4j:log4j-api:${log4j_version}"
 
