@@ -2,7 +2,6 @@ package com.agnux.tms.api.handler;
 
 import java.util.UUID;
 
-import com.agnux.tms.repository.BasicRepoImpl;
 import com.agnux.tms.repository.model.Customer;
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.IHaulRepo;

@@ -55,10 +55,6 @@ class AIPCRouterIntegrationTest {
                 .load()
                 .migrate();
 
-        /* System.setProperty("debug", "true");
-        System.setProperty("logging.level.org.springframework.web", "DEBUG");
-        System.setProperty("logging.level.org.springframework.web.reactive", "DEBUG");
-        System.setProperty("logging.level.org.springframework.boot.autoconfigure", "DEBUG");*/
     }
 
     @DynamicPropertySource
@@ -68,14 +64,6 @@ class AIPCRouterIntegrationTest {
         registry.add("db.password", postgresContainer::getPassword);
     }
 
-    /*
-    @DynamicPropertySource
-    static void overrideProps(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgresContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", postgresContainer::getUsername);
-        registry.add("spring.datasource.password", postgresContainer::getPassword);
-    }
-     */
     @Test
     void testCreateAndGetCustomer() {
         Customer newCustomer = new Customer(null, UUID.randomUUID(), "Integration Test Customer");

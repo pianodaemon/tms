@@ -2,9 +2,9 @@ package com.agnux.tms.api.handler;
 
 import java.util.UUID;
 
-import com.agnux.tms.repository.BasicRepoImpl;
 import com.agnux.tms.repository.model.Driver;
 import com.agnux.tms.errors.TmsException;
+import com.agnux.tms.repository.IHaulRepo;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class DriverHandler extends GenCrudHandler<Driver> {
 
-    private final BasicRepoImpl repo;
+    private final IHaulRepo repo;
 
     @Override
     protected UUID createEntity(Driver entity) throws TmsException {
