@@ -1,5 +1,6 @@
-package com.agnux.tms.api;
+package com.agnux.tms.api.handler;
 
+import com.agnux.tms.api.handler.ServiceResponseHelper;
 import com.agnux.tms.core.mgmt.HaulMgmt;
 import com.agnux.tms.core.mgmt.TenantDetailsDto;
 import com.agnux.tms.core.mgmt.TripDetailsDto;
@@ -7,14 +8,12 @@ import com.agnux.tms.errors.TmsException;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import reactor.core.publisher.Mono;
 
-import java.util.Map;
 import java.util.UUID;
 
 @Component

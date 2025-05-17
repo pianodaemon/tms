@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class AsyncIPCApp {
+public class AIPCApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AsyncIPCApp.class, args);
+		SpringApplication.run(AIPCApplication.class, args);
 	}
 
 }

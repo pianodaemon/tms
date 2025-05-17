@@ -1,13 +1,12 @@
-package com.agnux.tms.api;
+package com.agnux.tms.api.handler;
 
 import com.agnux.tms.errors.ErrorCodes;
 import java.util.UUID;
 
 import com.agnux.tms.repository.BasicRepoImpl;
-import com.agnux.tms.repository.model.Driver;
+import com.agnux.tms.repository.model.Patio;
 import com.agnux.tms.errors.TmsException;
 
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -19,18 +18,18 @@ import lombok.extern.log4j.Log4j2;
 @Component
 @RequiredArgsConstructor
 @Log4j2
-public class DriverHandler {
+public class PatioHandler {
 
     private final BasicRepoImpl repo;
 
-    public Mono<ServerResponse> createDriver(ServerRequest request) {
-        return request.bodyToMono(Driver.class)
-                .flatMap(driver -> {
+    public Mono<ServerResponse> createPatio(ServerRequest request) {
+        return request.bodyToMono(Patio.class)
+                .flatMap(patio -> {
                     try {
-                        UUID newId = repo.createDriver(driver);
-                        log.info("created driver featuring UUID: " + newId.toString());
-                        driver.setId(newId);
-                        return ServiceResponseHelper.successWithBody(driver);
+                        UUID newId = repo.createPatio(patio);
+                        log.info("created patio featuring UUID: " + newId.toString());
+                        patio.setId(newId);
+                        return ServiceResponseHelper.successWithBody(patio);
                     } catch (TmsException e) {
                         if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
                             return ServiceResponseHelper.badRequest("data supplied face issues", e);
@@ -40,11 +39,11 @@ public class DriverHandler {
                 });
     }
 
-    public Mono<ServerResponse> readDriver(ServerRequest request) {
-        UUID driverId = UUID.fromString(request.pathVariable("id"));
+    public Mono<ServerResponse> readPatio(ServerRequest request) {
+        UUID patioId = UUID.fromString(request.pathVariable("id"));
         try {
-            Driver driver = repo.getDriver(driverId);
-            return ServiceResponseHelper.successWithBody(driver);
+            Patio patio = repo.getPatio(patioId);
+            return ServiceResponseHelper.successWithBody(patio);
         } catch (TmsException e) {
             if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
                 return ServiceResponseHelper.notFound("data is not locatable", e);
@@ -53,13 +52,13 @@ public class DriverHandler {
         }
     }
 
-    public Mono<ServerResponse> updateDriver(ServerRequest request) {
-        return request.bodyToMono(Driver.class)
-                .flatMap(driver -> {
+    public Mono<ServerResponse> updatePatio(ServerRequest request) {
+        return request.bodyToMono(Patio.class)
+                .flatMap(patio -> {
                     try {
-                        UUID updatedId = repo.editDriver(driver);
-                        log.info("updated driver feturing UUID: " + updatedId.toString());
-                        return ServiceResponseHelper.successWithBody(driver);
+                        UUID updatedId = repo.editPatio(patio);
+                        log.info("updated patio feturing UUID: " + updatedId.toString());
+                        return ServiceResponseHelper.successWithBody(patio);
                     } catch (TmsException e) {
                         if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
                             return ServiceResponseHelper.badRequest("data supplied face issues", e);
@@ -69,10 +68,10 @@ public class DriverHandler {
                 });
     }
 
-    public Mono<ServerResponse> deleteDriver(ServerRequest request) {
-        UUID driverId = UUID.fromString(request.pathVariable("id"));
+    public Mono<ServerResponse> deletePatio(ServerRequest request) {
+        UUID patioId = UUID.fromString(request.pathVariable("id"));
         try {
-            repo.deleteDriver(driverId);
+            repo.deletePatio(patioId);
             return ServerResponse.noContent().build();
         } catch (TmsException e) {
             if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
