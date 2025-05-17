@@ -11,6 +11,8 @@ import reactor.core.publisher.Mono;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -18,6 +20,7 @@ import lombok.extern.log4j.Log4j2;
 public abstract class GenCrudHandler<T extends TmsBasicModel> {
 
     protected final Class<T> clazz;
+    private static final ConcurrentMap<Class<?>, Type> typeCache = new ConcurrentHashMap<>();
 
     @SuppressWarnings("unchecked")
     public GenCrudHandler() {
@@ -25,19 +28,19 @@ public abstract class GenCrudHandler<T extends TmsBasicModel> {
     }
 
     private Type extractGenericType() {
-        Type type = getClass().getGenericSuperclass();
-        Class<?> current = getClass();
-
-        while (!(type instanceof ParameterizedType) && current != null) {
-            current = current.getSuperclass();
-            type = current.getGenericSuperclass();
-        }
-
-        if (type instanceof ParameterizedType parameterizedType) {
-            return parameterizedType.getActualTypeArguments()[0];
-        } else {
-            throw new IllegalStateException("Could not determine generic type T.");
-        }
+        return typeCache.computeIfAbsent(getClass(), cls -> {
+            Type type = cls.getGenericSuperclass();
+            Class<?> current = cls;
+            while (!(type instanceof ParameterizedType) && current != null) {
+                current = current.getSuperclass();
+                type = current.getGenericSuperclass();
+            }
+            if (type instanceof ParameterizedType pt) {
+                return pt.getActualTypeArguments()[0];
+            } else {
+                throw new IllegalStateException("Could not determine generic type T.");
+            }
+        });
     }
 
     protected abstract UUID createEntity(T entity) throws TmsException;
