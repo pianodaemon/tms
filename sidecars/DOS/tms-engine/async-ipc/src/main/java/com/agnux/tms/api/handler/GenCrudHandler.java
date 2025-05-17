@@ -25,9 +25,15 @@ public abstract class GenCrudHandler<T extends TmsBasicModel> {
     }
 
     private Type extractGenericType() {
-        Type superClass = getClass().getGenericSuperclass();
+        Type type = getClass().getGenericSuperclass();
+        Class<?> current = getClass();
 
-        if (superClass instanceof ParameterizedType parameterizedType) {
+        while (!(type instanceof ParameterizedType) && current != null) {
+            current = current.getSuperclass();
+            type = current.getGenericSuperclass();
+        }
+
+        if (type instanceof ParameterizedType parameterizedType) {
             return parameterizedType.getActualTypeArguments()[0];
         } else {
             throw new IllegalStateException("Could not determine generic type T.");
