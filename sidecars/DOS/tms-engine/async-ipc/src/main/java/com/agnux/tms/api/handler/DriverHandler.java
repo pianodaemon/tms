@@ -1,83 +1,44 @@
 package com.agnux.tms.api.handler;
 
-import com.agnux.tms.errors.ErrorCodes;
 import java.util.UUID;
 
 import com.agnux.tms.repository.BasicRepoImpl;
 import com.agnux.tms.repository.model.Driver;
 import com.agnux.tms.errors.TmsException;
+import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.server.ServerRequest;
-import org.springframework.web.reactive.function.server.ServerResponse;
-import reactor.core.publisher.Mono;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 @Component
 @RequiredArgsConstructor
 @Log4j2
-public class DriverHandler {
+public class DriverHandler extends GenCrudHandler<Driver> {
 
     private final BasicRepoImpl repo;
 
-    public Mono<ServerResponse> create(ServerRequest request) {
-        return request.bodyToMono(Driver.class)
-                .flatMap(driver -> {
-                    try {
-                        UUID newId = repo.createDriver(driver);
-                        log.info("created driver featuring UUID: " + newId.toString());
-                        driver.setId(newId);
-                        return ServiceResponseHelper.successWithBody(driver);
-                    } catch (TmsException e) {
-                        if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
-                            return ServiceResponseHelper.badRequest("data supplied face issues", e);
-                        }
-                        return ServiceResponseHelper.internalServerError(e);
-                    }
-                });
+    @Override
+    protected UUID createEntity(Driver entity) throws TmsException {
+        UUID id = repo.createDriver(entity);
+        log.info("created driver with UUID: " + id);
+        return id;
     }
 
-    public Mono<ServerResponse> read(ServerRequest request) {
-        UUID driverId = UUID.fromString(request.pathVariable("id"));
-        try {
-            Driver driver = repo.getDriver(driverId);
-            return ServiceResponseHelper.successWithBody(driver);
-        } catch (TmsException e) {
-            if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
-                return ServiceResponseHelper.notFound("data is not locatable", e);
-            }
-            return ServiceResponseHelper.internalServerError(e);
-        }
+    @Override
+    protected Driver getEntity(UUID id) throws TmsException {
+        return repo.getDriver(id);
     }
 
-    public Mono<ServerResponse> update(ServerRequest request) {
-        return request.bodyToMono(Driver.class)
-                .flatMap(driver -> {
-                    try {
-                        UUID updatedId = repo.editDriver(driver);
-                        log.info("updated driver feturing UUID: " + updatedId.toString());
-                        return ServiceResponseHelper.successWithBody(driver);
-                    } catch (TmsException e) {
-                        if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
-                            return ServiceResponseHelper.badRequest("data supplied face issues", e);
-                        }
-                        return ServiceResponseHelper.internalServerError(e);
-                    }
-                });
+    @Override
+    protected UUID updateEntity(Driver entity) throws TmsException {
+        UUID id = repo.editDriver(entity);
+        log.info("updated driver with UUID: " + id);
+        return id;
     }
 
-    public Mono<ServerResponse> delete(ServerRequest request) {
-        UUID driverId = UUID.fromString(request.pathVariable("id"));
-        try {
-            repo.deleteDriver(driverId);
-            return ServerResponse.noContent().build();
-        } catch (TmsException e) {
-            if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
-                return ServiceResponseHelper.badRequest("data supplied face issues", e);
-            }
-            return ServiceResponseHelper.internalServerError(e);
-        }
+    @Override
+    protected void deleteEntity(UUID id) throws TmsException {
+        repo.deleteDriver(id);
     }
 }
