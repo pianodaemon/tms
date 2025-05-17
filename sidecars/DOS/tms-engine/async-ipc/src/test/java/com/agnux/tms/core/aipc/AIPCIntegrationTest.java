@@ -1,6 +1,7 @@
 package com.agnux.tms.core.aipc;
 
 import com.agnux.tms.repository.model.Customer;
+import com.agnux.tms.repository.model.Driver;
 import java.util.UUID;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
@@ -62,6 +63,38 @@ class AIPCRouterIntegrationTest {
         registry.add("db.url", postgresContainer::getJdbcUrl);
         registry.add("db.username", postgresContainer::getUsername);
         registry.add("db.password", postgresContainer::getPassword);
+    }
+
+    @Test
+    void testCreateAndGetDriver() {
+        Driver newDriver = new Driver(null, UUID.randomUUID(), "Integration Test Driver", "D123456789");
+
+        var response = webTestClient.post()
+                .uri("/adm/drivers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(newDriver)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(Driver.class)
+                .returnResult();
+
+        Driver createdDriver = response.getResponseBody();
+        assert createdDriver != null : "Created driver should not be null";
+        assert "Integration Test Driver".equals(createdDriver.getName());
+        assert "D123456789".equals(createdDriver.getLicenseNumber());
+
+        final UUID newID = createdDriver.getId().orElseThrow();
+
+        System.out.println("/adm/drivers/" + newID);
+
+        webTestClient.get()
+                .uri("/adm/drivers/" + newID)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.name").isEqualTo("Integration Test Driver");
     }
 
     @Test
