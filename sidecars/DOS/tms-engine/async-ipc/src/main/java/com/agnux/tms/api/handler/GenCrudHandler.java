@@ -59,7 +59,10 @@ abstract class GenCrudHandler<T extends TmsBasicModel> {
                         entity.setId(newId);
                         return ServiceResponseHelper.successWithBody(entity);
                     } catch (TmsException e) {
-                        return handleError(e, "data supplied face issues");
+                        if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
+                            return ServiceResponseHelper.badRequest("data supplied face issues", e);
+                        }
+                        return ServiceResponseHelper.internalServerError(e);
                     }
                 });
     }
@@ -70,7 +73,10 @@ abstract class GenCrudHandler<T extends TmsBasicModel> {
             T entity = getEntity(id);
             return ServiceResponseHelper.successWithBody(entity);
         } catch (TmsException e) {
-            return handleError(e, "data is not locatable");
+            if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
+                return ServiceResponseHelper.notFound("data is not locatable", e);
+            }
+            return ServiceResponseHelper.internalServerError(e);
         }
     }
 
@@ -81,7 +87,10 @@ abstract class GenCrudHandler<T extends TmsBasicModel> {
                         updateEntity(entity);
                         return ServiceResponseHelper.successWithBody(entity);
                     } catch (TmsException e) {
-                        return handleError(e, "data supplied face issues");
+                        if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
+                            return ServiceResponseHelper.badRequest("data supplied face issues", e);
+                        }
+                        return ServiceResponseHelper.internalServerError(e);
                     }
                 });
     }
@@ -92,14 +101,10 @@ abstract class GenCrudHandler<T extends TmsBasicModel> {
             deleteEntity(id);
             return ServerResponse.noContent().build();
         } catch (TmsException e) {
-            return handleError(e, "data supplied face issues");
+            if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
+                return ServiceResponseHelper.badRequest("data supplied face issues", e);
+            }
+            return ServiceResponseHelper.internalServerError(e);
         }
-    }
-
-    private Mono<ServerResponse> handleError(TmsException e, String userMessage) {
-        if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
-            return ServiceResponseHelper.badRequest(userMessage, e);
-        }
-        return ServiceResponseHelper.internalServerError(e);
     }
 }

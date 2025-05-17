@@ -131,6 +131,16 @@ class AIPCRouterIntegrationTest {
                 .jsonPath("$.name").isEqualTo("Integration Test Patio")
                 .jsonPath("$.latitudeLocation").isEqualTo(19.4326)
                 .jsonPath("$.longitudeLocation").isEqualTo(-99.1332);
+
+        webTestClient.delete()
+                .uri("/adm/patios/" + newID)
+                .exchange()
+                .expectStatus().isNoContent();
+
+        webTestClient.get()
+                .uri("/adm/patios/" + newID)
+                .exchange()
+                .expectStatus().isNotFound();
     }
 
     @Test
