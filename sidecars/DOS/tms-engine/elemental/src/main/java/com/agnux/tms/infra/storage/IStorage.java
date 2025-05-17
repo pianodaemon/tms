@@ -1,4 +1,4 @@
-package com.agnux.tms.storage;
+package com.agnux.tms.infra.storage;
 
 import java.io.BufferedInputStream;
 import com.agnux.tms.errors.TmsException;

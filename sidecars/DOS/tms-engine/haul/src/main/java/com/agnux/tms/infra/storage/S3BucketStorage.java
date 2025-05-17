@@ -1,5 +1,6 @@
-package com.agnux.tms.storage;
+package com.agnux.tms.infra.storage;
 
+import com.agnux.tms.infra.storage.IStorage;
 import software.amazon.awssdk.core.ResponseBytes;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;

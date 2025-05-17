@@ -1,4 +1,4 @@
-package com.agnux.tms.storage;
+package com.agnux.tms.infra.storage;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;

@@ -1,4 +1,4 @@
-package com.agnux.tms.fifo;
+package com.agnux.tms.infra.fifo;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
