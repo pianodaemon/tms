@@ -9,13 +9,13 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 @Configuration
-public class DriverRouter {
+public class PatioRouter {
 
     @Bean
-    public RouterFunction<ServerResponse> driverRoutes(DriverHandler handler) {
-        return route(GET("/drivers/{id}"), handler::readDriver)
-                .andRoute(POST("/drivers"), handler::createDriver)
-                .andRoute(PUT("/drivers"), handler::updateDriver)
-                .andRoute(DELETE("/drivers/{id}"), handler::deleteDriver);
+    public RouterFunction<ServerResponse> patioRoutes(PatioHandler handler) {
+        return route(GET("/patios/{id}"), handler::readPatio)
+                .andRoute(POST("/patios"), handler::createPatio)
+                .andRoute(PUT("/patios"), handler::updatePatio)
+                .andRoute(DELETE("/patios/{id}"), handler::deletePatio);
     }
 }
