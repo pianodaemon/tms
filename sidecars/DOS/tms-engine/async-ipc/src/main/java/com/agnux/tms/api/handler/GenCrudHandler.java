@@ -34,15 +34,11 @@ class GenCrudHandler<T extends TmsBasicModel> {
         return typeCache.computeIfAbsent(getClass(), cls -> {
             Type type = cls.getGenericSuperclass();
             Class<?> current = cls;
-            while (!(type instanceof ParameterizedType) && current != null) {
+            while (!(type instanceof ParameterizedType pt)) {
                 current = current.getSuperclass();
                 type = current.getGenericSuperclass();
             }
-            if (type instanceof ParameterizedType pt) {
-                return pt.getActualTypeArguments()[0];
-            } else {
-                throw new IllegalStateException("Could not determine generic type T.");
-            }
+            return pt.getActualTypeArguments()[0];
         });
     }
 
