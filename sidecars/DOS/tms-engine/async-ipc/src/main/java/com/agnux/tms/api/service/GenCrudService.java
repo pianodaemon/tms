@@ -9,7 +9,7 @@ public interface GenCrudService<T> {
 
     T read(UUID id) throws TmsException;
 
-    UUID update(T entity) throws TmsException;
+    void update(T entity) throws TmsException;
 
     void delete(UUID id) throws TmsException;
 }

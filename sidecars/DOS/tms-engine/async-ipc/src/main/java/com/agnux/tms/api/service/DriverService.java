@@ -30,10 +30,9 @@ public class DriverService implements GenCrudService<Driver> {
     }
 
     @Override
-    public UUID update(Driver entity) throws TmsException {
+    public void update(Driver entity) throws TmsException {
         UUID id = repo.editDriver(entity);
         log.info("Updated driver with UUID: " + id);
-        return id;
     }
 
     @Override

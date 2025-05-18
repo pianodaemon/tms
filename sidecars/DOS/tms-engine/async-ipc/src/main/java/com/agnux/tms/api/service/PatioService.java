@@ -30,10 +30,9 @@ public class PatioService implements GenCrudService<Patio> {
     }
 
     @Override
-    public UUID update(Patio entity) throws TmsException {
+    public void update(Patio entity) throws TmsException {
         UUID id = repo.editPatio(entity);
         log.info("Updated patio with UUID: " + id);
-        return id;
     }
 
     @Override

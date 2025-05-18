@@ -28,10 +28,9 @@ public class CustomerService implements GenCrudService<Customer> {
     }
 
     @Override
-    public UUID update(Customer entity) throws TmsException {
+    public void update(Customer entity) throws TmsException {
         UUID id = repo.editCustomer(entity);
         log.info("Updated customer with UUID: {}", id);
-        return id;
     }
 
     @Override
