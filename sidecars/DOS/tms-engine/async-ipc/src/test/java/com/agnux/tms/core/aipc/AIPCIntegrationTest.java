@@ -207,6 +207,7 @@ class AIPCRouterIntegrationTest {
                 "ABC-1234",
                 "ASDXXXX001",
                 VehicleType.DRY_VAN,
+                VehicleColor.GRAY,
                 2025,
                 "XA",
                 DistUnit.KM,
@@ -229,6 +230,7 @@ class AIPCRouterIntegrationTest {
         assert "ABC-1234".equals(createdVehicule.getNumberPlate());
         assert "ASDXXXX001".equals(createdVehicule.getNumberSerial());
         assert 2025 == createdVehicule.getVehicleYear();
+        assert createdVehicule.getVehicleColor() == VehicleColor.GRAY;
         assert createdVehicule.getPerfVolUnit() == VolUnit.LT;
         assert createdVehicule.getPerfDistUnit() == DistUnit.KM;
 
@@ -242,6 +244,8 @@ class AIPCRouterIntegrationTest {
                 .expectBody()
                 .jsonPath("$.numberPlate").isEqualTo("ABC-1234")
                 .jsonPath("$.numberSerial").isEqualTo("ASDXXXX001")
+                .jsonPath("$.vehicleType").isEqualTo("DRY_VAN")
+                .jsonPath("$.vehicleColor").isEqualTo("GRAY")
                 .jsonPath("$.vehicleYear").isEqualTo(2025)
                 .jsonPath("$.perfVolUnit").isEqualTo("LT")
                 .jsonPath("$.perfDistUnit").isEqualTo("KM")
