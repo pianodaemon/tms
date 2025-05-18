@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 public class Vehicle extends TmsBasicModel {
 
     private String numberPlate;
+    private String numberSerial;
     private VehicleType vehicleType;
     private int vehicleYear;
     private String federalConf;
@@ -26,10 +27,11 @@ public class Vehicle extends TmsBasicModel {
     private BigDecimal perfScalar;
 
     public Vehicle(final UUID vehicleId, final UUID tenantId,
-            final String numberPlate, final VehicleType vehicleType,
+            final String numberPlate, final String numberSerial, final VehicleType vehicleType,
             final int vehicleYear, final String federalConf, DistUnit perfDistUnit, VolUnit perfVolUnit) {
         this(vehicleId, tenantId);
         this.numberPlate = numberPlate;
+        this.numberSerial = numberSerial;
         this.vehicleType = vehicleType;
         this.vehicleYear = vehicleYear;
         this.federalConf = federalConf;
