@@ -15,6 +15,8 @@ dependencies {
     // PostgreSQL JDBC Driver
     implementation "org.postgresql:postgresql:${pg_jdbc_driver_version}"
 
+    testImplementation project(path: ':shared-test-resources', configuration: 'testResources')
+
     testImplementation 'org.slf4j:slf4j-simple:2.0.9'
 }
 

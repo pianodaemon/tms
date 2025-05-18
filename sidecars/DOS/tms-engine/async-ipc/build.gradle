@@ -20,6 +20,9 @@ dependencies {
     implementation "org.postgresql:postgresql:${pg_jdbc_driver_version}"
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    testImplementation project(path: ':shared-test-resources', configuration: 'testResources')
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
