@@ -17,13 +17,15 @@ import java.util.concurrent.ConcurrentMap;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-abstract class GenCrudHandler<T extends TmsBasicModel> {
+class GenCrudHandler<T extends TmsBasicModel> {
 
     protected final Class<T> clazz;
+    private final GenCrudService<T> service;
     private static final ConcurrentMap<Class<?>, Type> typeCache = new ConcurrentHashMap<>();
 
     @SuppressWarnings("unchecked")
-    public GenCrudHandler() {
+    public GenCrudHandler(GenCrudService<T> service) {
+        this.service = service;
         this.clazz = (Class<T>) extractGenericType();
     }
 
@@ -43,19 +45,11 @@ abstract class GenCrudHandler<T extends TmsBasicModel> {
         });
     }
 
-    protected abstract UUID createEntity(T entity) throws TmsException;
-
-    protected abstract T getEntity(UUID id) throws TmsException;
-
-    protected abstract UUID updateEntity(T entity) throws TmsException;
-
-    protected abstract void deleteEntity(UUID id) throws TmsException;
-
     public Mono<ServerResponse> create(ServerRequest request) {
         return request.bodyToMono(clazz)
                 .flatMap(entity -> {
                     try {
-                        UUID newId = createEntity(entity);
+                        UUID newId = service.create(entity);
                         entity.setId(newId);
                         return ServiceResponseHelper.successWithBody(entity);
                     } catch (TmsException e) {
@@ -70,7 +64,7 @@ abstract class GenCrudHandler<T extends TmsBasicModel> {
     public Mono<ServerResponse> read(ServerRequest request) {
         UUID id = UUID.fromString(request.pathVariable("id"));
         try {
-            T entity = getEntity(id);
+            T entity = service.read(id);
             return ServiceResponseHelper.successWithBody(entity);
         } catch (TmsException e) {
             if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
@@ -84,7 +78,7 @@ abstract class GenCrudHandler<T extends TmsBasicModel> {
         return request.bodyToMono(clazz)
                 .flatMap(entity -> {
                     try {
-                        updateEntity(entity);
+                        service.update(entity);
                         return ServiceResponseHelper.successWithBody(entity);
                     } catch (TmsException e) {
                         if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
@@ -98,7 +92,7 @@ abstract class GenCrudHandler<T extends TmsBasicModel> {
     public Mono<ServerResponse> delete(ServerRequest request) {
         UUID id = UUID.fromString(request.pathVariable("id"));
         try {
-            deleteEntity(id);
+            service.delete(id);
             return ServerResponse.noContent().build();
         } catch (TmsException e) {
             if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
