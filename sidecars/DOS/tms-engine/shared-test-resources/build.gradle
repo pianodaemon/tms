@@ -1,0 +1,16 @@
+plugins {
+    id 'base' // No Java plugin needed
+}
+
+configurations {
+    testResources
+}
+
+task packageTestResources(type: Jar) {
+    from('src/test/resources')
+    archiveClassifier.set('test-resources')
+}
+
+artifacts {
+    testResources packageTestResources
+}
