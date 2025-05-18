@@ -39,6 +39,7 @@ CREATE TABLE vehicles (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
     tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
     number_plate VARCHAR(50) NOT NULL,
+    number_serial VARCHAR(128) NOT NULL,
     vehicle_type VARCHAR(50) NOT NULL,  -- Store as a string (enum values)
     vehicle_year INT NOT NULL,
     federal_conf VARCHAR(6) NOT NULL,  -- configuración autotransporte federal ( Carta porte )
@@ -103,6 +104,7 @@ CREATE OR REPLACE FUNCTION alter_vehicle(
     _vehicle_id        UUID,
     _tenant_id         UUID,
     _number_plate      VARCHAR,
+    _number_serial     VARCHAR,
     _vehicle_type      VARCHAR,
     _vehicle_year      INT,
     _federal_conf      VARCHAR,
@@ -129,6 +131,7 @@ BEGIN
                 id,
                 tenant_id,
                 number_plate,
+                number_serial,
                 vehicle_type,
                 vehicle_year,
                 federal_conf,
@@ -140,6 +143,7 @@ BEGIN
                 gen_random_uuid(),
                 _tenant_id,
                 _number_plate,
+                _number_serial,
                 _vehicle_type,
                 _vehicle_year,
                 _federal_conf,
@@ -155,6 +159,7 @@ BEGIN
             SET
                 tenant_id      = _tenant_id,
                 number_plate   = _number_plate,
+                number_serial  = _number_serial,
                 vehicle_type   = _vehicle_type,
                 vehicle_year   = _vehicle_year,
                 federal_conf   = _federal_conf,
