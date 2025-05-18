@@ -1,6 +1,7 @@
 package com.agnux.tms.core.aipc;
 
 import com.agnux.tms.repository.model.*;
+import java.math.BigDecimal;
 
 import java.util.UUID;
 import org.flywaydb.core.Flyway;
@@ -209,7 +210,8 @@ class AIPCRouterIntegrationTest {
                 2025,
                 "XA",
                 DistUnit.KM,
-                VolUnit.LT
+                VolUnit.LT,
+                new BigDecimal("100")
         );
 
         var response = webTestClient.post()
@@ -231,7 +233,7 @@ class AIPCRouterIntegrationTest {
         assert createdVehicule.getPerfDistUnit() == DistUnit.KM;
 
         final UUID newID = createdVehicule.getId().orElseThrow();
-/*
+        /*
         System.out.println("/adm/vehicules/" + newID);
 
         webTestClient.get()

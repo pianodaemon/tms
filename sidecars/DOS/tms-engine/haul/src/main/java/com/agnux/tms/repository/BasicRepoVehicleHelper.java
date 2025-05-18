@@ -33,15 +33,11 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
                 String federalConf = rs.getString("federal_conf");
                 String distUnitStr = rs.getString("perf_dist_unit");
                 String volUnitStr = rs.getString("perf_vol_unit");
+                BigDecimal scalar = rs.getBigDecimal("perf_scalar");
 
                 Vehicle vehicle = new Vehicle(vehicleId, tenantId, numberPlate, numberSerial,
                         vehicleType, vehicleYear, federalConf, DistUnit.valueOf(distUnitStr),
-                        VolUnit.valueOf(volUnitStr));
-
-                BigDecimal scalar = rs.getBigDecimal("perf_scalar");
-                if (scalar != null) {
-                    vehicle.setPerfScalar(scalar);
-                }
+                        VolUnit.valueOf(volUnitStr), scalar);
 
                 return Optional.of(vehicle);
             }
