@@ -21,6 +21,13 @@ public class AIPCRouter {
     private static final String CATALOGS_API_PATH = "adm";
     private static final String HAUL_API_PATH = "oper";
 
+    public static RouterFunction<ServerResponse> vehicleRoutes(VehicleHandler handler) {
+        return route(GET("/vehicles/{id}"), handler::read)
+                .andRoute(POST("/vehicles"), handler::create)
+                .andRoute(PUT("/vehicles"), handler::update)
+                .andRoute(DELETE("/vehicles/{id}"), handler::delete);
+    }
+
     public static RouterFunction<ServerResponse> customerRoutes(CustomerHandler handler) {
         return route(GET("/customers/{id}"), handler::read)
                 .andRoute(POST("/customers"), handler::create)
@@ -50,12 +57,14 @@ public class AIPCRouter {
 
     @Bean
     public RouterFunction<ServerResponse> admRouter(
+            VehicleHandler vehicleHandler,
             CustomerHandler customerHandler,
             DriverHandler driverHandler,
             PatioHandler patioHandler) {
 
         return nest(path("/" + CATALOGS_API_PATH),
                 driverRoutes(driverHandler)
+                        .and(vehicleRoutes(vehicleHandler))
                         .and(patioRoutes(patioHandler))
                         .and(customerRoutes(customerHandler)));
     }

@@ -197,6 +197,69 @@ class AIPCRouterIntegrationTest {
                 .expectStatus().isNotFound();
     }
 
+    @Test
+    void testCreateAndGetVehicule() {
+        UUID tenantId = UUID.randomUUID();
+        Vehicle newVehicle = new Vehicle(
+                null,
+                tenantId,
+                "ABC-1234",
+                "ASDXXXX001",
+                VehicleType.DRY_VAN,
+                2025,
+                "XA",
+                DistUnit.KM,
+                VolUnit.LT
+        );
+
+        var response = webTestClient.post()
+                .uri("/adm/vehicles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(newVehicle)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(Vehicle.class)
+                .returnResult();
+
+        Vehicle createdVehicule = response.getResponseBody();
+        assert createdVehicule != null : "Created vehicule should not be null";
+        assert "ABC-1234".equals(createdVehicule.getNumberPlate());
+        assert "ASDXXXX001".equals(createdVehicule.getNumberSerial());
+        assert 2025 == createdVehicule.getVehicleYear();
+        assert createdVehicule.getPerfVolUnit() == VolUnit.LT;
+        assert createdVehicule.getPerfDistUnit() == DistUnit.KM;
+
+        final UUID newID = createdVehicule.getId().orElseThrow();
+/*
+        System.out.println("/adm/vehicules/" + newID);
+
+        webTestClient.get()
+                .uri("/adm/vehicules/" + newID)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.plateNumber").isEqualTo("ABC-1234")
+                .jsonPath("$.brand").isEqualTo("Volvo")
+                .jsonPath("$.model").isEqualTo("FH16")
+                .jsonPath("$.vin").isEqualTo("1V4NC9EJ7HN123456")
+                .jsonPath("$.fuelCapacity").isEqualTo(5000.0)
+                .jsonPath("$.fuelUnit").isEqualTo("LT")
+                .jsonPath("$.maxDistance").isEqualTo(1000.0)
+                .jsonPath("$.distanceUnit").isEqualTo("KM");
+
+        webTestClient.delete()
+                .uri("/adm/vehicules/" + newID)
+                .exchange()
+                .expectStatus().isNoContent();
+
+        webTestClient.get()
+                .uri("/adm/vehicules/" + newID)
+                .exchange()
+                .expectStatus().isNotFound();*/
+    }
+
     @AfterAll
     static void tearDown() {
         postgresContainer.stop();

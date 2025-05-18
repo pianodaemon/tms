@@ -109,7 +109,7 @@ public class BasicRepoImplTest {
         vehicle.setPerfScalar(new BigDecimal("7.50"));
 
         final UUID id = repo.createVehicle(vehicle);
-        Vehicle retrieved = repo.getVehicule(id);
+        Vehicle retrieved = repo.getVehicle(id);
 
         assertEquals(id, retrieved.getId().get());
         assertNotNull(vehicle, "vehicle created should not be null");
@@ -142,7 +142,7 @@ public class BasicRepoImplTest {
         repo.editVehicle(retrieved);
 
         // Retrieve the updated vehicle
-        Vehicle updated = repo.getVehicule(id);
+        Vehicle updated = repo.getVehicle(id);
 
         // Assert the updated vehicle matches the modified values
         assertNotNull(updated, "Updated vehicle should not be null");
@@ -169,7 +169,7 @@ public class BasicRepoImplTest {
         repo.deleteVehicle(id);
 
         // It can not retrieve the updated vehicle
-        TmsException assertThrows = assertThrows(TmsException.class, () -> repo.getVehicule(id), "Blocked vehicle should not be retrievable");
+        TmsException assertThrows = assertThrows(TmsException.class, () -> repo.getVehicle(id), "Blocked vehicle should not be retrievable");
         assertTrue(assertThrows.getErrorCode() == ErrorCodes.REPO_PROVIDER_ISSUES.getCode(), "Error code is not what we expected");
     }
 
