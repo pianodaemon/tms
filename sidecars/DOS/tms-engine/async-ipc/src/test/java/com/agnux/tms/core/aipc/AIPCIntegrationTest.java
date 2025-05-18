@@ -68,7 +68,7 @@ class AIPCRouterIntegrationTest {
 
     @Test
     void testCreateAndGetDriver() {
-        Driver newDriver = new Driver(null, UUID.randomUUID(), "Integration Test Driver", "tyson", "D123456789");
+        Driver newDriver = new Driver(null, UUID.randomUUID(), "Integration Test Driver", "tyson", "wallas", "D123456789");
 
         var response = webTestClient.post()
                 .uri("/adm/drivers")
@@ -84,6 +84,7 @@ class AIPCRouterIntegrationTest {
         assert createdDriver != null : "Created driver should not be null";
         assert "Integration Test Driver".equals(createdDriver.getName());
         assert "tyson".equals(createdDriver.getFirstSurname());
+        assert "wallas".equals(createdDriver.getSecondSurname());
         assert "D123456789".equals(createdDriver.getLicenseNumber());
 
         final UUID newID = createdDriver.getId().orElseThrow();

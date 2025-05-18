@@ -28,6 +28,7 @@ CREATE TABLE drivers (
     tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
     name VARCHAR(128) NOT NULL,
     first_surname VARCHAR(128) NOT NULL,
+    second_surname VARCHAR(128) NOT NULL,
     license_number VARCHAR(128) NOT NULL,
     blocked boolean DEFAULT false NOT NULL,
     CONSTRAINT unique_license_per_tenant UNIQUE (tenant_id, license_number)
@@ -182,6 +183,7 @@ CREATE OR REPLACE FUNCTION alter_driver(
     _tenant_id       UUID,
     _name            VARCHAR,
     _first_surname   VARCHAR,
+    _second_surname  VARCHAR,
     _license_number  VARCHAR
 ) RETURNS RECORD
 LANGUAGE plpgsql
@@ -204,6 +206,7 @@ BEGIN
                 tenant_id,
                 name,
                 first_surname,
+                second_surname,
                 license_number,
                 blocked
             ) VALUES (
@@ -211,6 +214,7 @@ BEGIN
                 _tenant_id,
                 _name,
                 _first_surname,
+                _second_surname,
                 _license_number,
                 false
             ) RETURNING id INTO _driver_id;
@@ -222,6 +226,7 @@ BEGIN
                 tenant_id      = _tenant_id,
                 name           = _name,
                 first_surname  = _first_surname,
+                second_surname = _second_surname,
                 license_number = _license_number
             WHERE id = _driver_id;
 
