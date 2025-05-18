@@ -1,4 +1,4 @@
-package com.agnux.tms.api.handler;
+package com.agnux.tms.api.service;
 
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.IHaulRepo;
