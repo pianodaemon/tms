@@ -1,6 +1,5 @@
 package com.agnux.tms.api.service;
 
-import com.agnux.tms.api.service.GenCrudService;
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.IHaulRepo;
 import com.agnux.tms.repository.model.Driver;
