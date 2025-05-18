@@ -24,9 +24,10 @@ class BasicRepoDriverHelper extends BasicRepoCommonHelper {
 
                 UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
                 String name = rs.getString("name");
+                String firstSurname = rs.getString("first_surname");
                 String licenseNumber = rs.getString("license_number");
 
-                Driver driver = new Driver(driverId, tenantId, name, licenseNumber);
+                Driver driver = new Driver(driverId, tenantId, name, firstSurname, licenseNumber);
 
                 return Optional.of(driver);
             }
@@ -39,7 +40,7 @@ class BasicRepoDriverHelper extends BasicRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_driver");
         }
 
-        String sql = "SELECT * FROM alter_driver(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR) AS (driver_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_driver(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR) AS (driver_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -52,7 +53,8 @@ class BasicRepoDriverHelper extends BasicRepoCommonHelper {
 
             stmt.setObject(2, d.getTenantId());           // _tenant_id
             stmt.setString(3, d.getName());               // _name
-            stmt.setString(4, d.getLicenseNumber());      // _license_number
+            stmt.setString(4, d.getFirstSurname());       // _first_surname
+            stmt.setString(5, d.getLicenseNumber());      // _license_number
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {

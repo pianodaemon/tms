@@ -61,7 +61,8 @@ public class BasicRepoImplTest {
         Driver driver = new Driver(
                 null,
                 tenantId,
-                "Juan Pérez",
+                "Juan",
+                "Pérez",
                 "D123456789"
         );
 
@@ -336,7 +337,8 @@ public class BasicRepoImplTest {
         Driver driver1 = new Driver(
                 null,
                 tenantId,
-                "John Smith",
+                "John",
+                "Smith",
                 "D123456789"
         );
         final UUID driver1Id = repo.createDriver(driver1);
@@ -345,7 +347,8 @@ public class BasicRepoImplTest {
         Driver driver2 = new Driver(
                 null,
                 tenantId,
-                "Jane Doe",
+                "Jane",
+                "Doe",
                 "D987654321"
         );
         final UUID driver2Id = repo.createDriver(driver2);

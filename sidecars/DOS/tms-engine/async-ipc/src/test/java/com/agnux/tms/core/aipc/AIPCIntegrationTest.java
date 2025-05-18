@@ -4,6 +4,7 @@ import com.agnux.tms.repository.model.*;
 
 import java.util.UUID;
 import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -67,7 +68,7 @@ class AIPCRouterIntegrationTest {
 
     @Test
     void testCreateAndGetDriver() {
-        Driver newDriver = new Driver(null, UUID.randomUUID(), "Integration Test Driver", "D123456789");
+        Driver newDriver = new Driver(null, UUID.randomUUID(), "Integration Test Driver", "tyson", "D123456789");
 
         var response = webTestClient.post()
                 .uri("/adm/drivers")
@@ -82,6 +83,7 @@ class AIPCRouterIntegrationTest {
         Driver createdDriver = response.getResponseBody();
         assert createdDriver != null : "Created driver should not be null";
         assert "Integration Test Driver".equals(createdDriver.getName());
+        assert "tyson".equals(createdDriver.getFirstSurname());
         assert "D123456789".equals(createdDriver.getLicenseNumber());
 
         final UUID newID = createdDriver.getId().orElseThrow();
@@ -192,5 +194,10 @@ class AIPCRouterIntegrationTest {
                 .uri("/adm/customers/" + newID)
                 .exchange()
                 .expectStatus().isNotFound();
+    }
+
+    @AfterAll
+    static void tearDown() {
+        postgresContainer.stop();
     }
 }
