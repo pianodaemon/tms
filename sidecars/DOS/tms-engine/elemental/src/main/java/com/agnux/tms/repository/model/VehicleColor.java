@@ -28,9 +28,4 @@ public enum VehicleColor {
     public String getHexCode() {
         return hexCode;
     }
-
-    @Override
-    public String toString() {
-        return name() + " (" + hexCode + ")";
-    }
 }
