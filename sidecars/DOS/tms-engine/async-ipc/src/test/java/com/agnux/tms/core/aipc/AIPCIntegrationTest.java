@@ -230,6 +230,7 @@ class AIPCRouterIntegrationTest {
         assert "ABC-1234".equals(createdVehicule.getNumberPlate());
         assert "ASDXXXX001".equals(createdVehicule.getNumberSerial());
         assert 2025 == createdVehicule.getVehicleYear();
+        assert createdVehicule.getVehicleColor() == VehicleColor.GRAY;
         assert createdVehicule.getPerfVolUnit() == VolUnit.LT;
         assert createdVehicule.getPerfDistUnit() == DistUnit.KM;
 
