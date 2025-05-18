@@ -233,33 +233,29 @@ class AIPCRouterIntegrationTest {
         assert createdVehicule.getPerfDistUnit() == DistUnit.KM;
 
         final UUID newID = createdVehicule.getId().orElseThrow();
-        /*
-        System.out.println("/adm/vehicules/" + newID);
 
         webTestClient.get()
-                .uri("/adm/vehicules/" + newID)
+                .uri("/adm/vehicles/" + newID)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                .jsonPath("$.plateNumber").isEqualTo("ABC-1234")
-                .jsonPath("$.brand").isEqualTo("Volvo")
-                .jsonPath("$.model").isEqualTo("FH16")
-                .jsonPath("$.vin").isEqualTo("1V4NC9EJ7HN123456")
-                .jsonPath("$.fuelCapacity").isEqualTo(5000.0)
-                .jsonPath("$.fuelUnit").isEqualTo("LT")
-                .jsonPath("$.maxDistance").isEqualTo(1000.0)
-                .jsonPath("$.distanceUnit").isEqualTo("KM");
+                .jsonPath("$.numberPlate").isEqualTo("ABC-1234")
+                .jsonPath("$.numberSerial").isEqualTo("ASDXXXX001")
+                .jsonPath("$.vehicleYear").isEqualTo(2025)
+                .jsonPath("$.perfVolUnit").isEqualTo("LT")
+                .jsonPath("$.perfDistUnit").isEqualTo("KM")
+                .jsonPath("$.perfScalar").isEqualTo(100);
 
         webTestClient.delete()
-                .uri("/adm/vehicules/" + newID)
+                .uri("/adm/vehicles/" + newID)
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient.get()
-                .uri("/adm/vehicules/" + newID)
+                .uri("/adm/vehicles/" + newID)
                 .exchange()
-                .expectStatus().isNotFound();*/
+                .expectStatus().isNotFound();
     }
 
     @AfterAll
