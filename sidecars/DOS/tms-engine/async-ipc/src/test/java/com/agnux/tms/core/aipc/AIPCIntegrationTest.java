@@ -1,6 +1,7 @@
 package com.agnux.tms.core.aipc;
 
 import com.agnux.tms.repository.model.*;
+import java.math.BigDecimal;
 
 import java.util.UUID;
 import org.flywaydb.core.Flyway;
@@ -193,6 +194,66 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.get()
                 .uri("/adm/customers/" + newID)
+                .exchange()
+                .expectStatus().isNotFound();
+    }
+
+    @Test
+    void testCreateAndGetVehicule() {
+        UUID tenantId = UUID.randomUUID();
+        Vehicle newVehicle = new Vehicle(
+                null,
+                tenantId,
+                "ABC-1234",
+                "ASDXXXX001",
+                VehicleType.DRY_VAN,
+                2025,
+                "XA",
+                DistUnit.KM,
+                VolUnit.LT,
+                new BigDecimal("100")
+        );
+
+        var response = webTestClient.post()
+                .uri("/adm/vehicles")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(newVehicle)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(Vehicle.class)
+                .returnResult();
+
+        Vehicle createdVehicule = response.getResponseBody();
+        assert createdVehicule != null : "Created vehicule should not be null";
+        assert "ABC-1234".equals(createdVehicule.getNumberPlate());
+        assert "ASDXXXX001".equals(createdVehicule.getNumberSerial());
+        assert 2025 == createdVehicule.getVehicleYear();
+        assert createdVehicule.getPerfVolUnit() == VolUnit.LT;
+        assert createdVehicule.getPerfDistUnit() == DistUnit.KM;
+
+        final UUID newID = createdVehicule.getId().orElseThrow();
+
+        webTestClient.get()
+                .uri("/adm/vehicles/" + newID)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.numberPlate").isEqualTo("ABC-1234")
+                .jsonPath("$.numberSerial").isEqualTo("ASDXXXX001")
+                .jsonPath("$.vehicleYear").isEqualTo(2025)
+                .jsonPath("$.perfVolUnit").isEqualTo("LT")
+                .jsonPath("$.perfDistUnit").isEqualTo("KM")
+                .jsonPath("$.perfScalar").isEqualTo(100);
+
+        webTestClient.delete()
+                .uri("/adm/vehicles/" + newID)
+                .exchange()
+                .expectStatus().isNoContent();
+
+        webTestClient.get()
+                .uri("/adm/vehicles/" + newID)
                 .exchange()
                 .expectStatus().isNotFound();
     }

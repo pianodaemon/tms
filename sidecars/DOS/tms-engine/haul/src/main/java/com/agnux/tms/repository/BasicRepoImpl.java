@@ -122,7 +122,7 @@ public class BasicRepoImpl implements IHaulRepo {
 
     // Vehicle
     @Override
-    public Vehicle getVehicule(UUID id) throws TmsException {
+    public Vehicle getVehicle(UUID id) throws TmsException {
         return fetchEntity(id, "Vehicule", BasicRepoVehicleHelper::fetchById);
     }
 

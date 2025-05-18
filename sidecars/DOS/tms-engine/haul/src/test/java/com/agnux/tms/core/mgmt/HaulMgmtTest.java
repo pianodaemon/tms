@@ -49,13 +49,13 @@ class HaulMgmtTest {
         customer = new Customer(customerUuid, tenantUuid, "quintanilla");
         tripDetails = new TripDetailsDto(vehicleUuid, agreementUuid, driverUuid);
         agreement = new Agreement(agreementUuid, tenantUuid, customerUuid, "Soriana", 0, 0, 0, 0, DistUnit.KM, new BigDecimal("100"));
-        ship = new Vehicle(vehicleUuid, tenantDetails.getTenantId(), "GAS9500", "AXD000000001", VehicleType.CAR, 1980, "VL", DistUnit.KM, VolUnit.LT);
+        ship = new Vehicle(vehicleUuid, tenantDetails.getTenantId(), "GAS9500", "AXD000000001", VehicleType.CAR, 1980, "VL", DistUnit.KM, VolUnit.LT, BigDecimal.ZERO);
     }
 
     @Test
     void assignTrip_ShouldReturnCargoId_WhenDataIsValid() throws TmsException {
         // Arrange
-        when(repo.getVehicule(vehicleUuid)).thenReturn(ship);
+        when(repo.getVehicle(vehicleUuid)).thenReturn(ship);
         when(repo.getAgreement(agreementUuid)).thenReturn(agreement);
         when(repo.createCargoAssignment(any(CargoAssignment.class))).thenReturn(cargorUuid);
         when(repo.createTransLogRecord(any(TransLogRecord.class))).thenReturn(transLogRecordUuid);
@@ -67,7 +67,7 @@ class HaulMgmtTest {
         assertEquals(cargorUuid, cargoId);
 
         // Verify methods called
-        verify(repo).getVehicule(vehicleUuid);
+        verify(repo).getVehicle(vehicleUuid);
 
         ArgumentCaptor<CargoAssignment> assignmentCaptor = ArgumentCaptor.forClass(CargoAssignment.class);
         verify(repo).createCargoAssignment(assignmentCaptor.capture());
@@ -80,8 +80,8 @@ class HaulMgmtTest {
     @Test
     void assignTrip_ShouldThrowTmsException_WhenTenantMismatch() throws TmsException {
         // Arrange
-        Vehicle mismatchedVehicle = new Vehicle(vehicleUuid, UUID.fromString("0a232802-d6e8-458f-9eca-6a8c2b980900"), "GAS9500", "AXD000000001", VehicleType.CAR, 1980, "VL", DistUnit.KM, VolUnit.LT);
-        when(repo.getVehicule(vehicleUuid)).thenReturn(mismatchedVehicle);
+        Vehicle mismatchedVehicle = new Vehicle(vehicleUuid, UUID.fromString("0a232802-d6e8-458f-9eca-6a8c2b980900"), "GAS9500", "AXD000000001", VehicleType.CAR, 1980, "VL", DistUnit.KM, VolUnit.LT, BigDecimal.ZERO);
+        when(repo.getVehicle(vehicleUuid)).thenReturn(mismatchedVehicle);
 
         // Act & Assert
         TmsException ex = assertThrows(TmsException.class, ()

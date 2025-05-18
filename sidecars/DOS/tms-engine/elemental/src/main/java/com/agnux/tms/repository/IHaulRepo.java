@@ -32,7 +32,7 @@ public interface IHaulRepo {
 
     public UUID createTransLogRecord(TransLogRecord tlr) throws TmsException;
 
-    public Vehicle getVehicule(UUID vehicleId) throws TmsException;
+    public Vehicle getVehicle(UUID vehicleId) throws TmsException;
 
     public UUID createVehicle(Vehicle v) throws TmsException;
 

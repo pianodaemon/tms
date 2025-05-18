@@ -104,12 +104,10 @@ public class BasicRepoImplTest {
                 VehicleType.REFRIGERATED_VAN,
                 1970,
                 "VL",
-                DistUnit.KM, VolUnit.LT);
-
-        vehicle.setPerfScalar(new BigDecimal("7.50"));
+                DistUnit.KM, VolUnit.LT, new BigDecimal("7.50"));
 
         final UUID id = repo.createVehicle(vehicle);
-        Vehicle retrieved = repo.getVehicule(id);
+        Vehicle retrieved = repo.getVehicle(id);
 
         assertEquals(id, retrieved.getId().get());
         assertNotNull(vehicle, "vehicle created should not be null");
@@ -142,7 +140,7 @@ public class BasicRepoImplTest {
         repo.editVehicle(retrieved);
 
         // Retrieve the updated vehicle
-        Vehicle updated = repo.getVehicule(id);
+        Vehicle updated = repo.getVehicle(id);
 
         // Assert the updated vehicle matches the modified values
         assertNotNull(updated, "Updated vehicle should not be null");
@@ -169,7 +167,7 @@ public class BasicRepoImplTest {
         repo.deleteVehicle(id);
 
         // It can not retrieve the updated vehicle
-        TmsException assertThrows = assertThrows(TmsException.class, () -> repo.getVehicule(id), "Blocked vehicle should not be retrievable");
+        TmsException assertThrows = assertThrows(TmsException.class, () -> repo.getVehicle(id), "Blocked vehicle should not be retrievable");
         assertTrue(assertThrows.getErrorCode() == ErrorCodes.REPO_PROVIDER_ISSUES.getCode(), "Error code is not what we expected");
     }
 
@@ -326,13 +324,11 @@ public class BasicRepoImplTest {
         UUID tenantId = UUID.randomUUID();
 
         // Create the first Vehicle
-        Vehicle vehicle1 = new Vehicle(null, tenantId, "XYZ-999", "AXD00000000A", VehicleType.DELIVERY_TRUCK, 2022, "VL", DistUnit.KM, VolUnit.LT);
-        vehicle1.setPerfScalar(new BigDecimal("5.5"));
+        Vehicle vehicle1 = new Vehicle(null, tenantId, "XYZ-999", "AXD00000000A", VehicleType.DELIVERY_TRUCK, 2022, "VL", DistUnit.KM, VolUnit.LT, new BigDecimal("5.5"));
         final UUID vehicle1Id = repo.createVehicle(vehicle1);
 
         // Create the second Vehicle
-        Vehicle vehicle2 = new Vehicle(null, tenantId, "ABC-123", "AXD00000000B", VehicleType.DELIVERY_TRUCK, 2023, "VL", DistUnit.KM, VolUnit.LT);
-        vehicle2.setPerfScalar(new BigDecimal("6.5"));
+        Vehicle vehicle2 = new Vehicle(null, tenantId, "ABC-123", "AXD00000000B", VehicleType.DELIVERY_TRUCK, 2023, "VL", DistUnit.KM, VolUnit.LT, new BigDecimal("6.5"));
         final UUID vehicle2Id = repo.createVehicle(vehicle2);
 
         // Create the first Driver

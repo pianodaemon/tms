@@ -34,7 +34,7 @@ public class HaulMgmt {
         // Si el vehiculo no esta disponible 
         // Una exception sera levantada con el respectivo codigo de error
         // para esta situacion
-        Vehicle ship = repo.getVehicule(tripDetails.getVehicleId());
+        Vehicle ship = repo.getVehicle(tripDetails.getVehicleId());
 
         if (!ship.getTenantId().equals(tenantDetails.getTenantId())) {
             final String emsg = "The assigned vehicle does not pertain to tenant " + tenantDetails.getTenantId();
