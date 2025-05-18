@@ -41,6 +41,7 @@ CREATE TABLE vehicles (
     number_plate VARCHAR(50) NOT NULL,
     number_serial VARCHAR(128) NOT NULL,
     vehicle_type VARCHAR(50) NOT NULL,  -- Store as a string (enum values)
+    vehicle_color VARCHAR(50) NOT NULL, -- Store as a string (enum values)
     vehicle_year INT NOT NULL,
     federal_conf VARCHAR(6) NOT NULL,  -- configuración autotransporte federal ( Carta porte )
     perf_dist_unit VARCHAR(50),         -- Store as a string (enum values)
@@ -106,6 +107,7 @@ CREATE OR REPLACE FUNCTION alter_vehicle(
     _number_plate      VARCHAR,
     _number_serial     VARCHAR,
     _vehicle_type      VARCHAR,
+    _vehicle_color     VARCHAR,
     _vehicle_year      INT,
     _federal_conf      VARCHAR,
     _perf_dist_unit    VARCHAR,
@@ -133,6 +135,7 @@ BEGIN
                 number_plate,
                 number_serial,
                 vehicle_type,
+                vehicle_color,
                 vehicle_year,
                 federal_conf,
                 perf_dist_unit,
@@ -145,6 +148,7 @@ BEGIN
                 _number_plate,
                 _number_serial,
                 _vehicle_type,
+                _vehicle_color,
                 _vehicle_year,
                 _federal_conf,
                 _perf_dist_unit,
@@ -161,6 +165,7 @@ BEGIN
                 number_plate   = _number_plate,
                 number_serial  = _number_serial,
                 vehicle_type   = _vehicle_type,
+                vehicle_color  = _vehicle_color,
                 vehicle_year   = _vehicle_year,
                 federal_conf   = _federal_conf,
                 perf_dist_unit = _perf_dist_unit,

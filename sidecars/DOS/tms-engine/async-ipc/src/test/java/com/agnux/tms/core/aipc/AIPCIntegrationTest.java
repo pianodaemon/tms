@@ -207,6 +207,7 @@ class AIPCRouterIntegrationTest {
                 "ABC-1234",
                 "ASDXXXX001",
                 VehicleType.DRY_VAN,
+                VehicleColor.GRAY,
                 2025,
                 "XA",
                 DistUnit.KM,

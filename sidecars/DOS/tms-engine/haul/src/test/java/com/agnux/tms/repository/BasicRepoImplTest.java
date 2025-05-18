@@ -11,6 +11,7 @@ import com.agnux.tms.repository.model.VehicleType;
 import com.agnux.tms.repository.model.DistUnit;
 import com.agnux.tms.repository.model.Patio;
 import com.agnux.tms.repository.model.TransLogRecord;
+import com.agnux.tms.repository.model.VehicleColor;
 import com.agnux.tms.repository.model.VolUnit;
 import org.junit.jupiter.api.*;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -102,6 +103,7 @@ public class BasicRepoImplTest {
                 "ABC-123",
                 "AXD00000000A",
                 VehicleType.REFRIGERATED_VAN,
+                VehicleColor.GREEN,
                 1970,
                 "VL",
                 DistUnit.KM, VolUnit.LT, new BigDecimal("7.50"));
@@ -324,11 +326,11 @@ public class BasicRepoImplTest {
         UUID tenantId = UUID.randomUUID();
 
         // Create the first Vehicle
-        Vehicle vehicle1 = new Vehicle(null, tenantId, "XYZ-999", "AXD00000000A", VehicleType.DELIVERY_TRUCK, 2022, "VL", DistUnit.KM, VolUnit.LT, new BigDecimal("5.5"));
+        Vehicle vehicle1 = new Vehicle(null, tenantId, "XYZ-999", "AXD00000000A", VehicleType.DELIVERY_TRUCK, VehicleColor.BROWN, 2022, "VL", DistUnit.KM, VolUnit.LT, new BigDecimal("5.5"));
         final UUID vehicle1Id = repo.createVehicle(vehicle1);
 
         // Create the second Vehicle
-        Vehicle vehicle2 = new Vehicle(null, tenantId, "ABC-123", "AXD00000000B", VehicleType.DELIVERY_TRUCK, 2023, "VL", DistUnit.KM, VolUnit.LT, new BigDecimal("6.5"));
+        Vehicle vehicle2 = new Vehicle(null, tenantId, "ABC-123", "AXD00000000B", VehicleType.DELIVERY_TRUCK, VehicleColor.RED, 2023, "VL", DistUnit.KM, VolUnit.LT, new BigDecimal("6.5"));
         final UUID vehicle2Id = repo.createVehicle(vehicle2);
 
         // Create the first Driver

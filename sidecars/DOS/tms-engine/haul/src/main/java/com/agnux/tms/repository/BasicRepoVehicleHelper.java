@@ -2,6 +2,7 @@ package com.agnux.tms.repository;
 
 import com.agnux.tms.repository.model.DistUnit;
 import com.agnux.tms.repository.model.Vehicle;
+import com.agnux.tms.repository.model.VehicleColor;
 import com.agnux.tms.repository.model.VehicleType;
 import com.agnux.tms.repository.model.VolUnit;
 import java.math.BigDecimal;
@@ -29,6 +30,7 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
                 String numberPlate = rs.getString("number_plate");
                 String numberSerial = rs.getString("number_serial");
                 VehicleType vehicleType = VehicleType.valueOf(rs.getString("vehicle_type"));
+                VehicleColor vehicleColor = VehicleColor.valueOf(rs.getString("vehicle_color"));
                 Integer vehicleYear = rs.getInt("vehicle_year");
                 String federalConf = rs.getString("federal_conf");
                 String distUnitStr = rs.getString("perf_dist_unit");
@@ -36,7 +38,7 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
                 BigDecimal scalar = rs.getBigDecimal("perf_scalar");
 
                 Vehicle vehicle = new Vehicle(vehicleId, tenantId, numberPlate, numberSerial,
-                        vehicleType, vehicleYear, federalConf, DistUnit.valueOf(distUnitStr),
+                        vehicleType, vehicleColor, vehicleYear, federalConf, DistUnit.valueOf(distUnitStr),
                         VolUnit.valueOf(volUnitStr), scalar);
 
                 return Optional.of(vehicle);
@@ -50,7 +52,7 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_vehicle");
         }
 
-        String sql = "SELECT * FROM alter_vehicle(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::INT, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::NUMERIC) AS (vehicle_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_vehicle(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::INT, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::NUMERIC) AS (vehicle_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -65,11 +67,12 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
             stmt.setString(3, v.getNumberPlate());                // _number_plate
             stmt.setString(4, v.getNumberSerial());               // _number_serial
             stmt.setString(5, v.getVehicleType().toString());     // _vehicle_type
-            stmt.setInt(6, v.getVehicleYear());                   // _vehicle_year
-            stmt.setString(7, v.getFederalConf());                // _federal_conf
-            stmt.setString(8, v.getPerfDistUnit().toString());    // _perf_dist_unit
-            stmt.setString(9, v.getPerfVolUnit().toString());     // _perf_vol_unit
-            stmt.setBigDecimal(10, v.getPerfScalar());             // _perf_scalar
+            stmt.setString(6, v.getVehicleColor().toString());     // _vehicle_color
+            stmt.setInt(7, v.getVehicleYear());                   // _vehicle_year
+            stmt.setString(8, v.getFederalConf());                // _federal_conf
+            stmt.setString(9, v.getPerfDistUnit().toString());    // _perf_dist_unit
+            stmt.setString(10, v.getPerfVolUnit().toString());     // _perf_vol_unit
+            stmt.setBigDecimal(11, v.getPerfScalar());             // _perf_scalar
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
