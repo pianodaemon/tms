@@ -244,6 +244,8 @@ class AIPCRouterIntegrationTest {
                 .expectBody()
                 .jsonPath("$.numberPlate").isEqualTo("ABC-1234")
                 .jsonPath("$.numberSerial").isEqualTo("ASDXXXX001")
+                .jsonPath("$.vehicleType").isEqualTo("DRY_VAN")
+                .jsonPath("$.vehicleColor").isEqualTo("GRAY")
                 .jsonPath("$.vehicleYear").isEqualTo(2025)
                 .jsonPath("$.perfVolUnit").isEqualTo("LT")
                 .jsonPath("$.perfDistUnit").isEqualTo("KM")
