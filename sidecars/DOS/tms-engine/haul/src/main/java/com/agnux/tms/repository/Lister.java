@@ -1,4 +1,4 @@
-package com.agnux.tms.api.handler;
+package com.agnux.tms.repository;
 
 import lombok.Getter;
 
@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 
 public abstract class Lister<T> {
-    
+
     private static final String AND_SORROUNDED_BY_SPACES = " AND ";
 
     @Getter

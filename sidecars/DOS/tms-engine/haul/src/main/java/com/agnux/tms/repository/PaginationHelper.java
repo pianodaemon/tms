@@ -1,4 +1,4 @@
-package com.agnux.tms.api.handler;
+package com.agnux.tms.repository;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
