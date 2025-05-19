@@ -1,5 +1,6 @@
 package com.agnux.tms.repository;
 
+import com.agnux.tms.repository.Lister.Result;
 import com.agnux.tms.repository.model.Customer;
 
 import java.sql.Connection;
@@ -7,7 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
@@ -79,4 +83,21 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
             stmt.executeUpdate();
         }
     }
+
+    public static Result<Customer> list(Connection conn, List<Lister.Param> filters, List<Lister.Param> pagination) {
+        return new Lister<Customer>(
+                "customers",
+                Arrays.asList("id", "tenant_id", "name"),
+                Set.of("name") // fields that should be quoted in WHERE clauses
+        ) {
+            @Override
+            protected Customer mapRow(ResultSet rs) throws SQLException {
+                UUID id = UUID.fromString(rs.getString("id"));
+                UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
+                String name = rs.getString("name");
+                return new Customer(id, tenantId, name);
+            }
+        }.list(conn, filters, pagination);
+    }
+
 }
