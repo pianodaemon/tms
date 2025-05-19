@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -84,11 +84,11 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
         }
     }
 
-    public static Result<Customer> list(Connection conn, List<Lister.Param> filters, List<Lister.Param> pagination) {
+    public static Result<Customer> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) {
         return new Lister<Customer>(
                 "customers",
                 Arrays.asList("id", "tenant_id", "name"),
-                Set.of("name") // fields that should be quoted in WHERE clauses
+                Set.of("name")
         ) {
             @Override
             protected Customer mapRow(ResultSet rs) throws SQLException {
@@ -99,5 +99,4 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
             }
         }.list(conn, filters, pagination);
     }
-
 }

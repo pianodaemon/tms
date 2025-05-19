@@ -35,6 +35,18 @@ public abstract class Lister<T> {
     private final List<String> selectFields;
     private final Set<String> quotedFields;
 
+    public Result<T> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) {
+        List<Param> filterParams = filters.entrySet().stream()
+                .map(e -> new Param(e.getKey(), e.getValue()))
+                .collect(Collectors.toList());
+
+        List<Param> paginationParams = pagination.entrySet().stream()
+                .map(e -> new Param(e.getKey(), e.getValue()))
+                .collect(Collectors.toList());
+
+        return list(conn, filterParams, paginationParams);
+    }
+
     public Result<T> list(Connection conn, List<Param> searchParams, List<Param> pageParams) {
         String conditionStr = buildCondition(searchParams);
         Map<String, String> pageMap = pageParams.stream()
