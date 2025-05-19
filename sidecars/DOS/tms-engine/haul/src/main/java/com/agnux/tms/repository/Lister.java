@@ -35,6 +35,9 @@ public abstract class Lister<T> {
     private final List<String> selectFields;
     private final Set<String> quotedFields;
 
+    // Subclass must implement how to map a ResultSet row to T
+    protected abstract T mapRow(ResultSet rs) throws SQLException;
+
     public Result<T> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) {
         List<Param> filterParams = filters.entrySet().stream()
                 .map(e -> new Param(e.getKey(), e.getValue()))
@@ -126,9 +129,6 @@ public abstract class Lister<T> {
 
         return items;
     }
-
-    // Subclass must implement how to map a ResultSet row to T
-    protected abstract T mapRow(ResultSet rs) throws SQLException;
 
     private static class EntityCounter {
 
