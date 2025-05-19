@@ -84,7 +84,7 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
         }
     }
 
-    public static Result<Customer> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) {
+    private static Result<Customer> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) {
         return new Lister<Customer>(
                 "customers",
                 Arrays.asList("id", "tenant_id", "name"),

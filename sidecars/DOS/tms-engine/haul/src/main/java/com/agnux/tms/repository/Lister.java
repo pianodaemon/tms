@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public abstract class Lister<T> {
+abstract class Lister<T> {
 
     private static final String AND_SORROUNDED_BY_SPACES = " AND ";
 
