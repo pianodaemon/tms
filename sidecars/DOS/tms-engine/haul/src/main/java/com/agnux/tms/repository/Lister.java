@@ -38,9 +38,11 @@ public abstract class Lister<T> {
     private final List<String> selectFields;
     private final Set<String> quotedFields;
 
-    public Result<T> list(Connection conn, List<Param> searchParams, Map<String, String> pageParams) {
+    public Result<T> list(Connection conn, List<Param> searchParams, List<Param> pageParams) {
         String conditionStr = buildCondition(searchParams);
-        PaginationHelper.PageInfo pageInfo = PaginationHelper.extractPageInfo(pageParams);
+        PaginationHelper.PageInfo pageInfo = PaginationHelper.extractPageInfo(
+                pageParams.stream().collect(Collectors.toMap(Param::getName, Param::getValue))
+        );
 
         String countByField = Optional.ofNullable(pageInfo.getOrderBy())
                 .filter(f -> !f.isBlank())
