@@ -1,14 +1,11 @@
 package com.agnux.tms.repository;
 
 import lombok.Getter;
+import lombok.AllArgsConstructor;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public abstract class Lister<T> {
@@ -40,9 +37,10 @@ public abstract class Lister<T> {
 
     public Result<T> list(Connection conn, List<Param> searchParams, List<Param> pageParams) {
         String conditionStr = buildCondition(searchParams);
-        PaginationHelper.PageInfo pageInfo = PaginationHelper.extractPageInfo(
-                pageParams.stream().collect(Collectors.toMap(Param::getName, Param::getValue))
-        );
+        Map<String, String> pageMap = pageParams.stream()
+                .collect(Collectors.toMap(Param::getName, Param::getValue));
+
+        PaginationHelper.PageInfo pageInfo = PaginationHelper.extractPageInfo(pageMap);
 
         String countByField = Optional.ofNullable(pageInfo.getOrderBy())
                 .filter(f -> !f.isBlank())
@@ -63,17 +61,9 @@ public abstract class Lister<T> {
             return new Result<>(-1, "Page " + pageInfo.getPage() + " does not exist", Collections.emptyList(), totalItems, totalPages);
         }
 
-        String sql = buildSelectQuery(conditionStr, pageInfo, limit, offset);
-
-        List<T> items = new ArrayList<>();
-        try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                items.add(mapRow(rs));
-            }
-
+        try {
+            List<T> items = fetchEntities(conn, conditionStr, pageInfo, limit, offset);
             return new Result<>(items.size(), "", items, totalItems, totalPages);
-
         } catch (SQLException e) {
             return new Result<>(-1, "Query execution error: " + e.getMessage(), Collections.emptyList(), totalItems, totalPages);
         }
@@ -82,7 +72,9 @@ public abstract class Lister<T> {
     private String buildCondition(List<Param> searchParams) {
         String condition = searchParams.stream()
                 .map(param -> {
-                    String value = quotedFields.contains(param.getName()) ? "'" + param.getValue() + "'" : param.getValue();
+                    String value = quotedFields.contains(param.getName())
+                            ? "'" + param.getValue() + "'"
+                            : param.getValue();
                     return param.getName() + "=" + value;
                 })
                 .collect(Collectors.joining(AND_SORROUNDED_BY_SPACES));
@@ -107,6 +99,20 @@ public abstract class Lister<T> {
                 limit,
                 offset
         );
+    }
+
+    protected List<T> fetchEntities(Connection conn, String conditionStr, PaginationHelper.PageInfo pageInfo, int limit, int offset) throws SQLException {
+        String sql = buildSelectQuery(conditionStr, pageInfo, limit, offset);
+        List<T> items = new ArrayList<>();
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                items.add(mapRow(rs));
+            }
+        }
+
+        return items;
     }
 
     // Subclass must implement how to map a ResultSet row to T
