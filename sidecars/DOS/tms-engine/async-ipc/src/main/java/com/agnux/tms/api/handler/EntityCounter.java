@@ -1,4 +1,4 @@
-package com.agnux.tms.api.helpers;
+package com.agnux.tms.api.handler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,25 +6,27 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
-public class EntityCounter {
+class EntityCounter {
 
     public static class NoResultFoundException extends RuntimeException {
+
         public NoResultFoundException(String message) {
             super(message);
         }
     }
 
     public static class MultipleResultsFoundException extends RuntimeException {
+
         public MultipleResultsFoundException(String message) {
             super(message);
         }
     }
 
     public static int countEntities(Connection conn,
-                                    String table,
-                                    String searchParamsClause,
-                                    boolean notBlocked,
-                                    String countByField) throws SQLException {
+            String table,
+            String searchParamsClause,
+            boolean notBlocked,
+            String countByField) throws SQLException {
 
         final String field = Optional.ofNullable(countByField)
                 .filter(f -> !f.isBlank())
@@ -32,13 +34,19 @@ public class EntityCounter {
 
         final String query = buildQuery(table, field, searchParamsClause, notBlocked);
 
-        try (PreparedStatement stmt = conn.prepareStatement(query);
-             ResultSet rs = stmt.executeQuery()) {
+        try (PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
 
-            return Optional.ofNullable(rs)
-                    .filter(ResultSet::next)
-                    .map(r -> getSingleCount(rs))
-                    .orElseThrow(() -> new NoResultFoundException("Expected exactly one result"));
+            if (!rs.next()) {
+                throw new NoResultFoundException("Expected exactly one result");
+            }
+
+            int total = rs.getInt("total");
+
+            if (rs.next()) {
+                throw new MultipleResultsFoundException("Multiple results found, but only one expected");
+            }
+
+            return total;
         }
     }
 
