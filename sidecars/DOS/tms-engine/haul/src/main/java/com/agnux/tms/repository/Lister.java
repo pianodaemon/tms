@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 
+@AllArgsConstructor
 public abstract class Lister<T> {
 
     private static final String AND_SORROUNDED_BY_SPACES = " AND ";
@@ -33,24 +34,21 @@ public abstract class Lister<T> {
         private final int totalPages;
     }
 
+    private final String tableName;
+    private final List<String> selectFields;
+    private final Set<String> quotedFields;
+
     public Result<T> list(Connection conn, List<Param> searchParams, Map<String, String> pageParams) {
         String conditionStr = buildCondition(searchParams);
         PaginationHelper.PageInfo pageInfo = PaginationHelper.extractPageInfo(pageParams);
 
-        // Safely determine countByField
         String countByField = Optional.ofNullable(pageInfo.getOrderBy())
-                .filter(s -> !s.isBlank())
+                .filter(f -> !f.isBlank())
                 .orElse("id");
 
         int totalItems;
         try {
-            totalItems = EntityCounter.countEntities(
-                    conn,
-                    getTableName(),
-                    conditionStr,
-                    true,
-                    countByField
-            );
+            totalItems = EntityCounter.countEntities(conn, tableName, conditionStr, true, countByField);
         } catch (SQLException e) {
             return new Result<>(-1, "Error counting entities: " + e.getMessage(), Collections.emptyList(), 0, 0);
         }
@@ -80,8 +78,6 @@ public abstract class Lister<T> {
     }
 
     private String buildCondition(List<Param> searchParams) {
-        Set<String> quotedFields = getQuotedFields();
-
         String condition = searchParams.stream()
                 .map(param -> {
                     String value = quotedFields.contains(param.getName()) ? "'" + param.getValue() + "'" : param.getValue();
@@ -101,8 +97,8 @@ public abstract class Lister<T> {
                  ORDER BY %s %s
                  LIMIT %d OFFSET %d
                 """,
-                String.join(", ", getSelectFields()),
-                getTableName(),
+                String.join(", ", selectFields),
+                tableName,
                 conditionStr,
                 pageInfo.getOrderBy(),
                 pageInfo.getOrder(),
@@ -111,14 +107,6 @@ public abstract class Lister<T> {
         );
     }
 
-    // Abstract methods to be implemented by subclasses
-    protected abstract String getTableName();
-
-    protected abstract List<String> getSelectFields();
-
+    // Subclass must implement how to map a ResultSet row to T
     protected abstract T mapRow(ResultSet rs) throws SQLException;
-
-    protected Set<String> getQuotedFields() {
-        return Set.of(); // Default: no fields are quoted
-    }
 }
