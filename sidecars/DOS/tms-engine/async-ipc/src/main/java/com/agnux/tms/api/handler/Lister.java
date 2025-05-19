@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 
 public abstract class Lister<T> {
+    
+    private static final String AND_SORROUNDED_BY_SPACES = " AND ";
 
     @Getter
     @AllArgsConstructor
@@ -85,9 +87,9 @@ public abstract class Lister<T> {
                     String value = quotedFields.contains(param.getName()) ? "'" + param.getValue() + "'" : param.getValue();
                     return param.getName() + "=" + value;
                 })
-                .collect(Collectors.joining(" AND "));
+                .collect(Collectors.joining(AND_SORROUNDED_BY_SPACES));
 
-        return condition.isBlank() ? "" : "AND " + condition;
+        return condition.isBlank() ? "" : AND_SORROUNDED_BY_SPACES + condition;
     }
 
     private String buildSelectQuery(String conditionStr, PaginationHelper.PageInfo pageInfo, int limit, int offset) {
