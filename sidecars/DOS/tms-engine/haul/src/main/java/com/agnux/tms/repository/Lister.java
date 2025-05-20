@@ -23,17 +23,6 @@ public abstract class Lister<T> {
         final String value;
     }
 
-    @Getter
-    @AllArgsConstructor
-    public static class Result<T> {
-
-        private final int code;
-        private final String message;
-        private final List<T> data;
-        private final int totalItems;
-        private final int totalPages;
-    }
-
     private final String tableName;
     private final List<String> selectFields;
     private final Set<String> quotedFields;
@@ -41,7 +30,7 @@ public abstract class Lister<T> {
     // Subclass must implement how to map a ResultSet row to T
     protected abstract T mapRow(ResultSet rs) throws SQLException;
 
-    public Result<T> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) throws TmsException {
+    public Segment<T> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) throws TmsException {
         List<Param> filterParams = filters.entrySet().stream()
                 .map(e -> new Param(e.getKey(), e.getValue()))
                 .collect(Collectors.toList());
@@ -53,7 +42,7 @@ public abstract class Lister<T> {
         return list(conn, filterParams, paginationParams);
     }
 
-    public Result<T> list(Connection conn, List<Param> searchParams, List<Param> pageParams) throws TmsException {
+    public Segment<T> list(Connection conn, List<Param> searchParams, List<Param> pageParams) throws TmsException {
         String conditionStr = buildCondition(searchParams);
         Map<String, String> pageMap = pageParams.stream()
                 .collect(Collectors.toMap(Param::getName, Param::getValue));
@@ -83,7 +72,7 @@ public abstract class Lister<T> {
 
         try {
             List<T> items = fetchEntities(conn, conditionStr, pageInfo, limit, offset);
-            return new Result<>(items.size(), "", items, totalItems, totalPages);
+            return new Segment<>(items, totalItems, totalPages);
         } catch (SQLException e) {
             final String emsg = "Query execution error: " + e.getMessage();
             throw new TmsException(emsg, ErrorCodes.STORAGE_PROVIDER_ISSUES);
