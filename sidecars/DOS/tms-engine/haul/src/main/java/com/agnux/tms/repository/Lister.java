@@ -57,8 +57,8 @@ public abstract class Lister<T> {
         try {
             totalItems = EntityCounter.countEntities(conn, tableName, conditionStr, true, countByField);
         } catch (SQLException e) {
-            final String emsg = "Error counting entities: " + e.getMessage();
-            throw new TmsException(emsg, ErrorCodes.STORAGE_PROVIDER_ISSUES);
+            final String emsg = "Error counting entities";
+            throw new TmsException(emsg, e, ErrorCodes.STORAGE_PROVIDER_ISSUES);
         }
 
         int offset = pageInfo.getOffset();
@@ -74,8 +74,8 @@ public abstract class Lister<T> {
             List<T> items = fetchEntities(conn, conditionStr, pageInfo, limit, offset);
             return new PaginationSegment<>(items, totalItems, totalPages);
         } catch (SQLException e) {
-            final String emsg = "Query execution error: " + e.getMessage();
-            throw new TmsException(emsg, ErrorCodes.STORAGE_PROVIDER_ISSUES);
+            final String emsg = "Fetch execution error";
+            throw new TmsException(emsg, e, ErrorCodes.STORAGE_PROVIDER_ISSUES);
         }
     }
 

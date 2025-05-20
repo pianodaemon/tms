@@ -12,6 +12,7 @@ import com.agnux.tms.repository.model.Vehicle;
 import java.sql.Connection;
 
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -118,6 +119,14 @@ public class BasicRepoImpl implements IHaulRepo {
     @Override
     public void deleteCustomer(UUID id) throws TmsException {
         deleteEntity(id, "Customer", BasicRepoCustomerHelper::block);
+    }
+
+    PaginationSegment<Customer> listCustomerPage(Map<String, String> filters, Map<String, String> pagination) throws TmsException {
+        try (var conn = ds.getConnection()) {
+            return BasicRepoCustomerHelper.list(conn, filters, pagination);
+        } catch (SQLException ex) {
+            throw new TmsException("Customer" + " page failed", ex, ErrorCodes.REPO_PROVIDER_ISSUES);
+        }
     }
 
     // Vehicle
