@@ -8,6 +8,7 @@ import com.agnux.tms.repository.model.Customer;
 import com.agnux.tms.repository.model.Driver;
 import com.agnux.tms.repository.model.Patio;
 import com.agnux.tms.repository.model.TransLogRecord;
+import java.util.Map;
 import java.util.UUID;
 
 public interface IHaulRepo {
@@ -55,6 +56,8 @@ public interface IHaulRepo {
     public UUID editPatio(Patio p) throws TmsException;
 
     public void deletePatio(UUID patioId) throws TmsException;
+
+    public PaginationSegment<Customer> listCustomerPage(Map<String, String> filters, Map<String, String> pagination) throws TmsException;
 
     public Customer getCustomer(UUID customerId) throws TmsException;
 

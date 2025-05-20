@@ -12,6 +12,7 @@ import com.agnux.tms.repository.model.Vehicle;
 import java.sql.Connection;
 
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,12 @@ public class BasicRepoImpl implements IHaulRepo {
     private Boolean debugMode;
 
     @FunctionalInterface
+    public interface ListPage<T> {
+
+        PaginationSegment<T> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) throws TmsException;
+    }
+
+    @FunctionalInterface
     public interface FetchById<T> {
 
         Optional<T> fetch(Connection conn, UUID id) throws SQLException;
@@ -51,6 +58,14 @@ public class BasicRepoImpl implements IHaulRepo {
     public interface BlockById {
 
         void block(Connection conn, UUID id) throws SQLException;
+    }
+
+    private <T> PaginationSegment<T> listEntityPage(Map<String, String> filters, Map<String, String> pagination, String name, ListPage<T> lister) throws TmsException {
+        try (var conn = ds.getConnection()) {
+            return lister.list(conn, filters, pagination);
+        } catch (SQLException ex) {
+            throw new TmsException(name + " page failed", ex, ErrorCodes.REPO_PROVIDER_ISSUES);
+        }
     }
 
     private <T> T fetchEntity(UUID id, String name, FetchById<T> fetcher) throws TmsException {
@@ -118,6 +133,11 @@ public class BasicRepoImpl implements IHaulRepo {
     @Override
     public void deleteCustomer(UUID id) throws TmsException {
         deleteEntity(id, "Customer", BasicRepoCustomerHelper::block);
+    }
+
+    @Override
+    public PaginationSegment<Customer> listCustomerPage(Map<String, String> filters, Map<String, String> pagination) throws TmsException {
+        return listEntityPage(filters, pagination, "Customer", BasicRepoCustomerHelper::list);
     }
 
     // Vehicle
