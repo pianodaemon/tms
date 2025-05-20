@@ -30,7 +30,7 @@ public abstract class Lister<T> {
     // Subclass must implement how to map a ResultSet row to T
     protected abstract T mapRow(ResultSet rs) throws SQLException;
 
-    public Segment<T> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) throws TmsException {
+    public PaginationSegment<T> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) throws TmsException {
         List<Param> filterParams = filters.entrySet().stream()
                 .map(e -> new Param(e.getKey(), e.getValue()))
                 .collect(Collectors.toList());
@@ -42,7 +42,7 @@ public abstract class Lister<T> {
         return list(conn, filterParams, paginationParams);
     }
 
-    public Segment<T> list(Connection conn, List<Param> searchParams, List<Param> pageParams) throws TmsException {
+    public PaginationSegment<T> list(Connection conn, List<Param> searchParams, List<Param> pageParams) throws TmsException {
         String conditionStr = buildCondition(searchParams);
         Map<String, String> pageMap = pageParams.stream()
                 .collect(Collectors.toMap(Param::getName, Param::getValue));
@@ -72,7 +72,7 @@ public abstract class Lister<T> {
 
         try {
             List<T> items = fetchEntities(conn, conditionStr, pageInfo, limit, offset);
-            return new Segment<>(items, totalItems, totalPages);
+            return new PaginationSegment<>(items, totalItems, totalPages);
         } catch (SQLException e) {
             final String emsg = "Query execution error: " + e.getMessage();
             throw new TmsException(emsg, ErrorCodes.STORAGE_PROVIDER_ISSUES);
@@ -179,6 +179,53 @@ public abstract class Lister<T> {
                             .filter(s -> !s.isBlank())
                             .orElse(""))
                     .toString();
+        }
+    }
+
+    private static class PaginationHelper {
+
+        private static final int DEFAULT_PER_PAGE = 10;
+        private static final int DEFAULT_PAGE = 1;
+        private static final String DEFAULT_ORDER_BY = "id";
+        private static final String DEFAULT_ORDER = "asc";
+
+        @Getter
+        @AllArgsConstructor
+        public static class PageInfo {
+
+            private final int perPage;
+            private final int page;
+            private final String orderBy;
+            private final String order;
+
+            public int getOffset() {
+                return perPage * (page - 1);
+            }
+
+            public int getLimit(int totalItems) {
+                return Math.min(perPage, Math.max(0, totalItems - getOffset()));
+            }
+
+            public int getTotalPages(int totalItems) {
+                return (int) Math.ceil((double) totalItems / perPage);
+            }
+        }
+
+        public static PageInfo extractPageInfo(Map<String, String> pageParams) {
+            final int perPage = parseOrDefault(pageParams.get("per_page"), DEFAULT_PER_PAGE);
+            final int page = parseOrDefault(pageParams.get("page"), DEFAULT_PAGE);
+            final String orderBy = pageParams.getOrDefault("order_by", DEFAULT_ORDER_BY);
+            final String order = pageParams.getOrDefault("order", DEFAULT_ORDER);
+
+            return new PageInfo(perPage, page, orderBy, order);
+        }
+
+        private static Integer parseOrDefault(String value, int defaultVal) {
+            try {
+                return Integer.valueOf(value);
+            } catch (NumberFormatException e) {
+                return defaultVal;
+            }
         }
     }
 }

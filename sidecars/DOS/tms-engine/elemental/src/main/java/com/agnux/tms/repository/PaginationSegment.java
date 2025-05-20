@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class Segment<T> {
+public class PaginationSegment<T> {
 
     private final List<T> data;
     private final int totalItems;

@@ -84,7 +84,7 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
         }
     }
 
-    public static Segment<Customer> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) throws TmsException {
+    public static PaginationSegment<Customer> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) throws TmsException {
 
         return new Lister<Customer>(
                 "customers",
