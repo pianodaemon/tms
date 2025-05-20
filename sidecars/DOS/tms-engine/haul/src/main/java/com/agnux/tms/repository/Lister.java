@@ -68,7 +68,8 @@ public abstract class Lister<T> {
         try {
             totalItems = EntityCounter.countEntities(conn, tableName, conditionStr, true, countByField);
         } catch (SQLException e) {
-            return new Result<>(-1, "Error counting entities: " + e.getMessage(), Collections.emptyList(), 0, 0);
+            final String emsg = "Error counting entities: " + e.getMessage();
+            return new Result<>(-1, emsg, Collections.emptyList(), 0, 0);
         }
 
         int offset = pageInfo.getOffset();
