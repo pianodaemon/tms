@@ -1,5 +1,7 @@
 package com.agnux.tms.repository;
 
+import com.agnux.tms.errors.ErrorCodes;
+import com.agnux.tms.errors.TmsException;
 import lombok.Getter;
 import lombok.AllArgsConstructor;
 
@@ -39,7 +41,7 @@ public abstract class Lister<T> {
     // Subclass must implement how to map a ResultSet row to T
     protected abstract T mapRow(ResultSet rs) throws SQLException;
 
-    public Result<T> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) {
+    public Result<T> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) throws TmsException {
         List<Param> filterParams = filters.entrySet().stream()
                 .map(e -> new Param(e.getKey(), e.getValue()))
                 .collect(Collectors.toList());
@@ -51,7 +53,7 @@ public abstract class Lister<T> {
         return list(conn, filterParams, paginationParams);
     }
 
-    public Result<T> list(Connection conn, List<Param> searchParams, List<Param> pageParams) {
+    public Result<T> list(Connection conn, List<Param> searchParams, List<Param> pageParams) throws TmsException {
         String conditionStr = buildCondition(searchParams);
         Map<String, String> pageMap = pageParams.stream()
                 .collect(Collectors.toMap(Param::getName, Param::getValue));
@@ -74,14 +76,16 @@ public abstract class Lister<T> {
         int totalPages = pageInfo.getTotalPages(totalItems);
 
         if (offset >= totalItems) {
-            return new Result<>(-1, "Page " + pageInfo.getPage() + " does not exist", Collections.emptyList(), totalItems, totalPages);
+            final String emsg = "Page " + pageInfo.getPage() + " does not exist";
+            throw new TmsException(emsg, ErrorCodes.STORAGE_PROVIDER_ISSUES);
         }
 
         try {
             List<T> items = fetchEntities(conn, conditionStr, pageInfo, limit, offset);
             return new Result<>(items.size(), "", items, totalItems, totalPages);
         } catch (SQLException e) {
-            return new Result<>(-1, "Query execution error: " + e.getMessage(), Collections.emptyList(), totalItems, totalPages);
+            final String emsg = "Query execution error: " + e.getMessage();
+            throw new TmsException(emsg, ErrorCodes.STORAGE_PROVIDER_ISSUES);
         }
     }
 
