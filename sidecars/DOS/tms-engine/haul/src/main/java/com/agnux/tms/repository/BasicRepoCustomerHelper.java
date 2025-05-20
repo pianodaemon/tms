@@ -1,7 +1,6 @@
 package com.agnux.tms.repository;
 
 import com.agnux.tms.errors.TmsException;
-import com.agnux.tms.repository.Lister.Result;
 import com.agnux.tms.repository.model.Customer;
 
 import java.sql.Connection;
@@ -85,7 +84,8 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
         }
     }
 
-    public static Result<Customer> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) throws TmsException {
+    public static Segment<Customer> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) throws TmsException {
+
         return new Lister<Customer>(
                 "customers",
                 Arrays.asList("id", "tenant_id", "name"),
