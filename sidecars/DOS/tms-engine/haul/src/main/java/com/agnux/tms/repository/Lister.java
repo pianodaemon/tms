@@ -8,9 +8,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-abstract class Lister<T> {
+public abstract class Lister<T> {
 
     private static final String AND_SORROUNDED_BY_SPACES = " AND ";
+    private static final String DEFAULT_COUNTABLE_FIELD = "id";
 
     @Getter
     @AllArgsConstructor
@@ -59,7 +60,7 @@ abstract class Lister<T> {
 
         String countByField = Optional.ofNullable(pageInfo.getOrderBy())
                 .filter(f -> !f.isBlank())
-                .orElse("id");
+                .orElse(DEFAULT_COUNTABLE_FIELD);
 
         int totalItems;
         try {
