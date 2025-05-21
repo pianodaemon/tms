@@ -82,6 +82,8 @@ CREATE TABLE patios (
     name VARCHAR(128) NOT NULL,
     latitude_location DOUBLE PRECISION NOT NULL,
     longitude_location DOUBLE PRECISION NOT NULL,
+    last_touch_time timestamp without time zone NOT NULL,
+    creation_time timestamp without time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL
 );
 
@@ -286,7 +288,7 @@ DECLARE
     -- >> Date:        03/may/2025                                                  >>
     -- >> Developer:   Edwin Plauchu for agnux                                      >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    current_moment TIMESTAMP WITH TIME ZONE := now();
+    current_moment TIMESTAMP WITHOUT TIME ZONE := now();
     rmsg TEXT := '';
 BEGIN
     CASE
@@ -298,6 +300,8 @@ BEGIN
                 name,
                 latitude_location,
                 longitude_location,
+                last_touch_time,
+                creation_time,
                 blocked
             ) VALUES (
                 gen_random_uuid(),
@@ -305,6 +309,8 @@ BEGIN
                 _name,
                 _latitude,
                 _longitude,
+                current_moment,
+                current_moment,
                 false
             ) RETURNING id INTO _patio_id;
 
@@ -315,7 +321,8 @@ BEGIN
                 tenant_id         = _tenant_id,
                 name              = _name,
                 latitude_location = _latitude,
-                longitude_location = _longitude
+                longitude_location = _longitude,
+                last_touch_time = current_moment
             WHERE id = _patio_id;
 
         ELSE
