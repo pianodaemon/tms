@@ -3,6 +3,7 @@ package com.agnux.tms.api.handler;
 import com.agnux.tms.api.service.GenCrudService;
 import com.agnux.tms.errors.ErrorCodes;
 import com.agnux.tms.errors.TmsException;
+import com.agnux.tms.repository.PaginationSegment;
 
 import com.agnux.tms.repository.model.TmsBasicModel;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -11,6 +12,7 @@ import reactor.core.publisher.Mono;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -94,6 +96,25 @@ class GenCrudHandler<T extends TmsBasicModel> {
         } catch (TmsException e) {
             if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
                 return ServiceResponseHelper.badRequest("data supplied face issues", e);
+            }
+            return ServiceResponseHelper.internalServerError(e);
+        }
+    }
+
+    public Mono<ServerResponse> listPaginated(ServerRequest request) {
+        int page = request.queryParam("page").map(Integer::parseInt).orElse(0);
+        int size = request.queryParam("size").map(Integer::parseInt).orElse(20);
+
+        Optional<UUID> tenantIdOpt = request.queryParam("tenant_id")
+                .map(UUID::fromString);
+
+        try {
+            UUID tenantId = tenantIdOpt.orElseThrow(() -> new TmsException("Missing or invalid tenant identifier", ErrorCodes.STORAGE_PROVIDER_ISSUES));
+            PaginationSegment<T> segment = service.listPage(tenantId, page, size);
+            return ServiceResponseHelper.successWithBody(segment);
+        } catch (TmsException e) {
+            if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
+                return ServiceResponseHelper.badRequest("Unable to paginate data", e);
             }
             return ServiceResponseHelper.internalServerError(e);
         }
