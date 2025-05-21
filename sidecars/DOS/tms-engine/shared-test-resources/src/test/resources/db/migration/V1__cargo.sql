@@ -69,6 +69,8 @@ CREATE TABLE agreements (
     longitude_destiny DOUBLE PRECISION NOT NULL,
     dist_unit VARCHAR(5) NOT NULL,
     dist_scalar NUMERIC(15, 6) NOT NULL,
+    last_touch_time timestamp without time zone NOT NULL,
+    creation_time timestamp without time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL,
     CONSTRAINT unique_route_per_customer UNIQUE (
         customer_id, latitude_origin, longitude_origin, latitude_destiny, longitude_destiny
@@ -419,7 +421,7 @@ DECLARE
     -- >> Date:        03/may/2025                                                  >>
     -- >> Developer:   Edwin Plauchu for agnux                                      >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    current_moment TIMESTAMP WITH TIME ZONE := now();
+    current_moment TIMESTAMP WITHOUT TIME ZONE := now();
     rmsg TEXT := '';
 BEGIN
     CASE
@@ -436,6 +438,8 @@ BEGIN
                 longitude_destiny,
                 dist_unit,
                 dist_scalar,
+                last_touch_time,
+                creation_time,
                 blocked
             ) VALUES (
                 gen_random_uuid(),
@@ -448,6 +452,8 @@ BEGIN
                 _longitude_destiny,
                 _dist_unit,
                 _dist_scalar,
+                current_moment,
+                current_moment,
                 false
             ) RETURNING id INTO _agreement_id;
 
@@ -463,7 +469,8 @@ BEGIN
                 latitude_destiny  = _latitude_destiny,
                 longitude_destiny = _longitude_destiny,
                 dist_unit         = _dist_unit,
-                dist_scalar       = _dist_scalar
+                dist_scalar       = _dist_scalar,
+                last_touch_time = current_moment
             WHERE id = _agreement_id;
 
         ELSE
