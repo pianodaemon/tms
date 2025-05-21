@@ -16,10 +16,12 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 
 CREATE TABLE customers (
-    id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
-    tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
-    blocked boolean DEFAULT false NOT NULL,
-    name VARCHAR(128) NOT NULL
+    id UUID PRIMARY KEY,
+    tenant_id UUID NOT NULL,
+    name VARCHAR(128) NOT NULL,
+    last_touch_time timestamp without time zone NOT NULL,
+    creation_time timestamp without time zone NOT NULL,
+    blocked boolean DEFAULT false NOT NULL
 );
 
 
@@ -330,7 +332,7 @@ DECLARE
     -- >> Date:        03/may/2025                                                  >>
     -- >> Developer:   Edwin Plauchu for agnux                                      >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    current_moment TIMESTAMP WITH TIME ZONE := now();
+    current_moment TIMESTAMP WITHOUT TIME ZONE := now();
     rmsg TEXT := '';
 BEGIN
     CASE
@@ -340,11 +342,15 @@ BEGIN
                 id,
                 tenant_id,
                 name,
+                last_touch_time,
+                creation_time,
                 blocked
             ) VALUES (
                 gen_random_uuid(),
                 _tenant_id,
                 _name,
+                current_moment,
+                current_moment,
                 false
             ) RETURNING id INTO _customer_id;
 
@@ -353,6 +359,7 @@ BEGIN
             UPDATE customers
             SET
                 tenant_id = _tenant_id,
+                last_touch_time = current_moment,
                 name      = _name
             WHERE id = _customer_id;
 
