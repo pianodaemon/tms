@@ -97,6 +97,8 @@ CREATE TABLE cargo_assignments (
     vehicle_id UUID REFERENCES vehicles(id),
     latitude_location DOUBLE PRECISION,
     longitude_location DOUBLE PRECISION,
+    last_touch_time timestamp with time zone NOT NULL,
+    creation_time timestamp with time zone NOT NULL, 
     blocked boolean DEFAULT false NOT NULL
 );
 
@@ -517,6 +519,8 @@ BEGIN
                 vehicle_id,
                 latitude_location,
                 longitude_location,
+                last_touch_time,
+                creation_time,
                 blocked
             ) VALUES (
                 gen_random_uuid(),
@@ -525,6 +529,8 @@ BEGIN
                 _vehicle_id,
                 _latitude,
                 _longitude,
+                current_moment,
+                current_moment,
                 false
             ) RETURNING id INTO _assignment_id;
 
@@ -536,7 +542,8 @@ BEGIN
                 driver_id         = _driver_id,
                 vehicle_id        = _vehicle_id,
                 latitude_location = _latitude,
-                longitude_location = _longitude
+                longitude_location = _longitude,
+                last_touch_time = current_moment
             WHERE id = _assignment_id;
 
         ELSE
