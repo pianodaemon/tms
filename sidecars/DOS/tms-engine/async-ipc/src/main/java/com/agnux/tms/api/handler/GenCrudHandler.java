@@ -102,14 +102,14 @@ class GenCrudHandler<T extends TmsBasicModel> {
     }
 
     public Mono<ServerResponse> listPaginated(ServerRequest request) {
-        int page = request.queryParam("page").map(Integer::parseInt).orElse(0);
-        int size = request.queryParam("size").map(Integer::parseInt).orElse(20);
-
-        Optional<UUID> tenantIdOpt = request.queryParam("tenant_id")
-                .map(UUID::fromString);
 
         try {
-            UUID tenantId = tenantIdOpt.orElseThrow(() -> new TmsException("Missing or invalid tenant identifier", ErrorCodes.STORAGE_PROVIDER_ISSUES));
+            UUID tenantId = request.queryParam("tenant_id")
+                    .map(UUID::fromString).orElseThrow(() -> new TmsException("Missing or invalid tenant identifier", ErrorCodes.STORAGE_PROVIDER_ISSUES));
+            int size = request.queryParam("size")
+                    .map(Integer::parseInt).orElseThrow(() -> new TmsException("Missing or page size", ErrorCodes.STORAGE_PROVIDER_ISSUES));
+            int page = request.queryParam("page")
+                    .map(Integer::parseInt).orElseThrow(() -> new TmsException("Missing or invalid page number", ErrorCodes.STORAGE_PROVIDER_ISSUES));
             PaginationSegment<T> segment = service.listPage(tenantId, page, size);
             return ServiceResponseHelper.successWithBody(segment);
         } catch (TmsException e) {
