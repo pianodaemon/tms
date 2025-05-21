@@ -2,6 +2,7 @@ package com.agnux.tms.api.service;
 
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.IHaulRepo;
+import com.agnux.tms.repository.PaginationSegment;
 import com.agnux.tms.repository.model.Driver;
 import java.util.UUID;
 
@@ -39,5 +40,10 @@ public class DriverService implements GenCrudService<Driver> {
     public void delete(UUID id) throws TmsException {
         repo.deleteDriver(id);
         log.info("Deleted driver with UUID: {}", id);
+    }
+
+    @Override
+    public PaginationSegment<Driver> listPage(UUID tenantId, Integer page, Integer size) throws TmsException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }

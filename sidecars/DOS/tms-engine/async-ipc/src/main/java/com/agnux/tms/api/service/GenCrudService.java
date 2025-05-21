@@ -2,6 +2,7 @@ package com.agnux.tms.api.service;
 
 import java.util.UUID;
 import com.agnux.tms.errors.TmsException;
+import com.agnux.tms.repository.PaginationSegment;
 
 public interface GenCrudService<T> {
 
@@ -12,4 +13,6 @@ public interface GenCrudService<T> {
     void update(T entity) throws TmsException;
 
     void delete(UUID id) throws TmsException;
+
+    PaginationSegment<T> listPage(UUID tenantId, Integer page, Integer pageSize) throws TmsException;
 }

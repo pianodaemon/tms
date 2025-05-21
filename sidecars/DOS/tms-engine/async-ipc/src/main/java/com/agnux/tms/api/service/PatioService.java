@@ -2,6 +2,7 @@ package com.agnux.tms.api.service;
 
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.IHaulRepo;
+import com.agnux.tms.repository.PaginationSegment;
 import com.agnux.tms.repository.model.Patio;
 import java.util.UUID;
 
@@ -39,5 +40,10 @@ public class PatioService implements GenCrudService<Patio> {
     public void delete(UUID id) throws TmsException {
         repo.deletePatio(id);
         log.info("Deleted patio with UUID: {}", id);
+    }
+
+    @Override
+    public PaginationSegment<Patio> listPage(UUID tenantId, Integer page, Integer size) throws TmsException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
