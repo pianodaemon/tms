@@ -12,7 +12,6 @@ import reactor.core.publisher.Mono;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -102,21 +101,32 @@ class GenCrudHandler<T extends TmsBasicModel> {
     }
 
     public Mono<ServerResponse> listPaginated(ServerRequest request) {
-
         try {
             UUID tenantId = request.queryParam("tenant_id")
-                    .map(UUID::fromString).orElseThrow(() -> new TmsException("Missing or invalid tenant identifier", ErrorCodes.STORAGE_PROVIDER_ISSUES));
+                    .map(UUID::fromString)
+                    .orElseThrow(() -> new TmsException("Missing or invalid tenant identifier", ErrorCodes.INVALID_DATA));
+
             int size = request.queryParam("size")
-                    .map(Integer::parseInt).orElseThrow(() -> new TmsException("Missing or invalid page size", ErrorCodes.STORAGE_PROVIDER_ISSUES));
+                    .map(Integer::parseInt)
+                    .orElseThrow(() -> new TmsException("Missing or invalid page size", ErrorCodes.INVALID_DATA));
+
             int page = request.queryParam("page")
-                    .map(Integer::parseInt).orElseThrow(() -> new TmsException("Missing or invalid page number", ErrorCodes.STORAGE_PROVIDER_ISSUES));
+                    .map(Integer::parseInt)
+                    .orElseThrow(() -> new TmsException("Missing or invalid page number", ErrorCodes.INVALID_DATA));
+
             PaginationSegment<T> segment = service.listPage(tenantId, page, size);
             return ServiceResponseHelper.successWithBody(segment);
+
         } catch (TmsException e) {
-            if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
-                return ServiceResponseHelper.badRequest("Unable to paginate data", e);
+            if (e.getErrorCode() == ErrorCodes.INVALID_DATA.getCode()) {
+                return ServiceResponseHelper.badRequest("Invalid request data", e);
+            }
+
+            if (e.getErrorCode() == ErrorCodes.REPO_PROVIDER_ISSUES.getCode()) {
+                return ServiceResponseHelper.badRequest("data supplied face issues", e);
             }
             return ServiceResponseHelper.internalServerError(e);
         }
     }
+
 }
