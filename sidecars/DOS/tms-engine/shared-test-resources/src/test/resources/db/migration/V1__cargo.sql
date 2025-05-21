@@ -133,7 +133,7 @@ DECLARE
     -- >> Date:        02/may/2025                                                  >>
     -- >> Developer:   Edwin Plauchu for agnux                                      >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    current_moment TIMESTAMP WITHOUT TIME ZONE := now();
+    current_moment TIMESTAMP WITH TIME ZONE := now();
     rmsg TEXT := '';
 BEGIN
     CASE
@@ -220,7 +220,7 @@ DECLARE
     -- >> Date:        03/may/2025                                                  >>
     -- >> Developer:   Edwin Plauchu for agnux                                      >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    current_moment TIMESTAMP WITHOUT TIME ZONE := now();
+    current_moment TIMESTAMP WITH TIME ZONE := now();
     rmsg TEXT := '';
 BEGIN
     CASE
@@ -290,7 +290,7 @@ DECLARE
     -- >> Date:        03/may/2025                                                  >>
     -- >> Developer:   Edwin Plauchu for agnux                                      >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    current_moment TIMESTAMP WITHOUT TIME ZONE := now();
+    current_moment TIMESTAMP WITH TIME ZONE := now();
     rmsg TEXT := '';
 BEGIN
     CASE
@@ -355,7 +355,7 @@ DECLARE
     -- >> Date:        03/may/2025                                                  >>
     -- >> Developer:   Edwin Plauchu for agnux                                      >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    current_moment TIMESTAMP WITHOUT TIME ZONE := now();
+    current_moment TIMESTAMP WITH TIME ZONE := now();
     rmsg TEXT := '';
 BEGIN
     CASE
@@ -421,7 +421,7 @@ DECLARE
     -- >> Date:        03/may/2025                                                  >>
     -- >> Developer:   Edwin Plauchu for agnux                                      >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    current_moment TIMESTAMP WITHOUT TIME ZONE := now();
+    current_moment TIMESTAMP WITH TIME ZONE := now();
     rmsg TEXT := '';
 BEGIN
     CASE
