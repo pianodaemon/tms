@@ -48,7 +48,9 @@ public enum ErrorCodes {
      * entity. This error occurs when there are problems related to pushing or
      * pulling data from the FIFO queue.
      */
-    FIFO_PROVIDEER_ISSUES(1005); // Lack of interaction with FIFO provider entity
+    FIFO_PROVIDEER_ISSUES(1005), // Lack of interaction with FIFO provider entity
+    
+    INVALID_DATA(1006);
 
     /**
      * The integer code representing this error.
