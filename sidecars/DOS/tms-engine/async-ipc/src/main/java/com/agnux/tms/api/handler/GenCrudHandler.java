@@ -107,7 +107,7 @@ class GenCrudHandler<T extends TmsBasicModel> {
             UUID tenantId = request.queryParam("tenant_id")
                     .map(UUID::fromString).orElseThrow(() -> new TmsException("Missing or invalid tenant identifier", ErrorCodes.STORAGE_PROVIDER_ISSUES));
             int size = request.queryParam("size")
-                    .map(Integer::parseInt).orElseThrow(() -> new TmsException("Missing or page size", ErrorCodes.STORAGE_PROVIDER_ISSUES));
+                    .map(Integer::parseInt).orElseThrow(() -> new TmsException("Missing or invalid page size", ErrorCodes.STORAGE_PROVIDER_ISSUES));
             int page = request.queryParam("page")
                     .map(Integer::parseInt).orElseThrow(() -> new TmsException("Missing or invalid page number", ErrorCodes.STORAGE_PROVIDER_ISSUES));
             PaginationSegment<T> segment = service.listPage(tenantId, page, size);
