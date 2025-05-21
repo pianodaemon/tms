@@ -32,6 +32,8 @@ CREATE TABLE drivers (
     first_surname VARCHAR(128) NOT NULL,
     second_surname VARCHAR(128) NOT NULL,
     license_number VARCHAR(128) NOT NULL,
+    last_touch_time timestamp without time zone NOT NULL,
+    creation_time timestamp without time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL,
     CONSTRAINT unique_license_per_tenant UNIQUE (tenant_id, license_number)
 );
@@ -207,7 +209,7 @@ DECLARE
     -- >> Date:        03/may/2025                                                  >>
     -- >> Developer:   Edwin Plauchu for agnux                                      >>
     -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    current_moment TIMESTAMP WITH TIME ZONE := now();
+    current_moment TIMESTAMP WITHOUT TIME ZONE := now();
     rmsg TEXT := '';
 BEGIN
     CASE
@@ -220,6 +222,8 @@ BEGIN
                 first_surname,
                 second_surname,
                 license_number,
+                last_touch_time,
+                creation_time,
                 blocked
             ) VALUES (
                 gen_random_uuid(),
@@ -228,6 +232,8 @@ BEGIN
                 _first_surname,
                 _second_surname,
                 _license_number,
+                current_moment,
+                current_moment,
                 false
             ) RETURNING id INTO _driver_id;
 
@@ -239,7 +245,8 @@ BEGIN
                 name           = _name,
                 first_surname  = _first_surname,
                 second_surname = _second_surname,
-                license_number = _license_number
+                license_number = _license_number,
+                last_touch_time = current_moment
             WHERE id = _driver_id;
 
         ELSE
