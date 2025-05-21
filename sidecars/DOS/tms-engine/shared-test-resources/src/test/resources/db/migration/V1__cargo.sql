@@ -51,6 +51,8 @@ CREATE TABLE vehicles (
     perf_dist_unit VARCHAR(50),         -- Store as a string (enum values)
     perf_vol_unit VARCHAR(50),          -- Store as a string (enum values)
     perf_scalar NUMERIC(10, 2),
+    last_touch_time timestamp without time zone NOT NULL,
+    creation_time timestamp without time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL,
     CONSTRAINT vehicle_unique_number_plate UNIQUE (tenant_id, number_plate)
 );
@@ -145,6 +147,8 @@ BEGIN
                 perf_dist_unit,
                 perf_vol_unit,
                 perf_scalar,
+                last_touch_time,
+                creation_time,
                 blocked
             ) VALUES (
                 gen_random_uuid(),
@@ -158,6 +162,8 @@ BEGIN
                 _perf_dist_unit,
                 _perf_vol_unit,
                 _perf_scalar,
+                current_moment,
+                current_moment,
                 false
             ) RETURNING id INTO _vehicle_id;
 
@@ -174,7 +180,8 @@ BEGIN
                 federal_conf   = _federal_conf,
                 perf_dist_unit = _perf_dist_unit,
                 perf_vol_unit  = _perf_vol_unit,
-                perf_scalar    = _perf_scalar
+                perf_scalar    = _perf_scalar,
+                last_touch_time = current_moment
             WHERE id = _vehicle_id;
 
         ELSE
