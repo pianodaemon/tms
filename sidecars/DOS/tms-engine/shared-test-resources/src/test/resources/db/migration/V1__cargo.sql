@@ -19,8 +19,8 @@ CREATE TABLE customers (
     id UUID PRIMARY KEY,
     tenant_id UUID NOT NULL,
     name VARCHAR(128) NOT NULL,
-    last_touch_time timestamp without time zone NOT NULL,
-    creation_time timestamp without time zone NOT NULL,
+    last_touch_time timestamp with time zone NOT NULL,
+    creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL
 );
 
@@ -32,8 +32,8 @@ CREATE TABLE drivers (
     first_surname VARCHAR(128) NOT NULL,
     second_surname VARCHAR(128) NOT NULL,
     license_number VARCHAR(128) NOT NULL,
-    last_touch_time timestamp without time zone NOT NULL,
-    creation_time timestamp without time zone NOT NULL,
+    last_touch_time timestamp with time zone NOT NULL,
+    creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL,
     CONSTRAINT unique_license_per_tenant UNIQUE (tenant_id, license_number)
 );
@@ -51,8 +51,8 @@ CREATE TABLE vehicles (
     perf_dist_unit VARCHAR(50),         -- Store as a string (enum values)
     perf_vol_unit VARCHAR(50),          -- Store as a string (enum values)
     perf_scalar NUMERIC(10, 2),
-    last_touch_time timestamp without time zone NOT NULL,
-    creation_time timestamp without time zone NOT NULL,
+    last_touch_time timestamp with time zone NOT NULL,
+    creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL,
     CONSTRAINT vehicle_unique_number_plate UNIQUE (tenant_id, number_plate)
 );
@@ -69,8 +69,8 @@ CREATE TABLE agreements (
     longitude_destiny DOUBLE PRECISION NOT NULL,
     dist_unit VARCHAR(5) NOT NULL,
     dist_scalar NUMERIC(15, 6) NOT NULL,
-    last_touch_time timestamp without time zone NOT NULL,
-    creation_time timestamp without time zone NOT NULL,
+    last_touch_time timestamp with time zone NOT NULL,
+    creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL,
     CONSTRAINT unique_route_per_customer UNIQUE (
         customer_id, latitude_origin, longitude_origin, latitude_destiny, longitude_destiny
@@ -84,8 +84,8 @@ CREATE TABLE patios (
     name VARCHAR(128) NOT NULL,
     latitude_location DOUBLE PRECISION NOT NULL,
     longitude_location DOUBLE PRECISION NOT NULL,
-    last_touch_time timestamp without time zone NOT NULL,
-    creation_time timestamp without time zone NOT NULL,
+    last_touch_time timestamp with time zone NOT NULL,
+    creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL
 );
 
