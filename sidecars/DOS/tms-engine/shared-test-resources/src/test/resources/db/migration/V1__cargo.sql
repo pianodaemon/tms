@@ -109,6 +109,7 @@ CREATE TABLE trans_log_records (
     dist_unit VARCHAR(5) NOT NULL,
     dist_scalar NUMERIC(15, 6) NOT NULL,
     fuel_consumption NUMERIC(10, 2),
+    creation_time timestamp with time zone NOT NULL,
     cargo_assignment_id UUID REFERENCES cargo_assignments(id)
 );
 
@@ -589,14 +590,16 @@ BEGIN
                 dist_unit,
                 dist_scalar,
                 fuel_consumption,
-                cargo_assignment_id
+                cargo_assignment_id,
+                creation_time
             ) VALUES (
                 gen_random_uuid(),
                 _tenant_id,
                 _dist_unit,
                 _dist_scalar,
                 _fuel_consumption,
-                _cargo_assignment_id
+                _cargo_assignment_id,
+                current_moment
             ) RETURNING id INTO _id;
 
         WHEN _id IS NOT NULL THEN
