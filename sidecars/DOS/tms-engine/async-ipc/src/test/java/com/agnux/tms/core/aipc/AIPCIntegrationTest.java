@@ -199,6 +199,54 @@ class AIPCRouterIntegrationTest {
     }
 
     @Test
+    void testPaginatedCustomersEndpoint() {
+        UUID tenantId = UUID.randomUUID();
+
+        // Create multiple customers
+        for (int i = 1; i <= 5; i++) {
+            Customer customer = new Customer(null, tenantId, "Paginated Customer " + i);
+            webTestClient.post()
+                    .uri("/adm/customers")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(customer)
+                    .exchange()
+                    .expectStatus().isOk();
+        }
+
+        // Request page 0 with size 3
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                .path("/adm/customers")
+                .queryParam("tenant_id", tenantId.toString())
+                .queryParam("page_size", "3")
+                .queryParam("page_number", "1")
+                .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.data.length()").isEqualTo(3)
+                .jsonPath("$.totalElements").isEqualTo(5)
+                .jsonPath("$.totalPages").isEqualTo(2);
+
+        // Request page 1 with size 3
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                .path("/adm/customers")
+                .queryParam("tenant_id", tenantId.toString())
+                .queryParam("page_size", "3")
+                .queryParam("page_number", "2")
+                .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.data.length()").isEqualTo(2)
+                .jsonPath("$.totalElements").isEqualTo(5)
+                .jsonPath("$.totalPages").isEqualTo(2);
+    }
+
+    @Test
     void testCreateAndGetVehicule() {
         UUID tenantId = UUID.randomUUID();
         Vehicle newVehicle = new Vehicle(

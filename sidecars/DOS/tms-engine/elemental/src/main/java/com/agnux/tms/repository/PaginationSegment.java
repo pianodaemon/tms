@@ -9,6 +9,6 @@ import lombok.Getter;
 public class PaginationSegment<T> {
 
     private final List<T> data;
-    private final int totalItems;
+    private final int totalElements;
     private final int totalPages;
 }

@@ -8,7 +8,9 @@ import lombok.AllArgsConstructor;
 import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
+import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @AllArgsConstructor
 public abstract class Lister<T> {
 
@@ -108,6 +110,7 @@ public abstract class Lister<T> {
         String sql = buildSelectQuery(conditionStr, pageInfo, limit, offset);
         List<T> items = new ArrayList<>();
 
+        log.debug("Fetching query : " + sql);
         try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
@@ -145,7 +148,7 @@ public abstract class Lister<T> {
                     .orElse("id");
 
             final String query = buildQuery(table, field, searchParamsClause, notBlocked);
-
+            log.debug("Counting query : " + query);
             try (PreparedStatement stmt = conn.prepareStatement(query); ResultSet rs = stmt.executeQuery()) {
 
                 if (!rs.next()) {
@@ -180,7 +183,7 @@ public abstract class Lister<T> {
         private static final int DEFAULT_PER_PAGE = 10;
         private static final int DEFAULT_PAGE = 1;
         private static final String DEFAULT_ORDER_BY = "id";
-        private static final String DEFAULT_ORDER = "asc";
+        private static final String DEFAULT_ORDER = "ASC";
 
         @Getter
         @AllArgsConstructor
@@ -205,8 +208,8 @@ public abstract class Lister<T> {
         }
 
         public static PageInfo extractPageInfo(Map<String, String> pageParams) {
-            final int perPage = parseOrDefault(pageParams.get("per_page"), DEFAULT_PER_PAGE);
-            final int page = parseOrDefault(pageParams.get("page"), DEFAULT_PAGE);
+            final int perPage = parseOrDefault(pageParams.get("size"), DEFAULT_PER_PAGE);
+            final int page = parseOrDefault(pageParams.get("number"), DEFAULT_PAGE);
             final String orderBy = pageParams.getOrDefault("order_by", DEFAULT_ORDER_BY);
             final String order = pageParams.getOrDefault("order", DEFAULT_ORDER);
 
