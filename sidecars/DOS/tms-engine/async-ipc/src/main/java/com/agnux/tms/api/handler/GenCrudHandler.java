@@ -108,7 +108,7 @@ class GenCrudHandler<T extends TmsBasicModel> {
     public Mono<ServerResponse> listPaginated(ServerRequest request) {
 
         MultiValueMap<String, String> queryParams = request.queryParams();
-        Map<String, String> filters = new HashMap<>();
+        Map<String, String> searchParams = new HashMap<>();
         Map<String, String> pageParams = new HashMap<>();
 
         // Parse and split parameters
@@ -117,7 +117,7 @@ class GenCrudHandler<T extends TmsBasicModel> {
             String value = entry.getValue().get(0); // Take the first value
 
             if (key.startsWith("filter_")) {
-                filters.put(key.substring(7), value);
+                searchParams.put(key.substring(7), value);
             } else if (key.startsWith("page_")) {
                 pageParams.put(key.substring(5), value);
             }
@@ -128,15 +128,7 @@ class GenCrudHandler<T extends TmsBasicModel> {
                     .map(UUID::fromString)
                     .orElseThrow(() -> new TmsException("missing or invalid tenant identifier", ErrorCodes.INVALID_DATA));
 
-            Optional.ofNullable(pageParams.get("size"))
-                    .map(Integer::parseInt)
-                    .orElseThrow(() -> new TmsException("missing or invalid page size", ErrorCodes.INVALID_DATA));
-
-            Optional.ofNullable(pageParams.get("page"))
-                    .map(Integer::parseInt)
-                    .orElseThrow(() -> new TmsException("missing or invalid page number", ErrorCodes.INVALID_DATA));
-
-            PaginationSegment<T> segment = service.listPage(tenantId, filters, pageParams);
+            PaginationSegment<T> segment = service.listPage(tenantId, searchParams, pageParams);
             return ServiceResponseHelper.successWithBody(segment);
 
         } catch (TmsException e) {

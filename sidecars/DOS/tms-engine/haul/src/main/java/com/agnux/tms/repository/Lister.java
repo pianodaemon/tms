@@ -30,8 +30,8 @@ public abstract class Lister<T> {
     // Subclass must implement how to map a ResultSet row to T
     protected abstract T mapRow(ResultSet rs) throws SQLException;
 
-    public PaginationSegment<T> list(Connection conn, Map<String, String> filters, Map<String, String> pagination) throws TmsException {
-        List<Param> filterParams = filters.entrySet().stream()
+    public PaginationSegment<T> list(Connection conn, Map<String, String> searchParams, Map<String, String> pagination) throws TmsException {
+        List<Param> filterParams = searchParams.entrySet().stream()
                 .map(e -> new Param(e.getKey(), e.getValue()))
                 .collect(Collectors.toList());
 

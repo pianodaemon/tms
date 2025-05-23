@@ -84,7 +84,7 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
         }
     }
 
-    public static PaginationSegment<Customer> list(Connection conn, Map<String, String> filters, Map<String, String> pageParams) throws TmsException {
+    public static PaginationSegment<Customer> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
 
         return new Lister<Customer>(
                 "customers",
@@ -98,6 +98,6 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
                 String name = rs.getString("name");
                 return new Customer(id, tenantId, name);
             }
-        }.list(conn, filters, pageParams);
+        }.list(conn, searchParams, pageParams);
     }
 }
