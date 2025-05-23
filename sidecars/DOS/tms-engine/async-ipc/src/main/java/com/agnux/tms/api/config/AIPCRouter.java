@@ -32,7 +32,8 @@ public class AIPCRouter {
         return route(GET("/customers/{id}"), handler::read)
                 .andRoute(POST("/customers"), handler::create)
                 .andRoute(PUT("/customers"), handler::update)
-                .andRoute(DELETE("/customers/{id}"), handler::delete);
+                .andRoute(DELETE("/customers/{id}"), handler::delete)
+                .andRoute(GET("/customers"), handler::listPaginated);
     }
 
     public static RouterFunction<ServerResponse> patioRoutes(PatioHandler handler) {
