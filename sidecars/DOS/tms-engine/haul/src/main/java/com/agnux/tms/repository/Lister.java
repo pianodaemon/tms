@@ -182,7 +182,7 @@ public abstract class Lister<T> {
 
         private static final int DEFAULT_PER_PAGE = 10;
         private static final int DEFAULT_PAGE = 1;
-        private static final String DEFAULT_ORDER_BY = "id";
+        private static final String DEFAULT_ORDER_BY = DEFAULT_COUNTABLE_FIELD;
         private static final String DEFAULT_ORDER = "ASC";
 
         @Getter
