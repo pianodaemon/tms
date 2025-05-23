@@ -2,6 +2,8 @@ package com.agnux.tms.core.aipc;
 
 import com.agnux.tms.repository.model.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import java.util.UUID;
 import org.flywaydb.core.Flyway;
@@ -196,54 +198,146 @@ class AIPCRouterIntegrationTest {
                 .uri("/adm/customers/" + newID)
                 .exchange()
                 .expectStatus().isNotFound();
-    }
 
-    @Test
-    void testPaginatedCustomersEndpoint() {
-        UUID tenantId = UUID.randomUUID();
+        {
+            UUID tenantId = UUID.randomUUID();
+            List<UUID> createdCustomerIds = new ArrayList<>();
 
-        // Create multiple customers
-        for (int i = 1; i <= 5; i++) {
-            Customer customer = new Customer(null, tenantId, "Paginated Customer " + i);
-            webTestClient.post()
-                    .uri("/adm/customers")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(customer)
+            // Create multiple customers and collect their IDs
+            for (int i = 1; i <= 5; i++) {
+                Customer customer = new Customer(null, tenantId, "Paginated Customer " + i);
+                var res = webTestClient.post()
+                        .uri("/adm/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(customer)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectBody(Customer.class)
+                        .returnResult();
+
+                Customer created = res.getResponseBody();
+                assert created != null;
+                createdCustomerIds.add(created.getId().orElseThrow());
+            }
+
+            // Request page 1 with size 3
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                    .path("/adm/customers")
+                    .queryParam("tenant_id", tenantId.toString())
+                    .queryParam("page_size", "3")
+                    .queryParam("page_number", "1")
+                    .build())
                     .exchange()
-                    .expectStatus().isOk();
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                    .expectBody()
+                    .jsonPath("$.data.length()").isEqualTo(3)
+                    .jsonPath("$.totalElements").isEqualTo(5)
+                    .jsonPath("$.totalPages").isEqualTo(2);
+
+            // Request page 2 with size 3
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                    .path("/adm/customers")
+                    .queryParam("tenant_id", tenantId.toString())
+                    .queryParam("page_size", "3")
+                    .queryParam("page_number", "2")
+                    .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                    .expectBody()
+                    .jsonPath("$.data.length()").isEqualTo(2)
+                    .jsonPath("$.totalElements").isEqualTo(5)
+                    .jsonPath("$.totalPages").isEqualTo(2);
+
+            // Cleanup: delete all created customers
+            for (UUID id : createdCustomerIds) {
+                webTestClient.delete()
+                        .uri("/adm/customers/" + id)
+                        .exchange()
+                        .expectStatus().isNoContent();
+
+                webTestClient.get()
+                        .uri("/adm/customers/" + id)
+                        .exchange()
+                        .expectStatus().isNotFound();
+            }
         }
 
-        // Request page 0 with size 3
-        webTestClient.get()
-                .uri(uriBuilder -> uriBuilder
-                .path("/adm/customers")
-                .queryParam("tenant_id", tenantId.toString())
-                .queryParam("page_size", "3")
-                .queryParam("page_number", "1")
-                .build())
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody()
-                .jsonPath("$.data.length()").isEqualTo(3)
-                .jsonPath("$.totalElements").isEqualTo(5)
-                .jsonPath("$.totalPages").isEqualTo(2);
+        {
+            UUID tenantId = UUID.randomUUID();
+            List<String> names = List.of("Anna", "Brian", "Charlie", "Diana", "Edward");
+            List<UUID> createdCustomerIds = new ArrayList<>();
 
-        // Request page 1 with size 3
-        webTestClient.get()
-                .uri(uriBuilder -> uriBuilder
-                .path("/adm/customers")
-                .queryParam("tenant_id", tenantId.toString())
-                .queryParam("page_size", "3")
-                .queryParam("page_number", "2")
-                .build())
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody()
-                .jsonPath("$.data.length()").isEqualTo(2)
-                .jsonPath("$.totalElements").isEqualTo(5)
-                .jsonPath("$.totalPages").isEqualTo(2);
+            // Create customers and collect their IDs
+            for (String name : names) {
+                Customer customer = new Customer(null, tenantId, name);
+                var res = webTestClient.post()
+                        .uri("/adm/customers")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(customer)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectBody(Customer.class)
+                        .returnResult();
+
+                Customer created = res.getResponseBody();
+                assert created != null;
+                createdCustomerIds.add(created.getId().orElseThrow());
+            }
+
+            // === ASCENDING ORDER PAGE 1 ===
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                    .path("/adm/customers")
+                    .queryParam("tenant_id", tenantId.toString())
+                    .queryParam("page_size", "3")
+                    .queryParam("page_number", "1")
+                    .queryParam("page_order_by", "name")
+                    .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody()
+                    .jsonPath("$.data.length()").isEqualTo(3)
+                    .jsonPath("$.data[0].name").isEqualTo("Anna")
+                    .jsonPath("$.data[1].name").isEqualTo("Brian")
+                    .jsonPath("$.data[2].name").isEqualTo("Charlie")
+                    .jsonPath("$.totalElements").isEqualTo(5)
+                    .jsonPath("$.totalPages").isEqualTo(2);
+
+            // === DESCENDING ORDER PAGE 1 ===
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                    .path("/adm/customers")
+                    .queryParam("tenant_id", tenantId.toString())
+                    .queryParam("page_size", "3")
+                    .queryParam("page_number", "1")
+                    .queryParam("page_order_by", "name")
+                    .queryParam("page_order", "DESC")
+                    .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody()
+                    .jsonPath("$.data.length()").isEqualTo(3)
+                    .jsonPath("$.data[0].name").isEqualTo("Edward")
+                    .jsonPath("$.data[1].name").isEqualTo("Diana")
+                    .jsonPath("$.data[2].name").isEqualTo("Charlie");
+
+            // === Cleanup: Delete all created customers ===
+            for (UUID id : createdCustomerIds) {
+                webTestClient.delete()
+                        .uri("/adm/customers/" + id)
+                        .exchange()
+                        .expectStatus().isNoContent();
+
+                webTestClient.get()
+                        .uri("/adm/customers/" + id)
+                        .exchange()
+                        .expectStatus().isNotFound();
+            }
+        }
     }
 
     @Test
