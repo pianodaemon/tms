@@ -4,6 +4,7 @@ import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.IHaulRepo;
 import com.agnux.tms.repository.PaginationSegment;
 import com.agnux.tms.repository.model.Driver;
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class DriverService implements GenCrudService<Driver> {
     }
 
     @Override
-    public PaginationSegment<Driver> listPage(UUID tenantId, Integer page, Integer size) throws TmsException {
+    public PaginationSegment<Driver> listPage(UUID tenantId, Map<String, String> filters, Map<String, String> pagination)  throws TmsException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
