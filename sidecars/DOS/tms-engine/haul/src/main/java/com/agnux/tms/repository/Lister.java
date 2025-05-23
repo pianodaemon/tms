@@ -30,24 +30,17 @@ public abstract class Lister<T> {
     // Subclass must implement how to map a ResultSet row to T
     protected abstract T mapRow(ResultSet rs) throws SQLException;
 
-    public PaginationSegment<T> list(Connection conn, Map<String, String> searchParams, Map<String, String> pagination) throws TmsException {
+    public PaginationSegment<T> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
         List<Param> filterParams = searchParams.entrySet().stream()
                 .map(e -> new Param(e.getKey(), e.getValue()))
                 .collect(Collectors.toList());
 
-        List<Param> paginationParams = pagination.entrySet().stream()
-                .map(e -> new Param(e.getKey(), e.getValue()))
-                .collect(Collectors.toList());
-
-        return list(conn, filterParams, paginationParams);
+        return list(conn, filterParams, pageParams);
     }
 
-    public PaginationSegment<T> list(Connection conn, List<Param> searchParams, List<Param> pageParams) throws TmsException {
+    private PaginationSegment<T> list(Connection conn, List<Param> searchParams, Map<String, String> pageParams) throws TmsException {
         String conditionStr = buildCondition(searchParams);
-        Map<String, String> pageMap = pageParams.stream()
-                .collect(Collectors.toMap(Param::getName, Param::getValue));
-
-        PaginationHelper.PageInfo pageInfo = PaginationHelper.extractPageInfo(pageMap);
+        PaginationHelper.PageInfo pageInfo = PaginationHelper.extractPageInfo(pageParams);
 
         String countByField = Optional.ofNullable(pageInfo.getOrderBy())
                 .filter(f -> !f.isBlank())
