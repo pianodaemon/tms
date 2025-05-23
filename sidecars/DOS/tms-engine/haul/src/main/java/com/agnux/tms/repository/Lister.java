@@ -24,8 +24,8 @@ public abstract class Lister<T> {
     }
 
     private final String tableName;
-    private final List<String> selectFields;
     private final Set<String> quotedFields;
+    private final List<String> selectFields;
 
     // Subclass must implement how to map a ResultSet row to T
     protected abstract T mapRow(ResultSet rs) throws SQLException;

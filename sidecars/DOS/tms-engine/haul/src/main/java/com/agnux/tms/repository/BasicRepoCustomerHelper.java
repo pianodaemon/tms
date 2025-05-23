@@ -88,8 +88,8 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
 
         return new Lister<Customer>(
                 "customers",
-                Arrays.asList("id", "tenant_id", "name"),
-                Set.of("name")
+                Set.of("id", "tenant_id", "name"),
+                Arrays.asList("id", "name")
         ) {
             @Override
             protected Customer mapRow(ResultSet rs) throws SQLException {
