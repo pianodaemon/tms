@@ -148,17 +148,17 @@ public class BasicRepoImpl implements IHaulRepo {
 
     @Override
     public UUID createVehicle(Vehicle v) throws TmsException {
-        return saveOrUpdateEntity(v, "Vehicule", BasicRepoVehicleHelper::update, true);
+        return saveOrUpdateEntity(v, BasicRepoVehicleHelper.ENTITY_NAME, BasicRepoVehicleHelper::update, true);
     }
 
     @Override
     public UUID editVehicle(Vehicle v) throws TmsException {
-        return saveOrUpdateEntity(v, "Vehicule", BasicRepoVehicleHelper::update, false);
+        return saveOrUpdateEntity(v, BasicRepoVehicleHelper.ENTITY_NAME, BasicRepoVehicleHelper::update, false);
     }
 
     @Override
     public void deleteVehicle(UUID id) throws TmsException {
-        deleteEntity(id, "Vehicule", BasicRepoVehicleHelper::block);
+        deleteEntity(id, BasicRepoVehicleHelper.ENTITY_NAME, BasicRepoVehicleHelper::block);
     }
 
     @Override
