@@ -1,5 +1,7 @@
 package com.agnux.tms.repository;
 
+import com.agnux.tms.errors.ErrorCodes;
+import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.CargoAssignment;
 
 import java.sql.*;
@@ -73,12 +75,18 @@ class BasicRepoCargoAssignmentHelper extends BasicRepoCommonHelper {
         }
     }
 
-    public static void block(Connection conn, UUID assignmentId) throws SQLException {
+    public static void block(Connection conn, UUID assignmentId) throws TmsException {
 
         String sql = "UPDATE cargo_assignments SET blocked = true WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setObject(1, assignmentId);
-            stmt.executeUpdate();
+            int updates = stmt.executeUpdate();
+            if (updates == 1) {
+                return;
+            }
+            throw new TmsException("assignment not deleted", ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA);
+        } catch (SQLException ex) {
+            throw new TmsException("assignment not deleted", ErrorCodes.REPO_PROVIDER_ISSUES);
         }
     }
 }

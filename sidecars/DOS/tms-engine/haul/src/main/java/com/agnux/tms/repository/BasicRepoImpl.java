@@ -57,7 +57,7 @@ public class BasicRepoImpl implements IHaulRepo {
     @FunctionalInterface
     public interface BlockById {
 
-        void block(Connection conn, UUID id) throws SQLException;
+        void block(Connection conn, UUID id) throws TmsException;
     }
 
     private <T> PaginationSegment<T> listEntityPage(Map<String, String> filters, Map<String, String> pagination, String name, ListPage<T> lister) throws TmsException {

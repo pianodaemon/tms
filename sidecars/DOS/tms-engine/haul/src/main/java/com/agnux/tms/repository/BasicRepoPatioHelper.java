@@ -1,5 +1,7 @@
 package com.agnux.tms.repository;
 
+import com.agnux.tms.errors.ErrorCodes;
+import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.Patio;
 
 import java.sql.Connection;
@@ -73,11 +75,17 @@ class BasicRepoPatioHelper extends BasicRepoCommonHelper {
         }
     }
 
-    public static void block(Connection conn, UUID patioId) throws SQLException {
+    public static void block(Connection conn, UUID patioId) throws TmsException {
         String sql = "UPDATE patios SET blocked = true WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setObject(1, patioId);
-            stmt.executeUpdate();
+            int updates = stmt.executeUpdate();
+            if (updates == 1) {
+                return;
+            }
+            throw new TmsException("patio not deleted", ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA);
+        } catch (SQLException ex) {
+            throw new TmsException("patio not deleted", ErrorCodes.REPO_PROVIDER_ISSUES);
         }
     }
 }

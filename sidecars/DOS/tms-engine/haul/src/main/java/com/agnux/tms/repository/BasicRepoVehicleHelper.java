@@ -1,5 +1,7 @@
 package com.agnux.tms.repository;
 
+import com.agnux.tms.errors.ErrorCodes;
+import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.DistUnit;
 import com.agnux.tms.repository.model.Vehicle;
 import com.agnux.tms.repository.model.VehicleColor;
@@ -94,11 +96,17 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
         }
     }
 
-    public static void block(Connection conn, UUID vehicleId) throws SQLException {
+    public static void block(Connection conn, UUID vehicleId) throws TmsException {
         String sql = "UPDATE vehicles SET blocked = true WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setObject(1, vehicleId);
-            stmt.executeUpdate();
+            int updates = stmt.executeUpdate();
+            if (updates == 1) {
+                return;
+            }
+            throw new TmsException("vehicle not deleted", ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA);
+        } catch (SQLException ex) {
+            throw new TmsException("vehicle not deleted", ErrorCodes.REPO_PROVIDER_ISSUES);
         }
     }
 }

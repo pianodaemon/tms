@@ -31,8 +31,11 @@ public class CustomerHandler extends GenCrudHandler<Customer> {
 
     @Override
     protected Mono<ServerResponse> onDeleteFailure(TmsException e) {
-        if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
-            return ServiceResponseHelper.badRequest("data supplied face issues", e);
+        if (ErrorCodes.INVALID_DATA.getCode() == e.getErrorCode()) {
+            return ServiceResponseHelper.badRequest("invalid identifier", e);
+        }
+        if (e.getErrorCode() == ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA.getCode()) {
+            return ServiceResponseHelper.notFound("non-present identifier", e);
         }
         return ServiceResponseHelper.internalServerError(e);
     }
