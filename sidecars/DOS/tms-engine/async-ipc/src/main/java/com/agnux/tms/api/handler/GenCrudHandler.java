@@ -135,8 +135,8 @@ public class GenCrudHandler<T extends TmsBasicModel> {
                 return ServiceResponseHelper.badRequest("invalid request data", e);
             }
 
-            if (e.getErrorCode() == ErrorCodes.REPO_PROVIDER_ISSUES.getCode()) {
-                return ServiceResponseHelper.badRequest("data supplied face issues", e);
+            if (e.getErrorCode() == ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA.getCode()) {
+                return ServiceResponseHelper.notFound("non-present data", e);
             }
             return ServiceResponseHelper.internalServerError(e);
         }

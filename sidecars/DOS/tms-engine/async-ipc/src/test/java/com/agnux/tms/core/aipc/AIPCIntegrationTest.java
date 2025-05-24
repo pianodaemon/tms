@@ -341,6 +341,16 @@ class AIPCRouterIntegrationTest {
                     .jsonPath("$.data.length()").isEqualTo(1)
                     .jsonPath("$.data[0].name").isEqualTo("Charlie");
 
+            // === FILTER: Non-matching query ===
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                    .path("/adm/customers")
+                    .queryParam("tenant_id", tenantId.toString())
+                    .queryParam("filter_name", "zzzzzz")
+                    .build())
+                    .exchange()
+                    .expectStatus().isNotFound();
+
             // === Cleanup: Delete all created customers ===
             for (UUID id : createdCustomerIds) {
                 webTestClient.delete()

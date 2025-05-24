@@ -32,25 +32,28 @@ public enum ErrorCodes {
     CONFIG_ELEMENT_NOT_FOUND(1002),
     /**
      * Error code indicating issues when interacting with the repository provide
-     * entity. This error occurs when there are problems with operations such
-     * as saving or fetching data.
+     * entity. This error occurs when there are problems with operations such as
+     * saving or fetching data.
      */
     REPO_PROVIDER_ISSUES(1003), // Lack of interaction with storage provider entity
+
+    REPO_PROVIDER_NONPRESENT_DATA(1004),
+
     /**
      * Error code indicating issues when interacting with the storage provider
      * entity. This error occurs when there are problems with storage-related
      * operations, such as uploading or downloading data.
      */
-    STORAGE_PROVIDER_ISSUES(1004), // Lack of interaction with storage provider entity
+    STORAGE_PROVIDER_ISSUES(1005), // Lack of interaction with storage provider entity
 
     /**
      * Error code indicating issues when interacting with the FIFO provider
      * entity. This error occurs when there are problems related to pushing or
      * pulling data from the FIFO queue.
      */
-    FIFO_PROVIDEER_ISSUES(1005), // Lack of interaction with FIFO provider entity
-    
-    INVALID_DATA(1006);
+    FIFO_PROVIDEER_ISSUES(1006), // Lack of interaction with FIFO provider entity
+
+    INVALID_DATA(1007);
 
     /**
      * The integer code representing this error.

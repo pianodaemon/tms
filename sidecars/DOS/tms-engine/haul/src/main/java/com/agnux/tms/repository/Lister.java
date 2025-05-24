@@ -53,7 +53,7 @@ public abstract class Lister<T> {
             totalItems = EntityCounter.countEntities(conn, tableName, conditionStr, true, countByField);
         } catch (SQLException e) {
             final String emsg = "Error counting entities";
-            throw new TmsException(emsg, e, ErrorCodes.STORAGE_PROVIDER_ISSUES);
+            throw new TmsException(emsg, e, ErrorCodes.REPO_PROVIDER_ISSUES);
         }
 
         int offset = pageInfo.getOffset();
@@ -62,7 +62,7 @@ public abstract class Lister<T> {
 
         if (offset >= totalItems) {
             final String emsg = "Page " + pageInfo.getPage() + " does not exist";
-            throw new TmsException(emsg, ErrorCodes.STORAGE_PROVIDER_ISSUES);
+            throw new TmsException(emsg, ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA);
         }
 
         try {
