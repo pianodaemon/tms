@@ -8,7 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 class BasicRepoDriverHelper extends BasicRepoCommonHelper {
@@ -84,5 +87,25 @@ class BasicRepoDriverHelper extends BasicRepoCommonHelper {
 
     public static void block(Connection conn, UUID id) throws TmsException {
         blockAt(conn, ENTITY_TABLE, id);
+    }
+
+    public static PaginationSegment<Driver> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
+
+        return new Lister<Driver>(
+                ENTITY_TABLE,
+                Set.of("id", "tenant_id", "name", "first_surname", "second_surname", "license_number"),
+                Arrays.asList("id", "tenant_id", "name", "first_surname", "second_surname", "license_number")
+        ) {
+            @Override
+            protected Driver mapRow(ResultSet rs) throws SQLException {
+                UUID id = UUID.fromString(rs.getString("id"));
+                UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
+                String name = rs.getString("name");
+                String firstSurname = rs.getString("first_surname");
+                String secondSurname = rs.getString("second_surname");
+                String licenseNumber = rs.getString("license_number");
+                return new Driver(id, tenantId, name, firstSurname, secondSurname, licenseNumber);
+            }
+        }.list(conn, searchParams, pageParams);
     }
 }
