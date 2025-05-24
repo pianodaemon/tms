@@ -6,7 +6,10 @@ import com.agnux.tms.repository.model.DistUnit;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
@@ -24,30 +27,7 @@ class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
                     return Optional.empty();
                 }
 
-                UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
-                UUID customerId = UUID.fromString(rs.getString("customer_id"));
-                String receiver = rs.getString("receiver");
-                double latitudeOrigin = rs.getDouble("latitude_origin");
-                double longitudeOrigin = rs.getDouble("longitude_origin");
-                double latitudeDestiny = rs.getDouble("latitude_destiny");
-                double longitudeDestiny = rs.getDouble("longitude_destiny");
-                DistUnit distUnit = DistUnit.valueOf(rs.getString("dist_unit"));
-                BigDecimal distScalar = rs.getBigDecimal("dist_scalar");
-
-                Agreement agreement = new Agreement(
-                        agreementId,
-                        tenantId,
-                        customerId,
-                        receiver,
-                        latitudeOrigin,
-                        longitudeOrigin,
-                        latitudeDestiny,
-                        longitudeDestiny,
-                        distUnit,
-                        distScalar
-                );
-
-                return Optional.of(agreement);
+                return Optional.of(fromResultSet(rs));
             }
         }
     }
@@ -103,5 +83,46 @@ class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
 
     public static void block(Connection conn, UUID id) throws TmsException {
         blockAt(conn, ENTITY_TABLE, id);
+    }
+
+    public static PaginationSegment<Agreement> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
+
+        return new Lister<Agreement>(
+                ENTITY_TABLE,
+                Set.of("id", "tenant_id", "customer_id", "receiver", "dist_unit"),
+                Arrays.asList("id", "tenant_id", "customer_id", "receiver", "dist_unit",
+                        "dist_scalar", "latitude_origin", "longitude_origin", "latitude_destiny", "longitude_destiny")
+        ) {
+            @Override
+            protected Agreement mapRow(ResultSet rs) throws SQLException {
+                return fromResultSet(rs);
+            }
+        }.list(conn, searchParams, pageParams);
+    }
+
+    public static Agreement fromResultSet(ResultSet rs) throws SQLException {
+        UUID agreementId = UUID.fromString(rs.getString("id"));
+        UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
+        UUID customerId = UUID.fromString(rs.getString("customer_id"));
+        String receiver = rs.getString("receiver");
+        double latitudeOrigin = rs.getDouble("latitude_origin");
+        double longitudeOrigin = rs.getDouble("longitude_origin");
+        double latitudeDestiny = rs.getDouble("latitude_destiny");
+        double longitudeDestiny = rs.getDouble("longitude_destiny");
+        DistUnit distUnit = DistUnit.valueOf(rs.getString("dist_unit"));
+        BigDecimal distScalar = rs.getBigDecimal("dist_scalar");
+
+        return new Agreement(
+                agreementId,
+                tenantId,
+                customerId,
+                receiver,
+                latitudeOrigin,
+                longitudeOrigin,
+                latitudeDestiny,
+                longitudeDestiny,
+                distUnit,
+                distScalar
+        );
     }
 }
