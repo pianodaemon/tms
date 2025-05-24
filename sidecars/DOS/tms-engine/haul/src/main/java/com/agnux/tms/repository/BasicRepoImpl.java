@@ -184,7 +184,7 @@ public class BasicRepoImpl implements IHaulRepo {
     // Patio
     @Override
     public Patio getPatio(UUID id) throws TmsException {
-        return fetchEntity(id, "Patio", BasicRepoPatioHelper::fetchById);
+        return fetchEntity(id, BasicRepoPatioHelper.ENTITY_NAME, BasicRepoPatioHelper::fetchById);
     }
 
     @Override

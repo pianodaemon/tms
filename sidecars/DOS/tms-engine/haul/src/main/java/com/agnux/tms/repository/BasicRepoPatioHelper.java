@@ -1,6 +1,5 @@
 package com.agnux.tms.repository;
 
-import com.agnux.tms.errors.ErrorCodes;
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.Patio;
 
@@ -14,8 +13,11 @@ import java.util.UUID;
 
 class BasicRepoPatioHelper extends BasicRepoCommonHelper {
 
+    public static final String ENTITY_NAME = "patio";
+    public static final String ENTITY_TABLE = "patios";
+
     public static Optional<Patio> fetchById(Connection conn, UUID patioId) throws SQLException {
-        String sql = "SELECT * FROM patios WHERE NOT blocked AND id = ?";
+        String sql = String.format("SELECT * FROM %s WHERE not blocked AND id = ?", ENTITY_TABLE);
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setObject(1, patioId);
 
@@ -76,6 +78,6 @@ class BasicRepoPatioHelper extends BasicRepoCommonHelper {
     }
 
     public static void block(Connection conn, UUID id) throws TmsException {
-        blockAt(conn, "patios", id);
+        blockAt(conn, ENTITY_TABLE, id);
     }
 }
