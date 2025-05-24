@@ -22,7 +22,7 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
     public static final String ENTITY_TABLE = "vehicles";
 
     public static Optional<Vehicle> fetchById(Connection conn, UUID vehicleId) throws SQLException {
-        String sql = "SELECT * FROM vehicles WHERE not blocked AND id = ?";
+        String sql = String.format("SELECT * FROM %s WHERE not blocked AND id = ?", ENTITY_TABLE);
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setObject(1, vehicleId);
 
