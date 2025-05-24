@@ -69,7 +69,7 @@ public class GenCrudHandler<T extends TmsBasicModel> {
             T entity = service.read(id);
             return ServiceResponseHelper.successWithBody(entity);
         } catch (TmsException e) {
-            if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
+            if (ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA.getCode() == e.getErrorCode()) {
                 return ServiceResponseHelper.notFound("data is not locatable", e);
             }
             return ServiceResponseHelper.internalServerError(e);

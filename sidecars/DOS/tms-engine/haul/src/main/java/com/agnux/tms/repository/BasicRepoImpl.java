@@ -71,7 +71,7 @@ public class BasicRepoImpl implements IHaulRepo {
     private <T> T fetchEntity(UUID id, String name, FetchById<T> fetcher) throws TmsException {
         try (var conn = ds.getConnection()) {
             return fetcher.fetch(conn, id)
-                    .orElseThrow(() -> new TmsException(name + " " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDER_ISSUES));
+                    .orElseThrow(() -> new TmsException(name + " " + id + NOT_FOUND, ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA));
         } catch (SQLException ex) {
             throw new TmsException(name + LOOKUP_FAILED, ex, ErrorCodes.REPO_PROVIDER_ISSUES);
         }
