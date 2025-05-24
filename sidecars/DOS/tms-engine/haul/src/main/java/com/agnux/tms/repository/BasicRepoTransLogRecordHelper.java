@@ -14,7 +14,7 @@ class BasicRepoTransLogRecordHelper extends BasicRepoCommonHelper {
     public static final String ENTITY_TABLE = "trans_log_records";
 
     public static Optional<TransLogRecord> fetchById(Connection conn, UUID recordId) throws SQLException {
-        String sql = String.format(FETCH_BY_ID_SQL_QUERY, ENTITY_TABLE);
+        String sql = String.format("SELECT * FROM %s WHERE id = ?", ENTITY_TABLE);
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setObject(1, recordId);
 
