@@ -15,7 +15,6 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -24,7 +23,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.util.MultiValueMap;
 
 @Log4j2
-class GenCrudHandler<T extends TmsBasicModel> {
+public class GenCrudHandler<T extends TmsBasicModel> {
 
     protected final Class<T> clazz;
     private final GenCrudService<T> service;

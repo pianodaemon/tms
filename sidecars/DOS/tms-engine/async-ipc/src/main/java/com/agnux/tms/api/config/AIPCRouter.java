@@ -1,6 +1,7 @@
 package com.agnux.tms.api.config;
 
 import com.agnux.tms.api.handler.*;
+import com.agnux.tms.repository.model.TmsBasicModel;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -21,39 +22,14 @@ public class AIPCRouter {
     private static final String CATALOGS_API_PATH = "adm";
     private static final String HAUL_API_PATH = "oper";
 
-    public static RouterFunction<ServerResponse> vehicleRoutes(VehicleHandler handler) {
-        return route(GET("/vehicles/{id}"), handler::read)
-                .andRoute(POST("/vehicles"), handler::create)
-                .andRoute(PUT("/vehicles"), handler::update)
-                .andRoute(DELETE("/vehicles/{id}"), handler::delete);
-    }
+    private static <T extends TmsBasicModel> RouterFunction<ServerResponse> crudRoutes(final String pathPrefix, GenCrudHandler<T> handler) {
+        RouterFunction<ServerResponse> routes = route(GET(pathPrefix + "/{id}"), handler::read)
+                .andRoute(POST(pathPrefix), handler::create)
+                .andRoute(PUT(pathPrefix), handler::update)
+                .andRoute(DELETE(pathPrefix + "/{id}"), handler::delete)
+                .andRoute(GET(pathPrefix), handler::listPaginated);
 
-    public static RouterFunction<ServerResponse> customerRoutes(CustomerHandler handler) {
-        return route(GET("/customers/{id}"), handler::read)
-                .andRoute(POST("/customers"), handler::create)
-                .andRoute(PUT("/customers"), handler::update)
-                .andRoute(DELETE("/customers/{id}"), handler::delete)
-                .andRoute(GET("/customers"), handler::listPaginated);
-    }
-
-    public static RouterFunction<ServerResponse> patioRoutes(PatioHandler handler) {
-        return route(GET("/patios/{id}"), handler::read)
-                .andRoute(POST("/patios"), handler::create)
-                .andRoute(PUT("/patios"), handler::update)
-                .andRoute(DELETE("/patios/{id}"), handler::delete);
-    }
-
-    public static RouterFunction<ServerResponse> driverRoutes(DriverHandler handler) {
-        return route(GET("/drivers/{id}"), handler::read)
-                .andRoute(POST("/drivers"), handler::create)
-                .andRoute(PUT("/drivers"), handler::update)
-                .andRoute(DELETE("/drivers/{id}"), handler::delete);
-    }
-
-    public static RouterFunction<ServerResponse> haulMgmtRoutes(HaulMgmtHandler handler) {
-        return RouterFunctions
-                .route(POST("/{tenantId}/{userId}/assign-trip"), handler::assignTrip)
-                .andRoute(GET("/{tenantId}/{userId}/estimate-fuel"), handler::estimateFuel);
+        return routes;
     }
 
     @Bean
@@ -64,10 +40,16 @@ public class AIPCRouter {
             PatioHandler patioHandler) {
 
         return nest(path("/" + CATALOGS_API_PATH),
-                driverRoutes(driverHandler)
-                        .and(vehicleRoutes(vehicleHandler))
-                        .and(patioRoutes(patioHandler))
-                        .and(customerRoutes(customerHandler)));
+                crudRoutes("/vehicles", vehicleHandler)
+                        .and(crudRoutes("/customers", customerHandler))
+                        .and(crudRoutes("/drivers", driverHandler))
+                        .and(crudRoutes("/patios", patioHandler)));
+    }
+
+    public static RouterFunction<ServerResponse> haulMgmtRoutes(HaulMgmtHandler handler) {
+        return RouterFunctions
+                .route(POST("/{tenantId}/{userId}/assign-trip"), handler::assignTrip)
+                .andRoute(GET("/{tenantId}/{userId}/estimate-fuel"), handler::estimateFuel);
     }
 
     @Bean
