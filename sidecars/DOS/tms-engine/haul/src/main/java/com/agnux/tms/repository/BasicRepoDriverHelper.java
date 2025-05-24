@@ -80,17 +80,7 @@ class BasicRepoDriverHelper extends BasicRepoCommonHelper {
         }
     }
 
-    public static void block(Connection conn, UUID driverId) throws TmsException {
-        String sql = "UPDATE drivers SET blocked = true WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setObject(1, driverId);
-            int updates = stmt.executeUpdate();
-            if (updates == 1) {
-                return;
-            }
-            throw new TmsException("driver not deleted", ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA);
-        } catch (SQLException ex) {
-            throw new TmsException("driver not deleted", ErrorCodes.REPO_PROVIDER_ISSUES);
-        }
+    public static void block(Connection conn, UUID id) throws TmsException {
+        blockAt(conn, "drivers", id);
     }
 }

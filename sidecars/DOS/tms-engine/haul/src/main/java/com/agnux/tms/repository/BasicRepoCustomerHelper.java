@@ -77,18 +77,8 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
         }
     }
 
-    public static void block(Connection conn, UUID customerId) throws TmsException {
-        String sql = "UPDATE customers SET blocked = true WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setObject(1, customerId);
-            int updates = stmt.executeUpdate();
-            if (updates == 1) {
-                return;
-            }
-            throw new TmsException("customer not deleted", ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA);
-        } catch (SQLException ex) {
-            throw new TmsException("customer not deleted", ErrorCodes.REPO_PROVIDER_ISSUES);
-        }
+    public static void block(Connection conn, UUID id) throws TmsException {
+        blockAt(conn, "customers", id);
     }
 
     public static PaginationSegment<Customer> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {

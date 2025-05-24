@@ -1,9 +1,12 @@
 package com.agnux.tms.repository;
 
+import com.agnux.tms.errors.ErrorCodes;
+import com.agnux.tms.errors.TmsException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.UUID;
 
 class BasicRepoCommonHelper {
 
@@ -15,6 +18,21 @@ class BasicRepoCommonHelper {
                     throw new SQLException("PostgreSQL function '" + functionName + "' should exist");
                 }
             }
+        }
+    }
+
+    public static void blockAt(Connection conn, String table, UUID entityId) throws TmsException {
+        String sql = String.format("UPDATE %s SET blocked = true WHERE id = ?", table);
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setObject(1, entityId);
+            int updates = stmt.executeUpdate();
+            if (updates == 1) {
+                return;
+            }
+            throw new TmsException("entity not updated", ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA);
+        } catch (SQLException ex) {
+            throw new TmsException("entity not updated", ErrorCodes.REPO_PROVIDER_ISSUES);
         }
     }
 }
