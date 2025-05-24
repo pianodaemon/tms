@@ -44,7 +44,8 @@ public class VehicleService implements GenCrudService<Vehicle> {
     }
 
     @Override
-    public PaginationSegment<Vehicle> listPage(UUID tenantId, Map<String, String> filters, Map<String, String> pagination) throws TmsException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public PaginationSegment<Vehicle> listPage(UUID tenantId, Map<String, String> filters, Map<String, String> pageParams) throws TmsException {
+        log.info("Fetching a vehicle's page");
+        return repo.listVehiclePage(filters, pageParams);
     }
 }

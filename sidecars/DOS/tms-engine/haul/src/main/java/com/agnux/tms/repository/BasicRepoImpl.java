@@ -140,6 +140,11 @@ public class BasicRepoImpl implements IHaulRepo {
         return listEntityPage(filters, pageParams, BasicRepoCustomerHelper.ENTITY_NAME, BasicRepoCustomerHelper::list);
     }
 
+    @Override
+    public PaginationSegment<Vehicle> listVehiclePage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException {
+        return listEntityPage(filters, pageParams, BasicRepoVehicleHelper.ENTITY_NAME, BasicRepoVehicleHelper::list);
+    }
+
     // Vehicle
     @Override
     public Vehicle getVehicle(UUID id) throws TmsException {

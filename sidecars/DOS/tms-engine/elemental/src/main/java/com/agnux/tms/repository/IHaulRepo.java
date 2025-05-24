@@ -56,14 +56,16 @@ public interface IHaulRepo {
     public UUID editPatio(Patio p) throws TmsException;
 
     public void deletePatio(UUID patioId) throws TmsException;
-    
+
     public PaginationSegment<Patio> listPatioPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException;
-    
+
     public PaginationSegment<Driver> listDriverPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException;
 
     public PaginationSegment<Customer> listCustomerPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException;
-    
+
     public PaginationSegment<Agreement> listAgreementPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException;
+
+    public PaginationSegment<Vehicle> listVehiclePage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException;
 
     public Customer getCustomer(UUID customerId) throws TmsException;
 

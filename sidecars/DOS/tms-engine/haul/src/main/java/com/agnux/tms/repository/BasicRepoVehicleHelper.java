@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -100,5 +101,9 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
 
     public static void block(Connection conn, UUID id) throws TmsException {
         blockAt(conn, ENTITY_TABLE, id);
+    }
+
+    public static PaginationSegment<Vehicle> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
+        return null;
     }
 }
