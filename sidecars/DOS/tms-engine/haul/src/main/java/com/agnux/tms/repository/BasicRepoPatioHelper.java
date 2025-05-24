@@ -8,7 +8,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 class BasicRepoPatioHelper extends BasicRepoCommonHelper {
@@ -79,5 +82,24 @@ class BasicRepoPatioHelper extends BasicRepoCommonHelper {
 
     public static void block(Connection conn, UUID id) throws TmsException {
         blockAt(conn, ENTITY_TABLE, id);
+    }
+
+    public static PaginationSegment<Patio> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
+
+        return new Lister<Patio>(
+                ENTITY_TABLE,
+                Set.of("id", "tenant_id", "name"),
+                Arrays.asList("id", "tenant_id", "name", "latitude_location", "longitude_location")
+        ) {
+            @Override
+            protected Patio mapRow(ResultSet rs) throws SQLException {
+                UUID id = UUID.fromString(rs.getString("id"));
+                UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
+                String name = rs.getString("name");
+                double latitudeLocation = rs.getDouble("latitude_location");
+                double longitudeLocation = rs.getDouble("longitude_location");
+                return new Patio(id, tenantId, name, latitudeLocation, longitudeLocation);
+            }
+        }.list(conn, searchParams, pageParams);
     }
 }
