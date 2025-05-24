@@ -225,11 +225,11 @@ public class BasicRepoImpl implements IHaulRepo {
 
     @Override
     public TransLogRecord getTransLogRecord(UUID id) throws TmsException {
-        return fetchEntity(id, "TransLogRecord", BasicRepoTransLogRecordHelper::fetchById);
+        return fetchEntity(id, BasicRepoTransLogRecordHelper.ENTITY_NAME, BasicRepoTransLogRecordHelper::fetchById);
     }
 
     @Override
     public UUID createTransLogRecord(TransLogRecord tlr) throws TmsException {
-        return saveOrUpdateEntity(tlr, "TransLogRecord", BasicRepoTransLogRecordHelper::update, true);
+        return saveOrUpdateEntity(tlr, BasicRepoTransLogRecordHelper.ENTITY_NAME, BasicRepoTransLogRecordHelper::update, true);
     }
 }

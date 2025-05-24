@@ -10,8 +10,11 @@ import java.util.UUID;
 
 class BasicRepoTransLogRecordHelper extends BasicRepoCommonHelper {
 
+    public static final String ENTITY_NAME = "trans_log_record";
+    public static final String ENTITY_TABLE = "trans_log_records";
+
     public static Optional<TransLogRecord> fetchById(Connection conn, UUID recordId) throws SQLException {
-        String sql = "SELECT * FROM trans_log_records WHERE id = ?";
+        String sql = String.format(FETCH_BY_ID_SQL_QUERY, ENTITY_TABLE);
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setObject(1, recordId);
 
