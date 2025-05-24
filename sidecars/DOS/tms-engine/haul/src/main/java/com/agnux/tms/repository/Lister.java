@@ -77,10 +77,10 @@ public abstract class Lister<T> {
     private String buildCondition(List<Param> searchParams) {
         String condition = searchParams.stream()
                 .map(param -> {
-                    String value = quotedFields.contains(param.getName())
-                            ? "'" + param.getValue() + "'"
-                            : param.getValue();
-                    return param.getName() + "=" + value;
+                    if ( quotedFields.contains(param.getName()) ) {
+                        return param.getName() + " LIKE " + "'" + param.getValue() + "'";
+                    }
+                    return param.getName() + "=" + param.getValue();
                 })
                 .collect(Collectors.joining(AND_SORROUNDED_BY_SPACES));
 
