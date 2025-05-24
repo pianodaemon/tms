@@ -55,7 +55,7 @@ public class GenCrudHandler<T extends TmsBasicModel> {
                         entity.setId(newId);
                         return ServiceResponseHelper.successWithBody(entity);
                     } catch (TmsException e) {
-                        if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
+                        if (ErrorCodes.INVALID_DATA.getCode() == e.getErrorCode()) {
                             return ServiceResponseHelper.badRequest("data supplied face issues", e);
                         }
                         return ServiceResponseHelper.internalServerError(e);
