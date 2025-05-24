@@ -18,6 +18,9 @@ import java.util.UUID;
 
 class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
 
+    public static final String ENTITY_NAME = "vehicule";
+    public static final String ENTITY_TABLE = "vehicles";
+
     public static Optional<Vehicle> fetchById(Connection conn, UUID vehicleId) throws SQLException {
         String sql = "SELECT * FROM vehicles WHERE not blocked AND id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -97,6 +100,6 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
     }
 
     public static void block(Connection conn, UUID id) throws TmsException {
-        blockAt(conn, "vehicles", id);
+        blockAt(conn, ENTITY_TABLE, id);
     }
 }
