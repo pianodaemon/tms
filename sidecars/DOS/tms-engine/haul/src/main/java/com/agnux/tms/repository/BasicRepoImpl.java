@@ -205,22 +205,22 @@ public class BasicRepoImpl implements IHaulRepo {
     // Agreement
     @Override
     public Agreement getAgreement(UUID id) throws TmsException {
-        return fetchEntity(id, "Agreement", BasicRepoAgreementHelper::fetchById);
+        return fetchEntity(id, BasicRepoAgreementHelper.ENTITY_NAME, BasicRepoAgreementHelper::fetchById);
     }
 
     @Override
     public UUID createAgreement(Agreement a) throws TmsException {
-        return saveOrUpdateEntity(a, "Agreement", BasicRepoAgreementHelper::update, true);
+        return saveOrUpdateEntity(a, BasicRepoAgreementHelper.ENTITY_NAME, BasicRepoAgreementHelper::update, true);
     }
 
     @Override
     public UUID editAgreement(Agreement a) throws TmsException {
-        return saveOrUpdateEntity(a, "Agreement", BasicRepoAgreementHelper::update, false);
+        return saveOrUpdateEntity(a, BasicRepoAgreementHelper.ENTITY_NAME, BasicRepoAgreementHelper::update, false);
     }
 
     @Override
     public void deleteAgreement(UUID id) throws TmsException {
-        deleteEntity(id, "Agreement", BasicRepoAgreementHelper::block);
+        deleteEntity(id, BasicRepoAgreementHelper.ENTITY_NAME, BasicRepoAgreementHelper::block);
     }
 
     @Override
