@@ -17,7 +17,7 @@ class BasicRepoDriverHelper extends BasicRepoCommonHelper {
     public static final String ENTITY_TABLE = "drivers";
 
     public static Optional<Driver> fetchById(Connection conn, UUID driverId) throws SQLException {
-        String sql = String.format("SELECT * FROM %s WHERE not blocked AND id = ?", ENTITY_TABLE);
+        String sql = String.format(FETCH_BY_ID_SQL_QUERY, ENTITY_TABLE);
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setObject(1, driverId);
 

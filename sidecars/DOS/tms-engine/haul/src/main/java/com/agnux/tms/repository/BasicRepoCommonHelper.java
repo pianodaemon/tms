@@ -10,6 +10,8 @@ import java.util.UUID;
 
 class BasicRepoCommonHelper {
 
+    protected static final String FETCH_BY_ID_SQL_QUERY = "SELECT * FROM %s WHERE not blocked AND id = ?";
+
     protected static void verifyPgFunctionExists(Connection conn, String functionName) throws SQLException {
         try (PreparedStatement stmt = conn.prepareStatement("SELECT 1 FROM pg_proc WHERE proname = ?")) {
             stmt.setString(1, functionName);
@@ -21,7 +23,7 @@ class BasicRepoCommonHelper {
         }
     }
 
-    public static void blockAt(Connection conn, String table, UUID entityId) throws TmsException {
+    protected static void blockAt(Connection conn, String table, UUID entityId) throws TmsException {
         String sql = String.format("UPDATE %s SET blocked = true WHERE id = ?", table);
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
