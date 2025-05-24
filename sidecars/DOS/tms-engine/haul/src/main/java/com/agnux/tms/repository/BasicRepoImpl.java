@@ -163,22 +163,22 @@ public class BasicRepoImpl implements IHaulRepo {
 
     @Override
     public Driver getDriver(UUID id) throws TmsException {
-        return fetchEntity(id, "Driver", BasicRepoDriverHelper::fetchById);
+        return fetchEntity(id, BasicRepoDriverHelper.ENTITY_NAME, BasicRepoDriverHelper::fetchById);
     }
 
     @Override
     public UUID createDriver(Driver d) throws TmsException {
-        return saveOrUpdateEntity(d, "Driver", BasicRepoDriverHelper::update, true);
+        return saveOrUpdateEntity(d, BasicRepoDriverHelper.ENTITY_NAME, BasicRepoDriverHelper::update, true);
     }
 
     @Override
     public UUID editDriver(Driver d) throws TmsException {
-        return saveOrUpdateEntity(d, "Driver", BasicRepoDriverHelper::update, false);
+        return saveOrUpdateEntity(d, BasicRepoDriverHelper.ENTITY_NAME, BasicRepoDriverHelper::update, false);
     }
 
     @Override
     public void deleteDriver(UUID id) throws TmsException {
-        deleteEntity(id, "Driver", BasicRepoDriverHelper::block);
+        deleteEntity(id, BasicRepoDriverHelper.ENTITY_NAME, BasicRepoDriverHelper::block);
     }
 
     // Patio

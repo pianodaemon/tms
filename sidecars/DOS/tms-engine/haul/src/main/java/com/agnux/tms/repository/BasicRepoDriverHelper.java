@@ -1,6 +1,5 @@
 package com.agnux.tms.repository;
 
-import com.agnux.tms.errors.ErrorCodes;
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.Driver;
 
@@ -14,8 +13,11 @@ import java.util.UUID;
 
 class BasicRepoDriverHelper extends BasicRepoCommonHelper {
 
+    public static final String ENTITY_NAME = "driver";
+    public static final String ENTITY_TABLE = "drivers";
+
     public static Optional<Driver> fetchById(Connection conn, UUID driverId) throws SQLException {
-        String sql = "SELECT * FROM drivers WHERE NOT blocked AND id = ?";
+        String sql = String.format("SELECT * FROM %s WHERE not blocked AND id = ?", ENTITY_TABLE);
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setObject(1, driverId);
 
@@ -81,6 +83,6 @@ class BasicRepoDriverHelper extends BasicRepoCommonHelper {
     }
 
     public static void block(Connection conn, UUID id) throws TmsException {
-        blockAt(conn, "drivers", id);
+        blockAt(conn, ENTITY_TABLE, id);
     }
 }
