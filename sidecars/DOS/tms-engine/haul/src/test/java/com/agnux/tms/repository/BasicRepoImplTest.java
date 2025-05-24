@@ -90,7 +90,7 @@ public class BasicRepoImplTest {
         repo.deleteDriver(driverId);
 
         TmsException ex = assertThrows(TmsException.class, () -> repo.getDriver(driverId));
-        assertEquals(ErrorCodes.REPO_PROVIDER_ISSUES.getCode(), ex.getErrorCode(), "Expected error code on deleted driver");
+        assertEquals(ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA.getCode(), ex.getErrorCode(), "Expected error code on deleted driver");
     }
 
     @Test
@@ -170,7 +170,7 @@ public class BasicRepoImplTest {
 
         // It can not retrieve the updated vehicle
         TmsException assertThrows = assertThrows(TmsException.class, () -> repo.getVehicle(id), "Blocked vehicle should not be retrievable");
-        assertTrue(assertThrows.getErrorCode() == ErrorCodes.REPO_PROVIDER_ISSUES.getCode(), "Error code is not what we expected");
+        assertTrue(assertThrows.getErrorCode() == ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA.getCode(), "Error code is not what we expected");
     }
 
     @Test
@@ -210,7 +210,7 @@ public class BasicRepoImplTest {
         repo.deletePatio(patioId);
 
         TmsException ex = assertThrows(TmsException.class, () -> repo.getPatio(patioId));
-        assertEquals(ErrorCodes.REPO_PROVIDER_ISSUES.getCode(), ex.getErrorCode(), "Expected error code on blocked patio");
+        assertEquals(ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA.getCode(), ex.getErrorCode(), "Expected error code on blocked patio");
     }
 
     @Test
@@ -249,7 +249,7 @@ public class BasicRepoImplTest {
 
         // It should not be possible to retrieve the blocked customer
         TmsException assertThrows = assertThrows(TmsException.class, () -> repo.getCustomer(customerId), "Blocked customer should not be retrievable");
-        assertTrue(assertThrows.getErrorCode() == ErrorCodes.REPO_PROVIDER_ISSUES.getCode(), "Error code is not what we expected");
+        assertTrue(assertThrows.getErrorCode() == ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA.getCode(), "Error code is not what we expected");
     }
 
     @Test
@@ -318,7 +318,7 @@ public class BasicRepoImplTest {
 
         // Verify it's blocked
         TmsException ex = assertThrows(TmsException.class, () -> repo.getAgreement(updatedId));
-        assertEquals(ErrorCodes.REPO_PROVIDER_ISSUES.getCode(), ex.getErrorCode(), "Blocked agreement should not be retrievable");
+        assertEquals(ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA.getCode(), ex.getErrorCode(), "Blocked agreement should not be retrievable");
     }
 
     @Test
@@ -390,7 +390,7 @@ public class BasicRepoImplTest {
 
         // Verify it's blocked
         TmsException ex = assertThrows(TmsException.class, () -> repo.getCargoAssignment(updatedId));
-        assertEquals(ErrorCodes.REPO_PROVIDER_ISSUES.getCode(), ex.getErrorCode(), "Blocked cargo assignment should not be retrievable");
+        assertEquals(ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA.getCode(), ex.getErrorCode(), "Blocked cargo assignment should not be retrievable");
     }
 
     @AfterAll
