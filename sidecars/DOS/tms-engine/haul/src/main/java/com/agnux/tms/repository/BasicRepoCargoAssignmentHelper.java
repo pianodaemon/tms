@@ -1,6 +1,5 @@
 package com.agnux.tms.repository;
 
-import com.agnux.tms.errors.ErrorCodes;
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.CargoAssignment;
 
@@ -10,8 +9,11 @@ import java.util.UUID;
 
 class BasicRepoCargoAssignmentHelper extends BasicRepoCommonHelper {
 
+    public static final String ENTITY_NAME = "cargo_assignment";
+    public static final String ENTITY_TABLE = "cargo_assignments";
+
     public static Optional<CargoAssignment> fetchById(Connection conn, UUID assignmentId) throws SQLException {
-        String sql = "SELECT * FROM cargo_assignments WHERE not blocked AND id = ?";
+        String sql = String.format(FETCH_BY_ID_SQL_QUERY, ENTITY_TABLE);
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setObject(1, assignmentId);
 
@@ -76,6 +78,6 @@ class BasicRepoCargoAssignmentHelper extends BasicRepoCommonHelper {
     }
 
     public static void block(Connection conn, UUID id) throws TmsException {
-        blockAt(conn, "cargo_assignments", id);
+        blockAt(conn, ENTITY_TABLE, id);
     }
 }

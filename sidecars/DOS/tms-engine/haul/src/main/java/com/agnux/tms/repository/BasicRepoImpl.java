@@ -96,22 +96,22 @@ public class BasicRepoImpl implements IHaulRepo {
 
     @Override
     public CargoAssignment getCargoAssignment(UUID id) throws TmsException {
-        return fetchEntity(id, "CargoAssignment", BasicRepoCargoAssignmentHelper::fetchById);
+        return fetchEntity(id, BasicRepoCargoAssignmentHelper.ENTITY_NAME, BasicRepoCargoAssignmentHelper::fetchById);
     }
 
     @Override
     public UUID createCargoAssignment(CargoAssignment t) throws TmsException {
-        return saveOrUpdateEntity(t, "CargoAssignment", BasicRepoCargoAssignmentHelper::update, true);
+        return saveOrUpdateEntity(t, BasicRepoCargoAssignmentHelper.ENTITY_NAME, BasicRepoCargoAssignmentHelper::update, true);
     }
 
     @Override
     public UUID editCargoAssignment(CargoAssignment t) throws TmsException {
-        return saveOrUpdateEntity(t, "CargoAssignment", BasicRepoCargoAssignmentHelper::update, false);
+        return saveOrUpdateEntity(t, BasicRepoCargoAssignmentHelper.ENTITY_NAME, BasicRepoCargoAssignmentHelper::update, false);
     }
 
     @Override
     public void deleteCargoAssignment(UUID id) throws TmsException {
-        deleteEntity(id, "CargoAssignment", BasicRepoCargoAssignmentHelper::block);
+        deleteEntity(id, BasicRepoCargoAssignmentHelper.ENTITY_NAME, BasicRepoCargoAssignmentHelper::block);
     }
 
     // Customer
