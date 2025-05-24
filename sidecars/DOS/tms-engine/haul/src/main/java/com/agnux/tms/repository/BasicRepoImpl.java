@@ -136,8 +136,8 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
-    public PaginationSegment<Customer> listCustomerPage(Map<String, String> filters, Map<String, String> pagination) throws TmsException {
-        return listEntityPage(filters, pagination, BasicRepoCustomerHelper.ENTITY_NAME, BasicRepoCustomerHelper::list);
+    public PaginationSegment<Customer> listCustomerPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException {
+        return listEntityPage(filters, pageParams, BasicRepoCustomerHelper.ENTITY_NAME, BasicRepoCustomerHelper::list);
     }
 
     // Vehicle
@@ -200,6 +200,11 @@ public class BasicRepoImpl implements IHaulRepo {
     @Override
     public void deletePatio(UUID id) throws TmsException {
         deleteEntity(id, BasicRepoPatioHelper.ENTITY_NAME, BasicRepoPatioHelper::block);
+    }
+
+    @Override
+    public PaginationSegment<Patio> listPatioPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException {
+        return listEntityPage(filters, pageParams, BasicRepoPatioHelper.ENTITY_NAME, BasicRepoPatioHelper::list);
     }
 
     // Agreement
