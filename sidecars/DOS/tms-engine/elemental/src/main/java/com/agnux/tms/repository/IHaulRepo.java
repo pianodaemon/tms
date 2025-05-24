@@ -58,6 +58,8 @@ public interface IHaulRepo {
     public void deletePatio(UUID patioId) throws TmsException;
     
     public PaginationSegment<Patio> listPatioPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException;
+    
+    public PaginationSegment<Driver> listDriverPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException;
 
     public PaginationSegment<Customer> listCustomerPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException;
 

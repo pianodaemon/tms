@@ -44,7 +44,8 @@ public class DriverService implements GenCrudService<Driver> {
     }
 
     @Override
-    public PaginationSegment<Driver> listPage(UUID tenantId, Map<String, String> filters, Map<String, String> pagination)  throws TmsException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public PaginationSegment<Driver> listPage(UUID tenantId, Map<String, String> filters, Map<String, String> pageParams) throws TmsException {
+        log.info("Fetching a driver's page");
+        return repo.listDriverPage(filters, pageParams);
     }
 }

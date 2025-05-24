@@ -181,6 +181,11 @@ public class BasicRepoImpl implements IHaulRepo {
         deleteEntity(id, BasicRepoDriverHelper.ENTITY_NAME, BasicRepoDriverHelper::block);
     }
 
+    @Override
+    public PaginationSegment<Driver> listDriverPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException {
+        return listEntityPage(filters, pageParams, BasicRepoDriverHelper.ENTITY_NAME, BasicRepoDriverHelper::list);
+    }
+
     // Patio
     @Override
     public Patio getPatio(UUID id) throws TmsException {

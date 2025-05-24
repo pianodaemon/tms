@@ -111,6 +111,71 @@ class AIPCRouterIntegrationTest {
                 .uri("/adm/drivers/" + newID)
                 .exchange()
                 .expectStatus().isNotFound();
+
+        // --- Pagination assertions ---
+        UUID tenantId = UUID.randomUUID();
+
+        List<UUID> createdDriverIds = new ArrayList<>();
+        for (int i = 1; i <= 6; i++) {
+            Driver d = new Driver(null, tenantId, "Paginated Driver " + i, "RFC" + i, "LIC" + i, "REG" + i);
+            var res = webTestClient.post()
+                    .uri("/adm/drivers")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(d)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(Driver.class)
+                    .returnResult();
+
+            Driver created = res.getResponseBody();
+            assert created != null;
+            createdDriverIds.add(created.getId().orElseThrow());
+        }
+
+        // Page 1, size 4
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                .path("/adm/drivers")
+                .queryParam("tenant_id", tenantId.toString())
+                .queryParam("page_size", "4")
+                .queryParam("page_number", "1")
+                .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.data.length()").isEqualTo(4)
+                .jsonPath("$.totalElements").isEqualTo(6)
+                .jsonPath("$.totalPages").isEqualTo(2);
+
+        // Page 2, size 4
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                .path("/adm/drivers")
+                .queryParam("tenant_id", tenantId.toString())
+                .queryParam("page_size", "4")
+                .queryParam("page_number", "2")
+                .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.data.length()").isEqualTo(2)
+                .jsonPath("$.totalElements").isEqualTo(6)
+                .jsonPath("$.totalPages").isEqualTo(2);
+
+        // Cleanup
+        for (UUID id : createdDriverIds) {
+            webTestClient.delete()
+                    .uri("/adm/drivers/" + id)
+                    .exchange()
+                    .expectStatus().isNoContent();
+
+            webTestClient.get()
+                    .uri("/adm/drivers/" + id)
+                    .exchange()
+                    .expectStatus().isNotFound();
+        }
     }
 
     @Test
