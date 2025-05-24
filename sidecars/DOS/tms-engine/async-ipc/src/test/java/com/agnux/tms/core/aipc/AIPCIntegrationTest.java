@@ -330,7 +330,6 @@ class AIPCRouterIntegrationTest {
                     .uri(uriBuilder -> uriBuilder
                     .path("/adm/customers")
                     .queryParam("tenant_id", tenantId.toString())
-                    //.queryParam("page_size", "3")
                     .queryParam("page_number", "1")
                     .queryParam("page_order_by", "name")
                     .queryParam("page_order", "DESC")
