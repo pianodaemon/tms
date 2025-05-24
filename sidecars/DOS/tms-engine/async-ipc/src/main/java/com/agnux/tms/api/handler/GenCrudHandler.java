@@ -23,7 +23,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.util.MultiValueMap;
 
 @Log4j2
-public abstract class GenCrudHandler<T extends TmsBasicModel> {
+public class GenCrudHandler<T extends TmsBasicModel> {
 
     protected final Class<T> clazz;
     private final GenCrudService<T> service;
@@ -47,8 +47,6 @@ public abstract class GenCrudHandler<T extends TmsBasicModel> {
         });
     }
 
-    protected abstract Mono<ServerResponse> onCreateiFailure(TmsException e);
-
     public Mono<ServerResponse> create(ServerRequest request) {
         return request.bodyToMono(clazz)
                 .flatMap(entity -> {
@@ -62,8 +60,6 @@ public abstract class GenCrudHandler<T extends TmsBasicModel> {
                 });
     }
 
-    protected abstract Mono<ServerResponse> onReadFailure(TmsException e);
-
     public Mono<ServerResponse> read(ServerRequest request) {
         UUID id = UUID.fromString(request.pathVariable("id"));
         try {
@@ -73,8 +69,6 @@ public abstract class GenCrudHandler<T extends TmsBasicModel> {
             return onReadFailure(e);
         }
     }
-
-    protected abstract Mono<ServerResponse> onUpdateFailure(TmsException e);
 
     public Mono<ServerResponse> update(ServerRequest request) {
         return request.bodyToMono(clazz)
@@ -88,8 +82,6 @@ public abstract class GenCrudHandler<T extends TmsBasicModel> {
                 });
     }
 
-    protected abstract Mono<ServerResponse> onDeleteFailure(TmsException e);
-
     public Mono<ServerResponse> delete(ServerRequest request) {
         UUID id = UUID.fromString(request.pathVariable("id"));
         try {
@@ -99,8 +91,6 @@ public abstract class GenCrudHandler<T extends TmsBasicModel> {
             return onDeleteFailure(e);
         }
     }
-
-    protected abstract Mono<ServerResponse> onPaginationFailure(TmsException e);
 
     public Mono<ServerResponse> listPaginated(ServerRequest request) {
 
@@ -133,4 +123,45 @@ public abstract class GenCrudHandler<T extends TmsBasicModel> {
         }
     }
 
+    public Mono<ServerResponse> onPaginationFailure(TmsException e) {
+        if (e.getErrorCode() == ErrorCodes.INVALID_DATA.getCode()) {
+            return ServiceResponseHelper.badRequest("invalid request data", e);
+        }
+
+        if (e.getErrorCode() == ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA.getCode()) {
+            return ServiceResponseHelper.notFound("non-present data", e);
+        }
+        return ServiceResponseHelper.internalServerError(e);
+    }
+
+    protected Mono<ServerResponse> onDeleteFailure(TmsException e) {
+        if (ErrorCodes.INVALID_DATA.getCode() == e.getErrorCode()) {
+            return ServiceResponseHelper.badRequest("invalid identifier", e);
+        }
+        if (e.getErrorCode() == ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA.getCode()) {
+            return ServiceResponseHelper.notFound("non-present identifier", e);
+        }
+        return ServiceResponseHelper.internalServerError(e);
+    }
+
+    protected Mono<ServerResponse> onUpdateFailure(TmsException e) {
+        if (ErrorCodes.REPO_PROVIDER_ISSUES.getCode() == e.getErrorCode()) {
+            return ServiceResponseHelper.badRequest("data supplied face issues", e);
+        }
+        return ServiceResponseHelper.internalServerError(e);
+    }
+
+    protected Mono<ServerResponse> onReadFailure(TmsException e) {
+        if (ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA.getCode() == e.getErrorCode()) {
+            return ServiceResponseHelper.notFound("data is not locatable", e);
+        }
+        return ServiceResponseHelper.internalServerError(e);
+    }
+
+    protected Mono<ServerResponse> onCreateiFailure(TmsException e) {
+        if (ErrorCodes.INVALID_DATA.getCode() == e.getErrorCode()) {
+            return ServiceResponseHelper.badRequest("data supplied face issues", e);
+        }
+        return ServiceResponseHelper.internalServerError(e);
+    }
 }
