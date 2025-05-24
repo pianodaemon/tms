@@ -1,6 +1,5 @@
 package com.agnux.tms.repository;
 
-import com.agnux.tms.errors.ErrorCodes;
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.Agreement;
 import com.agnux.tms.repository.model.DistUnit;
@@ -12,8 +11,11 @@ import java.util.UUID;
 
 class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
 
+    public static final String ENTITY_NAME = "agreement";
+    public static final String ENTITY_TABLE = "agreements";
+
     public static Optional<Agreement> fetchById(Connection conn, UUID agreementId) throws SQLException {
-        String sql = "SELECT * FROM agreements WHERE NOT blocked AND id = ?";
+        String sql = String.format(FETCH_BY_ID_SQL_QUERY, ENTITY_TABLE);
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setObject(1, agreementId);
 
@@ -100,6 +102,6 @@ class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
     }
 
     public static void block(Connection conn, UUID id) throws TmsException {
-        blockAt(conn, "agreements", id);
+        blockAt(conn, ENTITY_TABLE, id);
     }
 }
