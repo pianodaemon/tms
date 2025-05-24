@@ -62,6 +62,8 @@ public interface IHaulRepo {
     public PaginationSegment<Driver> listDriverPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException;
 
     public PaginationSegment<Customer> listCustomerPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException;
+    
+    public PaginationSegment<Agreement> listAgreementPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException;
 
     public Customer getCustomer(UUID customerId) throws TmsException;
 

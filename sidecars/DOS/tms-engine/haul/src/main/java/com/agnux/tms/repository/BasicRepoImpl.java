@@ -234,6 +234,11 @@ public class BasicRepoImpl implements IHaulRepo {
     }
 
     @Override
+    public PaginationSegment<Agreement> listAgreementPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException {
+        return listEntityPage(filters, pageParams, BasicRepoAgreementHelper.ENTITY_NAME, BasicRepoAgreementHelper::list);
+    }
+
+    @Override
     public TransLogRecord getTransLogRecord(UUID id) throws TmsException {
         return fetchEntity(id, BasicRepoTransLogRecordHelper.ENTITY_NAME, BasicRepoTransLogRecordHelper::fetchById);
     }
