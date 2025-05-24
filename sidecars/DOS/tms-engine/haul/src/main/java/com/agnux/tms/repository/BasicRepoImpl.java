@@ -189,17 +189,17 @@ public class BasicRepoImpl implements IHaulRepo {
 
     @Override
     public UUID createPatio(Patio p) throws TmsException {
-        return saveOrUpdateEntity(p, "Patio", BasicRepoPatioHelper::update, true);
+        return saveOrUpdateEntity(p, BasicRepoPatioHelper.ENTITY_NAME, BasicRepoPatioHelper::update, true);
     }
 
     @Override
     public UUID editPatio(Patio p) throws TmsException {
-        return saveOrUpdateEntity(p, "Patio", BasicRepoPatioHelper::update, false);
+        return saveOrUpdateEntity(p, BasicRepoPatioHelper.ENTITY_NAME, BasicRepoPatioHelper::update, false);
     }
 
     @Override
     public void deletePatio(UUID id) throws TmsException {
-        deleteEntity(id, "Patio", BasicRepoPatioHelper::block);
+        deleteEntity(id, BasicRepoPatioHelper.ENTITY_NAME, BasicRepoPatioHelper::block);
     }
 
     // Agreement
