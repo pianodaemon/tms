@@ -75,18 +75,7 @@ class BasicRepoCargoAssignmentHelper extends BasicRepoCommonHelper {
         }
     }
 
-    public static void block(Connection conn, UUID assignmentId) throws TmsException {
-
-        String sql = "UPDATE cargo_assignments SET blocked = true WHERE id = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setObject(1, assignmentId);
-            int updates = stmt.executeUpdate();
-            if (updates == 1) {
-                return;
-            }
-            throw new TmsException("assignment not deleted", ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA);
-        } catch (SQLException ex) {
-            throw new TmsException("assignment not deleted", ErrorCodes.REPO_PROVIDER_ISSUES);
-        }
+    public static void block(Connection conn, UUID id) throws TmsException {
+        blockAt(conn, "cargo_assignments", id);
     }
 }
