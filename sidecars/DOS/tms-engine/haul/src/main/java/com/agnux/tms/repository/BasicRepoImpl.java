@@ -117,27 +117,27 @@ public class BasicRepoImpl implements IHaulRepo {
     // Customer
     @Override
     public Customer getCustomer(UUID id) throws TmsException {
-        return fetchEntity(id, "Customer", BasicRepoCustomerHelper::fetchById);
+        return fetchEntity(id, BasicRepoCustomerHelper.ENTITY_NAME, BasicRepoCustomerHelper::fetchById);
     }
 
     @Override
     public UUID createCustomer(Customer p) throws TmsException {
-        return saveOrUpdateEntity(p, "Customer", BasicRepoCustomerHelper::update, true);
+        return saveOrUpdateEntity(p, BasicRepoCustomerHelper.ENTITY_NAME, BasicRepoCustomerHelper::update, true);
     }
 
     @Override
     public UUID editCustomer(Customer p) throws TmsException {
-        return saveOrUpdateEntity(p, "Customer", BasicRepoCustomerHelper::update, false);
+        return saveOrUpdateEntity(p, BasicRepoCustomerHelper.ENTITY_NAME, BasicRepoCustomerHelper::update, false);
     }
 
     @Override
     public void deleteCustomer(UUID id) throws TmsException {
-        deleteEntity(id, "Customer", BasicRepoCustomerHelper::block);
+        deleteEntity(id, BasicRepoCustomerHelper.ENTITY_NAME, BasicRepoCustomerHelper::block);
     }
 
     @Override
     public PaginationSegment<Customer> listCustomerPage(Map<String, String> filters, Map<String, String> pagination) throws TmsException {
-        return listEntityPage(filters, pagination, "Customer", BasicRepoCustomerHelper::list);
+        return listEntityPage(filters, pagination, BasicRepoCustomerHelper.ENTITY_NAME, BasicRepoCustomerHelper::list);
     }
 
     // Vehicle
