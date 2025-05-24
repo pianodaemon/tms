@@ -325,6 +325,23 @@ class AIPCRouterIntegrationTest {
                     .jsonPath("$.data[1].name").isEqualTo("Diana")
                     .jsonPath("$.data[2].name").isEqualTo("Charlie");
 
+            // === FILTERS ===
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                    .path("/adm/customers")
+                    .queryParam("tenant_id", tenantId.toString())
+                    //.queryParam("page_size", "3")
+                    .queryParam("page_number", "1")
+                    .queryParam("page_order_by", "name")
+                    .queryParam("page_order", "DESC")
+                    .queryParam("filter_name", "%arl%")
+                    .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody()
+                    .jsonPath("$.data.length()").isEqualTo(1)
+                    .jsonPath("$.data[0].name").isEqualTo("Charlie");
+
             // === Cleanup: Delete all created customers ===
             for (UUID id : createdCustomerIds) {
                 webTestClient.delete()
