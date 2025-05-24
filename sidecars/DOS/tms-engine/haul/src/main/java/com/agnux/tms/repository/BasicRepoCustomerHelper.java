@@ -17,8 +17,11 @@ import java.util.UUID;
 
 class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
 
+    public static final String ENTITY_NAME = "customer";
+    public static final String ENTITY_TABLE = "customers";
+
     public static Optional<Customer> fetchById(Connection conn, UUID customerId) throws SQLException {
-        String sql = "SELECT * FROM customers WHERE NOT blocked AND id = ?";
+        String sql = String.format(FETCH_BY_ID_SQL_QUERY, ENTITY_TABLE);
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setObject(1, customerId);
 
@@ -78,13 +81,13 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
     }
 
     public static void block(Connection conn, UUID id) throws TmsException {
-        blockAt(conn, "customers", id);
+        blockAt(conn, ENTITY_TABLE, id);
     }
 
     public static PaginationSegment<Customer> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
 
         return new Lister<Customer>(
-                "customers",
+                ENTITY_TABLE,
                 Set.of("id", "tenant_id", "name"),
                 Arrays.asList("id", "tenant_id", "name")
         ) {
