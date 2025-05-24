@@ -1,5 +1,6 @@
 package com.agnux.tms.repository;
 
+import com.agnux.tms.errors.ErrorCodes;
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.Customer;
 
@@ -76,11 +77,17 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
         }
     }
 
-    public static void block(Connection conn, UUID customerId) throws SQLException {
+    public static void block(Connection conn, UUID customerId) throws TmsException {
         String sql = "UPDATE customers SET blocked = true WHERE id = ?";
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setObject(1, customerId);
-            stmt.executeUpdate();
+            int updates = stmt.executeUpdate();
+            if (updates == 1) {
+                return;
+            }
+            throw new TmsException("customer not deleted", ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA);
+        } catch (SQLException ex) {
+            throw new TmsException("customer not deleted", ErrorCodes.REPO_PROVIDER_ISSUES);
         }
     }
 
