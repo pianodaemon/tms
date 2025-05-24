@@ -157,6 +157,69 @@ class AIPCRouterIntegrationTest {
                 .uri("/adm/patios/" + newID)
                 .exchange()
                 .expectStatus().isNotFound();
+
+        // --- Pagination assertions ---
+        List<UUID> createdPatioIds = new ArrayList<>();
+        for (int i = 1; i <= 5; i++) {
+            Patio patio = new Patio(null, tenantId, "Paginated Patio " + i, 20.0 + i, -100.0 - i);
+            var res = webTestClient.post()
+                    .uri("/adm/patios")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(patio)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(Patio.class)
+                    .returnResult();
+
+            Patio created = res.getResponseBody();
+            assert created != null;
+            createdPatioIds.add(created.getId().orElseThrow());
+        }
+
+        // Page 1, size 3
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                .path("/adm/patios")
+                .queryParam("tenant_id", tenantId.toString())
+                .queryParam("page_size", "3")
+                .queryParam("page_number", "1")
+                .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.data.length()").isEqualTo(3)
+                .jsonPath("$.totalElements").isEqualTo(5)
+                .jsonPath("$.totalPages").isEqualTo(2);
+
+        // Page 2, size 3
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                .path("/adm/patios")
+                .queryParam("tenant_id", tenantId.toString())
+                .queryParam("page_size", "3")
+                .queryParam("page_number", "2")
+                .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.data.length()").isEqualTo(2)
+                .jsonPath("$.totalElements").isEqualTo(5)
+                .jsonPath("$.totalPages").isEqualTo(2);
+
+        // Cleanup
+        for (UUID id : createdPatioIds) {
+            webTestClient.delete()
+                    .uri("/adm/patios/" + id)
+                    .exchange()
+                    .expectStatus().isNoContent();
+
+            webTestClient.get()
+                    .uri("/adm/patios/" + id)
+                    .exchange()
+                    .expectStatus().isNotFound();
+        }
     }
 
     @Test

@@ -44,7 +44,8 @@ public class PatioService implements GenCrudService<Patio> {
     }
 
     @Override
-    public PaginationSegment<Patio> listPage(UUID tenantId, Map<String, String> filters, Map<String, String> pagination)  throws TmsException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public PaginationSegment<Patio> listPage(UUID tenantId, Map<String, String> filters, Map<String, String> pageParams)  throws TmsException {
+        log.info("Fetching a patio's page");
+        return repo.listPatioPage(filters, pageParams);
     }
 }
