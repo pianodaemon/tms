@@ -598,7 +598,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_number", "1")
                     .queryParam("filter_vehicle_type", "DRY_VAN")
                     .queryParam("filter_vehicle_color", "%RAY")
-                    .queryParam("filter_vehicle_year", 2023)
+                    .queryParam("filter_ge_vehicle_year", 2023)
                     .build())
                     .exchange()
                     .expectStatus().isOk()

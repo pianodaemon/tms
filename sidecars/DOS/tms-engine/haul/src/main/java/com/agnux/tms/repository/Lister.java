@@ -16,6 +16,14 @@ public class Lister<T> {
 
     private static final String AND_SORROUNDED_BY_SPACES = " AND ";
     private static final String DEFAULT_COUNTABLE_FIELD = "id";
+    private static final String[][] OPERATOR_PREFIXES = {
+        {"eq_", "="},
+        {"ne_", "!="},
+        {"lt_", "<"},
+        {"le_", "<="},
+        {"gt_", ">"},
+        {"ge_", ">="}
+    };
 
     @Getter
     @AllArgsConstructor
@@ -81,9 +89,19 @@ public class Lister<T> {
                     if (quotedFields.contains(param.getName())) {
                         return param.getName() + " LIKE " + "'" + param.getValue() + "'";
                     }
-                    return param.getName() + "=" + param.getValue();
-                })
-                .collect(Collectors.joining(AND_SORROUNDED_BY_SPACES));
+
+                    String field = param.getName();
+                    String operator = "";
+                    for (String[] entry : OPERATOR_PREFIXES) {
+                        if (param.getName().startsWith(entry[0])) {
+                            operator = entry[1];
+                            field = param.getName().substring(entry[0].length());
+                            break;
+                        }
+                    }
+
+                    return field + " " + operator + " " + param.getValue();
+                }).collect(Collectors.joining(AND_SORROUNDED_BY_SPACES));
 
         return condition.isBlank() ? "" : AND_SORROUNDED_BY_SPACES + condition;
     }
@@ -121,6 +139,7 @@ public class Lister<T> {
         }
 
         return items;
+
     }
 
     private static class EntityCounter {
