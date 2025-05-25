@@ -30,12 +30,7 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
                     return Optional.empty();
                 }
 
-                UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
-                String name = rs.getString("name");
-
-                Customer customer = new Customer(customerId, tenantId, name);
-
-                return Optional.of(customer);
+                return Optional.of(fromResultSet(rs));
             }
         }
     }
@@ -86,18 +81,18 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
 
     public static PaginationSegment<Customer> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
 
-        return new Lister<Customer>(
+        return new Lister<>(
                 ENTITY_TABLE,
                 Set.of("id", "tenant_id", "name"),
-                Arrays.asList("id", "tenant_id", "name")
-        ) {
-            @Override
-            protected Customer mapRow(ResultSet rs) throws SQLException {
-                UUID id = UUID.fromString(rs.getString("id"));
-                UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
-                String name = rs.getString("name");
-                return new Customer(id, tenantId, name);
-            }
-        }.list(conn, searchParams, pageParams);
+                Arrays.asList("id", "tenant_id", "name"),
+                BasicRepoCustomerHelper::fromResultSet
+        ).list(conn, searchParams, pageParams);
+    }
+
+    public static Customer fromResultSet(ResultSet rs) throws SQLException {
+        UUID id = UUID.fromString(rs.getString("id"));
+        UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
+        String name = rs.getString("name");
+        return new Customer(id, tenantId, name);
     }
 }

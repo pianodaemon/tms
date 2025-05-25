@@ -12,7 +12,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @AllArgsConstructor
-public abstract class Lister<T> {
+public class Lister<T> {
 
     private static final String AND_SORROUNDED_BY_SPACES = " AND ";
     private static final String DEFAULT_COUNTABLE_FIELD = "id";
@@ -28,10 +28,10 @@ public abstract class Lister<T> {
     private final String tableName;
     private final Set<String> quotedFields;
     private final List<String> selectFields;
+    private final RowMapper<ResultSet, T> rowMapper;
 
     // Subclass must implement how to map a ResultSet row to T
-    protected abstract T mapRow(ResultSet rs) throws SQLException;
-
+    //protected abstract T mapRow(ResultSet rs) throws SQLException;
     public PaginationSegment<T> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
         List<Param> filterParams = searchParams.entrySet().stream()
                 .map(e -> new Param(e.getKey(), e.getValue()))
@@ -65,19 +65,14 @@ public abstract class Lister<T> {
             throw new TmsException(emsg, ErrorCodes.REPO_PROVIDER_NONPRESENT_DATA);
         }
 
-        try {
-            List<T> items = fetchEntities(conn, conditionStr, pageInfo, limit, offset);
-            return new PaginationSegment<>(items, totalItems, totalPages);
-        } catch (SQLException e) {
-            final String emsg = "Fetch execution error";
-            throw new TmsException(emsg, e, ErrorCodes.STORAGE_PROVIDER_ISSUES);
-        }
+        List<T> items = fetchEntities(conn, conditionStr, pageInfo, limit, offset);
+        return new PaginationSegment<>(items, totalItems, totalPages);
     }
 
     private String buildCondition(List<Param> searchParams) {
         String condition = searchParams.stream()
                 .map(param -> {
-                    if ( quotedFields.contains(param.getName()) ) {
+                    if (quotedFields.contains(param.getName())) {
                         return param.getName() + " LIKE " + "'" + param.getValue() + "'";
                     }
                     return param.getName() + "=" + param.getValue();
@@ -106,7 +101,7 @@ public abstract class Lister<T> {
         );
     }
 
-    protected List<T> fetchEntities(Connection conn, String conditionStr, PaginationHelper.PageInfo pageInfo, int limit, int offset) throws SQLException {
+    protected List<T> fetchEntities(Connection conn, String conditionStr, PaginationHelper.PageInfo pageInfo, int limit, int offset) throws TmsException {
         String sql = buildSelectQuery(conditionStr, pageInfo, limit, offset);
         List<T> items = new ArrayList<>();
 
@@ -114,8 +109,10 @@ public abstract class Lister<T> {
         try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                items.add(mapRow(rs));
+                items.add(rowMapper.apply(rs));
             }
+        } catch (SQLException ex) {
+            throw new TmsException("Fetch execution error", ex, ErrorCodes.REPO_PROVIDER_ISSUES);
         }
 
         return items;
@@ -223,5 +220,11 @@ public abstract class Lister<T> {
                 return defaultVal;
             }
         }
+    }
+
+    @FunctionalInterface
+    public interface RowMapper<T, R> {
+
+        R apply(T t) throws SQLException;
     }
 }

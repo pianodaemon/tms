@@ -29,15 +29,7 @@ class BasicRepoDriverHelper extends BasicRepoCommonHelper {
                     return Optional.empty();
                 }
 
-                UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
-                String name = rs.getString("name");
-                String firstSurname = rs.getString("first_surname");
-                String secondSurname = rs.getString("second_surname");
-                String licenseNumber = rs.getString("license_number");
-
-                Driver driver = new Driver(driverId, tenantId, name, firstSurname, secondSurname, licenseNumber);
-
-                return Optional.of(driver);
+                return Optional.of(fromResultSet(rs));
             }
         }
     }
@@ -91,21 +83,21 @@ class BasicRepoDriverHelper extends BasicRepoCommonHelper {
 
     public static PaginationSegment<Driver> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
 
-        return new Lister<Driver>(
+        return new Lister<>(
                 ENTITY_TABLE,
                 Set.of("id", "tenant_id", "name", "first_surname", "second_surname", "license_number"),
-                Arrays.asList("id", "tenant_id", "name", "first_surname", "second_surname", "license_number")
-        ) {
-            @Override
-            protected Driver mapRow(ResultSet rs) throws SQLException {
-                UUID id = UUID.fromString(rs.getString("id"));
-                UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
-                String name = rs.getString("name");
-                String firstSurname = rs.getString("first_surname");
-                String secondSurname = rs.getString("second_surname");
-                String licenseNumber = rs.getString("license_number");
-                return new Driver(id, tenantId, name, firstSurname, secondSurname, licenseNumber);
-            }
-        }.list(conn, searchParams, pageParams);
+                Arrays.asList("id", "tenant_id", "name", "first_surname", "second_surname", "license_number"),
+                BasicRepoDriverHelper::fromResultSet
+        ).list(conn, searchParams, pageParams);
+    }
+
+    public static Driver fromResultSet(ResultSet rs) throws SQLException {
+        UUID id = UUID.fromString(rs.getString("id"));
+        UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
+        String name = rs.getString("name");
+        String firstSurname = rs.getString("first_surname");
+        String secondSurname = rs.getString("second_surname");
+        String licenseNumber = rs.getString("license_number");
+        return new Driver(id, tenantId, name, firstSurname, secondSurname, licenseNumber);
     }
 }

@@ -29,13 +29,7 @@ class BasicRepoPatioHelper extends BasicRepoCommonHelper {
                     return Optional.empty();
                 }
 
-                UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
-                String name = rs.getString("name");
-                double latitudeLocation = rs.getDouble("latitude_location");
-                double longitudeLocation = rs.getDouble("longitude_location");
-
-                Patio patio = new Patio(patioId, tenantId, name, latitudeLocation, longitudeLocation);
-                return Optional.of(patio);
+                return Optional.of(fromResultSet(rs));
             }
         }
     }
@@ -86,20 +80,21 @@ class BasicRepoPatioHelper extends BasicRepoCommonHelper {
 
     public static PaginationSegment<Patio> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
 
-        return new Lister<Patio>(
+        return new Lister<>(
                 ENTITY_TABLE,
                 Set.of("id", "tenant_id", "name"),
-                Arrays.asList("id", "tenant_id", "name", "latitude_location", "longitude_location")
-        ) {
-            @Override
-            protected Patio mapRow(ResultSet rs) throws SQLException {
-                UUID id = UUID.fromString(rs.getString("id"));
-                UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
-                String name = rs.getString("name");
-                double latitudeLocation = rs.getDouble("latitude_location");
-                double longitudeLocation = rs.getDouble("longitude_location");
-                return new Patio(id, tenantId, name, latitudeLocation, longitudeLocation);
-            }
-        }.list(conn, searchParams, pageParams);
+                Arrays.asList("id", "tenant_id", "name", "latitude_location", "longitude_location"),
+                BasicRepoPatioHelper::fromResultSet
+        ).list(conn, searchParams, pageParams);
+    }
+
+    public static Patio fromResultSet(ResultSet rs) throws SQLException {
+        UUID id = UUID.fromString(rs.getString("id"));
+        UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
+        String name = rs.getString("name");
+        double latitudeLocation = rs.getDouble("latitude_location");
+        double longitudeLocation = rs.getDouble("longitude_location");
+
+        return new Patio(id, tenantId, name, latitudeLocation, longitudeLocation);
     }
 }

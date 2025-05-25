@@ -91,16 +91,12 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
     }
 
     public static PaginationSegment<Vehicle> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
-        return new Lister<Vehicle>(
+        return new Lister<>(
                 ENTITY_TABLE,
                 Set.of("id", "tenant_id", "number_plate", "number_serial", "vehicle_type", "vehicle_color", "federal_conf", "perf_dist_unit", "perf_vol_unit"),
-                Arrays.asList("id", "tenant_id", "number_plate", "number_serial", "vehicle_type", "vehicle_color", "vehicle_year", "federal_conf", "perf_dist_unit", "perf_vol_unit", "perf_scalar")
-        ) {
-            @Override
-            protected Vehicle mapRow(ResultSet rs) throws SQLException {
-                return fromResultSet(rs);
-            }
-        }.list(conn, searchParams, pageParams);
+                Arrays.asList("id", "tenant_id", "number_plate", "number_serial", "vehicle_type", "vehicle_color", "vehicle_year", "federal_conf", "perf_dist_unit", "perf_vol_unit", "perf_scalar"),
+                BasicRepoVehicleHelper::fromResultSet
+        ).list(conn, searchParams, pageParams);
     }
 
     public static Vehicle fromResultSet(ResultSet rs) throws SQLException {

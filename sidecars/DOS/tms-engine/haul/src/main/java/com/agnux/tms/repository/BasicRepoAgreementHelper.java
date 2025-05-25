@@ -87,17 +87,13 @@ class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
 
     public static PaginationSegment<Agreement> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
 
-        return new Lister<Agreement>(
+        return new Lister<>(
                 ENTITY_TABLE,
                 Set.of("id", "tenant_id", "customer_id", "receiver", "dist_unit"),
                 Arrays.asList("id", "tenant_id", "customer_id", "receiver", "dist_unit",
-                        "dist_scalar", "latitude_origin", "longitude_origin", "latitude_destiny", "longitude_destiny")
-        ) {
-            @Override
-            protected Agreement mapRow(ResultSet rs) throws SQLException {
-                return fromResultSet(rs);
-            }
-        }.list(conn, searchParams, pageParams);
+                        "dist_scalar", "latitude_origin", "longitude_origin", "latitude_destiny", "longitude_destiny"),
+                BasicRepoAgreementHelper::fromResultSet
+        ).list(conn, searchParams, pageParams);
     }
 
     public static Agreement fromResultSet(ResultSet rs) throws SQLException {
