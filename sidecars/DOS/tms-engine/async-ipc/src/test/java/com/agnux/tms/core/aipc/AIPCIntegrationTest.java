@@ -556,6 +556,84 @@ class AIPCRouterIntegrationTest {
                 .uri("/adm/vehicles/" + newID)
                 .exchange()
                 .expectStatus().isNotFound();
+
+        // --- Pagination test ---
+        {
+            List<UUID> createdVehicleIds = new ArrayList<>();
+            for (int i = 1; i <= 7; i++) {
+                Vehicle v = new Vehicle(
+                        null,
+                        tenantId,
+                        "PLATE-" + i,
+                        "SERIAL-" + i,
+                        VehicleType.DRY_VAN,
+                        VehicleColor.GRAY,
+                        2023,
+                        "XB",
+                        DistUnit.MI,
+                        VolUnit.GAL,
+                        new BigDecimal("100")
+                );
+
+                var res = webTestClient.post()
+                        .uri("/adm/vehicles")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(v)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectBody(Vehicle.class)
+                        .returnResult();
+
+                Vehicle created = res.getResponseBody();
+                assert created != null : "Created vehicule should not be null";
+                createdVehicleIds.add(created.getId().orElseThrow());
+            }
+
+            // PAGE 1, size 5
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                    .path("/adm/vehicles")
+                    .queryParam("tenant_id", tenantId.toString())
+                    .queryParam("page_size", "5")
+                    .queryParam("page_number", "1")
+                    .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                    .expectBody()
+                    .jsonPath("$.data.length()").isEqualTo(5)
+                    .jsonPath("$.totalElements").isEqualTo(7)
+                    .jsonPath("$.totalPages").isEqualTo(2);
+
+            // PAGE 2, size 5
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                    .path("/adm/vehicles")
+                    .queryParam("tenant_id", tenantId.toString())
+                    .queryParam("page_size", "5")
+                    .queryParam("page_number", "2")
+                    .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                    .expectBody()
+                    .jsonPath("$.data.length()").isEqualTo(2)
+                    .jsonPath("$.totalElements").isEqualTo(7)
+                    .jsonPath("$.totalPages").isEqualTo(2);
+
+            // Cleanup
+            for (UUID id : createdVehicleIds) {
+                webTestClient.delete()
+                        .uri("/adm/vehicles/" + id)
+                        .exchange()
+                        .expectStatus().isNoContent();
+
+                webTestClient.get()
+                        .uri("/adm/vehicles/" + id)
+                        .exchange()
+                        .expectStatus().isNotFound();
+            }
+        }
     }
 
     @AfterAll
