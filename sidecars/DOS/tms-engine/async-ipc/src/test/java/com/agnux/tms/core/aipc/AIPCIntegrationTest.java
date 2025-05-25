@@ -639,6 +639,135 @@ class AIPCRouterIntegrationTest {
         }
     }
 
+    @Test
+    void testCreateAndGetAgreement() {
+        UUID tenantId = UUID.randomUUID();
+
+        // --- Create a customer first ---
+        Customer newCustomer = new Customer(null, UUID.randomUUID(), "Integration Test Customer");
+
+        var response = webTestClient.post()
+                .uri("/adm/customers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(newCustomer)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(Customer.class)
+                .returnResult();
+
+        Customer createdCustomer = response.getResponseBody();
+        assert createdCustomer != null : "Created customer should not be null";
+        UUID customerId = createdCustomer.getId().orElseThrow();
+
+        // --- Create an agreement ---
+        Agreement agreement = new Agreement(null, tenantId, customerId, "Receiver X",
+                19.4326, -99.1332, 20.6597, -103.3496, DistUnit.KM, new BigDecimal("533.2"));
+
+        var agreementResponse = webTestClient.post()
+                .uri("/adm/agreements")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(agreement)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody(Agreement.class)
+                .returnResult();
+
+        Agreement createdAgreement = agreementResponse.getResponseBody();
+        assert createdAgreement != null;
+        UUID agreementId = createdAgreement.getId().orElseThrow();
+
+        // --- Read (GET) the agreement ---
+        webTestClient.get()
+                .uri("/adm/agreements/" + agreementId)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.receiver").isEqualTo("Receiver X");
+
+        // --- Update the agreement ---
+        createdAgreement.setReceiver("Updated Receiver");
+        createdAgreement.setDistScalar(new BigDecimal("999.99"));
+
+        webTestClient.put()
+                .uri("/adm/agreements")
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(createdAgreement)
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.receiver").isEqualTo("Updated Receiver")
+                .jsonPath("$.distScalar").isEqualTo(999.99);
+
+        // --- Pagination Test ---
+        List<UUID> createdAgreementIds = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            Agreement ag = new Agreement(null, tenantId, customerId, "Receiver " + i,
+                    10 + i, -10 - i, 20 + i, -20 - i, DistUnit.KM, new BigDecimal("100." + i));
+            var result = webTestClient.post()
+                    .uri("/adm/agreements")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(ag)
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody(Agreement.class)
+                    .returnResult();
+
+            Agreement created = result.getResponseBody();
+            assert created != null;
+            createdAgreementIds.add(created.getId().orElseThrow());
+        }
+
+        // Page 1, size 4
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                .path("/adm/agreements")
+                .queryParam("tenant_id", tenantId.toString())
+                .queryParam("page_size", "4")
+                .queryParam("page_number", "1")
+                .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.data.length()").isEqualTo(4)
+                .jsonPath("$.totalElements").isEqualTo(7)
+                .jsonPath("$.totalPages").isEqualTo(2);
+
+        // Page 2, size 4
+        webTestClient.get()
+                .uri(uriBuilder -> uriBuilder
+                .path("/adm/agreements")
+                .queryParam("tenant_id", tenantId.toString())
+                .queryParam("page_size", "4")
+                .queryParam("page_number", "2")
+                .build())
+                .exchange()
+                .expectStatus().isOk()
+                .expectBody()
+                .jsonPath("$.data.length()").isEqualTo(3)
+                .jsonPath("$.totalElements").isEqualTo(7)
+                .jsonPath("$.totalPages").isEqualTo(2);
+
+        // --- Delete all agreements ---
+        for (UUID id : createdAgreementIds) {
+            webTestClient.delete()
+                    .uri("/adm/agreements/" + id)
+                    .exchange()
+                    .expectStatus().isNoContent();
+        }
+
+        webTestClient.delete()
+                .uri("/adm/agreements/" + agreementId)
+                .exchange()
+                .expectStatus().isNoContent();
+
+        // --- Delete the customer ---
+        webTestClient.delete()
+                .uri("/adm/customers/" + customerId)
+                .exchange()
+                .expectStatus().isNoContent();
+    }
+
     @AfterAll
     static void tearDown() {
         postgresContainer.stop();
