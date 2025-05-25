@@ -25,6 +25,12 @@ public class Lister<T> {
         final String value;
     }
 
+    @FunctionalInterface
+    public interface RowMapper<T, R> {
+
+        R apply(T t) throws SQLException;
+    }
+
     private final String tableName;
     private final Set<String> quotedFields;
     private final List<String> selectFields;
@@ -220,11 +226,5 @@ public class Lister<T> {
                 return defaultVal;
             }
         }
-    }
-
-    @FunctionalInterface
-    public interface RowMapper<T, R> {
-
-        R apply(T t) throws SQLException;
     }
 }
