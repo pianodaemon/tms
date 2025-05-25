@@ -34,6 +34,7 @@ public class AIPCRouter {
 
     @Bean
     public RouterFunction<ServerResponse> admRouter(
+            AgreementHandler agreementHandler,
             VehicleHandler vehicleHandler,
             CustomerHandler customerHandler,
             DriverHandler driverHandler,
@@ -41,6 +42,7 @@ public class AIPCRouter {
 
         return nest(path("/" + CATALOGS_API_PATH),
                 crudRoutes("/vehicles", vehicleHandler)
+                        .and(crudRoutes("/agreements", agreementHandler))
                         .and(crudRoutes("/customers", customerHandler))
                         .and(crudRoutes("/drivers", driverHandler))
                         .and(crudRoutes("/patios", patioHandler)));
