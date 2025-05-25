@@ -113,7 +113,6 @@ public class Lister<T> {
 
         log.debug("Fetching query : " + sql);
         try (PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) {
-
             while (rs.next()) {
                 items.add(rowMapper.apply(rs));
             }
