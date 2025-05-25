@@ -31,22 +31,7 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
                     return Optional.empty();
                 }
 
-                UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
-                String numberPlate = rs.getString("number_plate");
-                String numberSerial = rs.getString("number_serial");
-                VehicleType vehicleType = VehicleType.valueOf(rs.getString("vehicle_type"));
-                VehicleColor vehicleColor = VehicleColor.valueOf(rs.getString("vehicle_color"));
-                Integer vehicleYear = rs.getInt("vehicle_year");
-                String federalConf = rs.getString("federal_conf");
-                String distUnitStr = rs.getString("perf_dist_unit");
-                String volUnitStr = rs.getString("perf_vol_unit");
-                BigDecimal scalar = rs.getBigDecimal("perf_scalar");
-
-                Vehicle vehicle = new Vehicle(vehicleId, tenantId, numberPlate, numberSerial,
-                        vehicleType, vehicleColor, vehicleYear, federalConf, DistUnit.valueOf(distUnitStr),
-                        VolUnit.valueOf(volUnitStr), scalar);
-
-                return Optional.of(vehicle);
+                return Optional.of(fromResultSet(rs));
             }
         }
     }
@@ -105,5 +90,24 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
 
     public static PaginationSegment<Vehicle> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
         return null;
+    }
+
+    public static Vehicle fromResultSet(ResultSet rs) throws SQLException {
+
+        UUID vehicleId = UUID.fromString(rs.getString("id"));
+        UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
+        String numberPlate = rs.getString("number_plate");
+        String numberSerial = rs.getString("number_serial");
+        VehicleType vehicleType = VehicleType.valueOf(rs.getString("vehicle_type"));
+        VehicleColor vehicleColor = VehicleColor.valueOf(rs.getString("vehicle_color"));
+        Integer vehicleYear = rs.getInt("vehicle_year");
+        String federalConf = rs.getString("federal_conf");
+        String distUnitStr = rs.getString("perf_dist_unit");
+        String volUnitStr = rs.getString("perf_vol_unit");
+        BigDecimal scalar = rs.getBigDecimal("perf_scalar");
+
+        return new Vehicle(vehicleId, tenantId, numberPlate, numberSerial,
+                vehicleType, vehicleColor, vehicleYear, federalConf, DistUnit.valueOf(distUnitStr),
+                VolUnit.valueOf(volUnitStr), scalar);
     }
 }
