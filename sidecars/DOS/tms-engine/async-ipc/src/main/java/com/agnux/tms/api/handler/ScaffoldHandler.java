@@ -58,10 +58,10 @@ public class ScaffoldHandler<T extends TmsBasicModel, D> implements CrudHandler<
     @Override
     public Mono<ServerResponse> listPaginated(ServerRequest request) {
         UUID tenantId = UUID.fromString(request.pathVariable("tenantId"));
-        return mtListPaginated(tenantId, request.queryParams(), dtoMapper);
+        return mtListPaginated(tenantId, request.queryParams());
     }
 
-    protected /*<D>*/ Mono<ServerResponse> mtCreate(Mono<D> dtoMono, UUID tenantId) {
+    protected Mono<ServerResponse> mtCreate(Mono<D> dtoMono, UUID tenantId) {
         return dtoMono.flatMap(dto -> {
             try {
                 T entity = entMapper.apply(dto, tenantId);
@@ -74,7 +74,7 @@ public class ScaffoldHandler<T extends TmsBasicModel, D> implements CrudHandler<
         });
     }
 
-    protected /*<D>*/ Mono<ServerResponse> mtRead(UUID tenantId, UUID entityId) {
+    protected Mono<ServerResponse> mtRead(UUID tenantId, UUID entityId) {
         try {
             T entity = service.read(entityId);
             D dto = dtoMapper.apply(entity);
@@ -84,7 +84,7 @@ public class ScaffoldHandler<T extends TmsBasicModel, D> implements CrudHandler<
         }
     }
 
-    protected /*<D>*/ Mono<ServerResponse> mtUpdate(Mono<D> dtoMono, UUID tenantId) {
+    protected Mono<ServerResponse> mtUpdate(Mono<D> dtoMono, UUID tenantId) {
         return dtoMono.flatMap(dto -> {
             try {
                 T entity = entMapper.apply(dto, tenantId);
@@ -105,7 +105,7 @@ public class ScaffoldHandler<T extends TmsBasicModel, D> implements CrudHandler<
         }
     }
 
-    protected <D> Mono<ServerResponse> mtListPaginated(UUID tenantId, MultiValueMap<String, String> queryParams, Function<T, D> mapper) {
+    protected Mono<ServerResponse> mtListPaginated(UUID tenantId, MultiValueMap<String, String> queryParams) {
         Map<String, String> searchParams = new HashMap<>();
         Map<String, String> pageParams = new HashMap<>();
 
@@ -123,7 +123,7 @@ public class ScaffoldHandler<T extends TmsBasicModel, D> implements CrudHandler<
 
         try {
             PaginationSegment<T> segmentEnt = service.listPage(tenantId, searchParams, pageParams);
-            List<D> dtos = segmentEnt.getData().stream().map(mapper).collect(Collectors.toList());
+            List<D> dtos = segmentEnt.getData().stream().map(dtoMapper).collect(Collectors.toList());
             PaginationSegment<D> segmentDto = new PaginationSegment(dtos, segmentEnt.getTotalElements(), segmentEnt.getTotalPages());
             return ServiceResponseHelper.successWithBody(segmentDto);
         } catch (TmsException e) {
