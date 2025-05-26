@@ -16,7 +16,8 @@ public class Lister<T> {
 
     private static final String AND_SORROUNDED_BY_SPACES = " AND ";
     private static final String DEFAULT_COUNTABLE_FIELD = "id";
-    private static final String[][] OPERATOR_PREFIXES = {
+    private static final String[] SCHAR_OPERATOR_PREFIX = {"qu_", "LIKE"};
+    private static final String[][] SCALAR_OPERATOR_PREFIXES = {
         {"eq_", "="},
         {"ne_", "!="},
         {"lt_", "<"},
@@ -83,16 +84,20 @@ public class Lister<T> {
         return new PaginationSegment<>(items, totalItems, totalPages);
     }
 
-    private String buildCondition(List<Param> searchParams) {
+    private String buildCondition(List<Param> searchParams) throws TmsException {
         String condition = searchParams.stream()
                 .map(param -> {
-                    if (quotedFields.contains(param.getName())) {
-                        return param.getName() + " LIKE " + "'" + param.getValue() + "'";
+                    if (param.getName().startsWith(SCHAR_OPERATOR_PREFIX[0])) {
+                        String name = param.getName().substring(SCHAR_OPERATOR_PREFIX[0].length());
+                        if (quotedFields.contains(name)) {
+                            return String.format("%s %s '%s'", name, SCHAR_OPERATOR_PREFIX[1], param.getValue());
+                        }
+                        throw new RuntimeException(String.format("%s is not a quoted field", name));
                     }
 
                     String field = param.getName();
                     String operator = "";
-                    for (String[] entry : OPERATOR_PREFIXES) {
+                    for (String[] entry : SCALAR_OPERATOR_PREFIXES) {
                         if (param.getName().startsWith(entry[0])) {
                             operator = entry[1];
                             field = param.getName().substring(entry[0].length());
@@ -125,7 +130,8 @@ public class Lister<T> {
         );
     }
 
-    protected List<T> fetchEntities(Connection conn, String conditionStr, PaginationHelper.PageInfo pageInfo, int limit, int offset) throws TmsException {
+    protected List<T> fetchEntities(Connection conn, String conditionStr,
+            PaginationHelper.PageInfo pageInfo, final int limit, final int offset) throws TmsException {
         String sql = buildSelectQuery(conditionStr, pageInfo, limit, offset);
         List<T> items = new ArrayList<>();
 
@@ -139,7 +145,6 @@ public class Lister<T> {
         }
 
         return items;
-
     }
 
     private static class EntityCounter {
@@ -166,7 +171,7 @@ public class Lister<T> {
 
             final String field = Optional.ofNullable(countByField)
                     .filter(f -> !f.isBlank())
-                    .orElse("id");
+                    .orElse(DEFAULT_COUNTABLE_FIELD);
 
             final String query = buildQuery(table, field, searchParamsClause, notBlocked);
             log.debug("Counting query : " + query);

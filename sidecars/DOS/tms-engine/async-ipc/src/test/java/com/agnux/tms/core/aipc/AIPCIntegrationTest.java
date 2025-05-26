@@ -461,7 +461,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_number", "1")
                     .queryParam("page_order_by", "name")
                     .queryParam("page_order", "DESC")
-                    .queryParam("filter_name", "%arl%")
+                    .queryParam("filter_qu_name", "%arl%")
                     .build())
                     .exchange()
                     .expectStatus().isOk()
@@ -474,7 +474,7 @@ class AIPCRouterIntegrationTest {
                     .uri(uriBuilder -> uriBuilder
                     .path("/adm/customers")
                     .queryParam("tenant_id", tenantId.toString())
-                    .queryParam("filter_name", "zzzzzz")
+                    .queryParam("filter_qu_name", "zzzzzz")
                     .build())
                     .exchange()
                     .expectStatus().isNotFound();
@@ -596,8 +596,8 @@ class AIPCRouterIntegrationTest {
                     .queryParam("tenant_id", tenantId.toString())
                     .queryParam("page_size", "5")
                     .queryParam("page_number", "1")
-                    .queryParam("filter_vehicle_type", "DRY_VAN")
-                    .queryParam("filter_vehicle_color", "%RAY")
+                    .queryParam("filter_ch_vehicle_type", "DRY_VAN")
+                    .queryParam("filter_ch_vehicle_color", "%RAY")
                     .queryParam("filter_ge_vehicle_year", 2023)
                     .build())
                     .exchange()
