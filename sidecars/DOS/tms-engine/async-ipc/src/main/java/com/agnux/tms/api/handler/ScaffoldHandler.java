@@ -9,44 +9,23 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.util.MultiValueMap;
 import com.agnux.tms.api.service.CrudService;
 
 @Log4j2
-public class CrudHandler<T extends TmsBasicModel> {
+public class ScaffoldHandler<T extends TmsBasicModel> extends AbstractCrudHandler<T> implements CrudHandler<Mono<ServerResponse>, ServerRequest> {
 
-    protected final Class<T> clazz;
-    private final CrudService<T> service;
-    private static final ConcurrentMap<Class<?>, Type> typeCache = new ConcurrentHashMap<>();
-
-    @SuppressWarnings("unchecked")
-    public CrudHandler(CrudService<T> service) {
-        this.service = service;
-        this.clazz = (Class<T>) extractGenericType();
+    public ScaffoldHandler(CrudService<T> service) {
+        super(service);
     }
 
-    private Type extractGenericType() {
-        return typeCache.computeIfAbsent(getClass(), cls -> {
-            Type type = cls.getGenericSuperclass();
-            Class<?> current = cls;
-            while (!(type instanceof ParameterizedType pt)) {
-                current = current.getSuperclass();
-                type = current.getGenericSuperclass();
-            }
-            return pt.getActualTypeArguments()[0];
-        });
-    }
-
+    @Override
     public Mono<ServerResponse> create(ServerRequest request) {
         return request.bodyToMono(clazz)
                 .flatMap(entity -> {
@@ -60,6 +39,7 @@ public class CrudHandler<T extends TmsBasicModel> {
                 });
     }
 
+    @Override
     public Mono<ServerResponse> read(ServerRequest request) {
         UUID id = UUID.fromString(request.pathVariable("id"));
         try {
@@ -70,6 +50,7 @@ public class CrudHandler<T extends TmsBasicModel> {
         }
     }
 
+    @Override
     public Mono<ServerResponse> update(ServerRequest request) {
         return request.bodyToMono(clazz)
                 .flatMap(entity -> {
@@ -82,6 +63,7 @@ public class CrudHandler<T extends TmsBasicModel> {
                 });
     }
 
+    @Override
     public Mono<ServerResponse> delete(ServerRequest request) {
         UUID id = UUID.fromString(request.pathVariable("id"));
         try {
@@ -92,6 +74,7 @@ public class CrudHandler<T extends TmsBasicModel> {
         }
     }
 
+    @Override
     public Mono<ServerResponse> listPaginated(ServerRequest request) {
 
         MultiValueMap<String, String> queryParams = request.queryParams();

@@ -8,7 +8,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Component
 @Log4j2
-public class VehicleHandler extends CrudHandler<Vehicle> {
+public class VehicleHandler extends ScaffoldHandler<Vehicle> {
 
     public VehicleHandler(VehicleService service) {
         super(service);

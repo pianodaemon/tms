@@ -8,7 +8,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Component
 @Log4j2
-public class AgreementHandler extends CrudHandler<Agreement> {
+public class AgreementHandler extends ScaffoldHandler<Agreement> {
 
     public AgreementHandler(AgreementService service) {
         super(service);
