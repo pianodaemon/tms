@@ -49,10 +49,11 @@ public class RouterConfig {
     }
 
     @Bean
-    public RouterFunction<ServerResponse> admRouter(CustomerHandler customerHandler) {
+    public RouterFunction<ServerResponse> admRouter(CustomerHandler customerHandler, PatioHandler patioHandler) {
 
         return nest(path("/" + ADM_API_PATH),
-                mtCrudRoutes("/customers", customerHandler));
+                mtCrudRoutes("/customers", customerHandler)
+                        .and(mtCrudRoutes("/patios", patioHandler)));
     }
 
     /*

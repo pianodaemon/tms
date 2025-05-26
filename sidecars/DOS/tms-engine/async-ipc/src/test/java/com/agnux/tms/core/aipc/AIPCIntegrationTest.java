@@ -1,6 +1,7 @@
 package com.agnux.tms.core.aipc;
 
 import com.agnux.tms.api.dto.CustomerDto;
+import com.agnux.tms.api.dto.PatioDto;
 import com.agnux.tms.repository.model.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -179,31 +180,33 @@ class AIPCRouterIntegrationTest {
                     .expectStatus().isNotFound();
         }
     }
-
+*/
     @Test
     void testCreateAndGetPatio() {
+        
         UUID tenantId = UUID.randomUUID();
-        Patio newPatio = new Patio(null, tenantId, "Integration Test Patio", 19.4326, -99.1332);
+        String prefixPathWithTenant = String.format("/adm/patios/%s", tenantId);
+        var newPatio = new PatioDto(null, "Integration Test Patio", 19.4326, -99.1332);
 
         var response = webTestClient.post()
-                .uri("/adm/patios")
+                .uri(prefixPathWithTenant)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newPatio)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(Patio.class)
+                .expectBody(PatioDto.class)
                 .returnResult();
 
-        Patio createdPatio = response.getResponseBody();
+        PatioDto createdPatio = response.getResponseBody();
         assert createdPatio != null : "Created patio should not be null";
         assert "Integration Test Patio".equals(createdPatio.getName());
         assert createdPatio.getLatitudeLocation() == 19.4326;
         assert createdPatio.getLongitudeLocation() == -99.1332;
 
-        final UUID newID = createdPatio.getId().orElseThrow();
+        final UUID newID = createdPatio.getId();
 
-        System.out.println("/adm/patios/" + newID);
+       /* System.out.println("/adm/patios/" + newID);
 
         webTestClient.get()
                 .uri("/adm/patios/" + newID)
@@ -286,9 +289,9 @@ class AIPCRouterIntegrationTest {
                     .uri("/adm/patios/" + id)
                     .exchange()
                     .expectStatus().isNotFound();
-        }
+        }*/
     }
-     */
+     
     @Test
     void testCreateAndGetCustomer() {
 
