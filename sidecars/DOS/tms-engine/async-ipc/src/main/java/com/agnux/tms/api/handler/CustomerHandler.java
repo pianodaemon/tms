@@ -19,34 +19,7 @@ public class CustomerHandler extends ScaffoldHandler<Customer, CustomerDto> {
     public CustomerHandler(CustomerService service) {
         super(service, CustomerHandler::entMapper, CustomerHandler::dtoMapper, CustomerDto.class);
     }
-/*
-    public Mono<ServerResponse> create(ServerRequest request) {
-        UUID tenantId = UUID.fromString(request.pathVariable("tenantId"));
-        return mtCreate(request.bodyToMono(CustomerDto.class), tenantId, CustomerHandler::entMapper);
-    }
 
-    public Mono<ServerResponse> read(ServerRequest request) {
-        UUID tenantId = UUID.fromString(request.pathVariable("tenantId"));
-        UUID entityId = UUID.fromString(request.pathVariable("id"));
-        return mtRead(tenantId, entityId, CustomerHandler::dtoMapper);
-    }
-
-    public Mono<ServerResponse> update(ServerRequest request) {
-        UUID tenantId = UUID.fromString(request.pathVariable("tenantId"));
-        return mtUpdate(request.bodyToMono(CustomerDto.class), tenantId, CustomerHandler::entMapper);
-    }
-
-    public Mono<ServerResponse> delete(ServerRequest request) {
-        UUID tenantId = UUID.fromString(request.pathVariable("tenantId"));
-        UUID entityId = UUID.fromString(request.pathVariable("id"));
-        return mtDelete(tenantId, entityId);
-    }
-
-    public Mono<ServerResponse> listPaginated(ServerRequest request) {
-        UUID tenantId = UUID.fromString(request.pathVariable("tenantId"));
-        return mtListPaginated(tenantId, request.queryParams(), CustomerHandler::dtoMapper);
-    }
-*/
     private static Customer entMapper(CustomerDto dto, UUID tenantId) {
         UUID id = dto.getId();
         String name = dto.getName();
