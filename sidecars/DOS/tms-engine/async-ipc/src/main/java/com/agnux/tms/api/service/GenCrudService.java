@@ -3,9 +3,10 @@ package com.agnux.tms.api.service;
 import java.util.UUID;
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.PaginationSegment;
+import com.agnux.tms.repository.model.TmsBasicModel;
 import java.util.Map;
 
-public interface GenCrudService<T> {
+public interface GenCrudService<T extends TmsBasicModel>  {
 
     UUID create(T entity) throws TmsException;
 
