@@ -39,13 +39,13 @@ public class ScaffoldHandler<T extends TmsBasicModel, D> implements CrudHandler<
     public Mono<ServerResponse> read(ServerRequest request) {
         UUID tenantId = UUID.fromString(request.pathVariable("tenantId"));
         UUID entityId = UUID.fromString(request.pathVariable("id"));
-        return mtRead(tenantId, entityId, dtoMapper);
+        return mtRead(tenantId, entityId);
     }
 
     @Override
     public Mono<ServerResponse> update(ServerRequest request) {
         UUID tenantId = UUID.fromString(request.pathVariable("tenantId"));
-        return mtUpdate(request.bodyToMono(dtoClazz), tenantId, entMapper);
+        return mtUpdate(request.bodyToMono(dtoClazz), tenantId);
     }
 
     @Override
@@ -74,20 +74,20 @@ public class ScaffoldHandler<T extends TmsBasicModel, D> implements CrudHandler<
         });
     }
 
-    protected /*<D>*/ Mono<ServerResponse> mtRead(UUID tenantId, UUID entityId, Function<T, D> mapper) {
+    protected /*<D>*/ Mono<ServerResponse> mtRead(UUID tenantId, UUID entityId) {
         try {
             T entity = service.read(entityId);
-            D dto = mapper.apply(entity);
+            D dto = dtoMapper.apply(entity);
             return ServiceResponseHelper.successWithBody(dto);
         } catch (TmsException e) {
             return onReadFailure(e);
         }
     }
 
-    protected /*<D>*/ Mono<ServerResponse> mtUpdate(Mono<D> dtoMono, UUID tenantId, BiFunction<D, UUID, T> mapper) {
+    protected /*<D>*/ Mono<ServerResponse> mtUpdate(Mono<D> dtoMono, UUID tenantId) {
         return dtoMono.flatMap(dto -> {
             try {
-                T entity = mapper.apply(dto, tenantId);
+                T entity = entMapper.apply(dto, tenantId);
                 service.update(entity);
                 return ServiceResponseHelper.successWithBody(entity);
             } catch (TmsException e) {
