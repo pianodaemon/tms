@@ -8,7 +8,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Component
 @Log4j2
-public class DriverHandler extends GenCrudHandler<Driver> {
+public class DriverHandler extends CrudHandler<Driver> {
 
     public DriverHandler(DriverService service) {
         super(service);

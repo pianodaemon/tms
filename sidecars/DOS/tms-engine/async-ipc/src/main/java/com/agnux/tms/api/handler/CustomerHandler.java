@@ -8,7 +8,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Component
 @Log4j2
-public class CustomerHandler extends GenCrudHandler<Customer> {
+public class CustomerHandler extends CrudHandler<Customer> {
 
     public CustomerHandler(CustomerService service) {
         super(service);

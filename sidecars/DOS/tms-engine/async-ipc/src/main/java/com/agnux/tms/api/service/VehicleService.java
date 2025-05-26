@@ -15,7 +15,7 @@ import lombok.extern.log4j.Log4j2;
 @Component
 @RequiredArgsConstructor
 @Log4j2
-public class VehicleService implements GenCrudService<Vehicle> {
+public class VehicleService implements CrudService<Vehicle> {
 
     private final IHaulRepo repo;
 

@@ -16,7 +16,7 @@ import lombok.extern.log4j.Log4j2;
 @Service
 @RequiredArgsConstructor
 @Log4j2
-public class AgreementService implements GenCrudService<Agreement> {
+public class AgreementService implements CrudService<Agreement> {
 
     private final IHaulRepo repo;
 

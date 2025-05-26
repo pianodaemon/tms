@@ -6,7 +6,7 @@ import com.agnux.tms.repository.PaginationSegment;
 import com.agnux.tms.repository.model.TmsBasicModel;
 import java.util.Map;
 
-public interface GenCrudService<T extends TmsBasicModel>  {
+public interface CrudService<T extends TmsBasicModel>  {
 
     UUID create(T entity) throws TmsException;
 

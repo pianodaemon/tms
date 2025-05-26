@@ -15,7 +15,7 @@ import lombok.extern.log4j.Log4j2;
 @Component
 @RequiredArgsConstructor
 @Log4j2
-public class PatioService implements GenCrudService<Patio> {
+public class PatioService implements CrudService<Patio> {
 
     private final IHaulRepo repo;
 

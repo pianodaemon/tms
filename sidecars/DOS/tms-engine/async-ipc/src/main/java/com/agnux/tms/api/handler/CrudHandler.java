@@ -1,6 +1,5 @@
 package com.agnux.tms.api.handler;
 
-import com.agnux.tms.api.service.GenCrudService;
 import com.agnux.tms.errors.ErrorCodes;
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.PaginationSegment;
@@ -21,16 +20,17 @@ import java.util.concurrent.ConcurrentMap;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.util.MultiValueMap;
+import com.agnux.tms.api.service.CrudService;
 
 @Log4j2
-public class GenCrudHandler<T extends TmsBasicModel> {
+public class CrudHandler<T extends TmsBasicModel> {
 
     protected final Class<T> clazz;
-    private final GenCrudService<T> service;
+    private final CrudService<T> service;
     private static final ConcurrentMap<Class<?>, Type> typeCache = new ConcurrentHashMap<>();
 
     @SuppressWarnings("unchecked")
-    public GenCrudHandler(GenCrudService<T> service) {
+    public CrudHandler(CrudService<T> service) {
         this.service = service;
         this.clazz = (Class<T>) extractGenericType();
     }

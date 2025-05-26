@@ -22,7 +22,7 @@ public class RouterConfig {
     private static final String CATALOGS_API_PATH = "adm";
     private static final String HAUL_API_PATH = "oper";
 
-    private static <T extends TmsBasicModel> RouterFunction<ServerResponse> crudRoutes(final String pathPrefix, GenCrudHandler<T> handler) {
+    private static <T extends TmsBasicModel> RouterFunction<ServerResponse> crudRoutes(final String pathPrefix, CrudHandler<T> handler) {
         RouterFunction<ServerResponse> routes = route(GET(pathPrefix + "/{id}"), handler::read)
                 .andRoute(POST(pathPrefix), handler::create)
                 .andRoute(PUT(pathPrefix), handler::update)
