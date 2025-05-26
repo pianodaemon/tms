@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.Optional;
 import java.util.UUID;
 
-class BasicRepoTransLogRecordHelper extends BasicRepoCommonHelper {
+class PgRepoTransLogRecordHelper extends PgRepoCommonHelper {
 
     public static final String ENTITY_NAME = "trans_log_record";
     public static final String ENTITY_TABLE = "trans_log_records";

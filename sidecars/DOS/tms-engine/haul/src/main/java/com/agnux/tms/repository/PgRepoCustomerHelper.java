@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
+class PgRepoCustomerHelper extends PgRepoCommonHelper {
 
     public static final String ENTITY_NAME = "customer";
     public static final String ENTITY_TABLE = "customers";
@@ -81,11 +81,11 @@ class BasicRepoCustomerHelper extends BasicRepoCommonHelper {
 
     public static PaginationSegment<Customer> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
 
-        return new Lister<>(
+        return new PgLister<>(
                 ENTITY_TABLE,
                 Set.of("id", "tenant_id", "name"),
                 Arrays.asList("id", "tenant_id", "name"),
-                BasicRepoCustomerHelper::fromResultSet
+                PgRepoCustomerHelper::fromResultSet
         ).list(conn, searchParams, pageParams);
     }
 

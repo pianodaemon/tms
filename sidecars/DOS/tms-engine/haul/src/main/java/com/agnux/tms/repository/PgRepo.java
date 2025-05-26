@@ -22,7 +22,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @AllArgsConstructor
-public class BasicRepoImpl implements IHaulRepo {
+public class PgRepo implements IHaulRepo {
 
     private static final String NOT_FOUND = " was not found";
     private static final String LOOKUP_FAILED = " lookup failed";
@@ -96,160 +96,160 @@ public class BasicRepoImpl implements IHaulRepo {
 
     @Override
     public CargoAssignment getCargoAssignment(UUID id) throws TmsException {
-        return fetchEntity(id, BasicRepoCargoAssignmentHelper.ENTITY_NAME, BasicRepoCargoAssignmentHelper::fetchById);
+        return fetchEntity(id, PgRepoCargoAssignmentHelper.ENTITY_NAME, PgRepoCargoAssignmentHelper::fetchById);
     }
 
     @Override
     public UUID createCargoAssignment(CargoAssignment t) throws TmsException {
-        return saveOrUpdateEntity(t, BasicRepoCargoAssignmentHelper.ENTITY_NAME, BasicRepoCargoAssignmentHelper::update, true);
+        return saveOrUpdateEntity(t, PgRepoCargoAssignmentHelper.ENTITY_NAME, PgRepoCargoAssignmentHelper::update, true);
     }
 
     @Override
     public UUID editCargoAssignment(CargoAssignment t) throws TmsException {
-        return saveOrUpdateEntity(t, BasicRepoCargoAssignmentHelper.ENTITY_NAME, BasicRepoCargoAssignmentHelper::update, false);
+        return saveOrUpdateEntity(t, PgRepoCargoAssignmentHelper.ENTITY_NAME, PgRepoCargoAssignmentHelper::update, false);
     }
 
     @Override
     public void deleteCargoAssignment(UUID id) throws TmsException {
-        deleteEntity(id, BasicRepoCargoAssignmentHelper.ENTITY_NAME, BasicRepoCargoAssignmentHelper::block);
+        deleteEntity(id, PgRepoCargoAssignmentHelper.ENTITY_NAME, PgRepoCargoAssignmentHelper::block);
     }
 
     // Customer
     @Override
     public Customer getCustomer(UUID id) throws TmsException {
-        return fetchEntity(id, BasicRepoCustomerHelper.ENTITY_NAME, BasicRepoCustomerHelper::fetchById);
+        return fetchEntity(id, PgRepoCustomerHelper.ENTITY_NAME, PgRepoCustomerHelper::fetchById);
     }
 
     @Override
     public UUID createCustomer(Customer p) throws TmsException {
-        return saveOrUpdateEntity(p, BasicRepoCustomerHelper.ENTITY_NAME, BasicRepoCustomerHelper::update, true);
+        return saveOrUpdateEntity(p, PgRepoCustomerHelper.ENTITY_NAME, PgRepoCustomerHelper::update, true);
     }
 
     @Override
     public UUID editCustomer(Customer p) throws TmsException {
-        return saveOrUpdateEntity(p, BasicRepoCustomerHelper.ENTITY_NAME, BasicRepoCustomerHelper::update, false);
+        return saveOrUpdateEntity(p, PgRepoCustomerHelper.ENTITY_NAME, PgRepoCustomerHelper::update, false);
     }
 
     @Override
     public void deleteCustomer(UUID id) throws TmsException {
-        deleteEntity(id, BasicRepoCustomerHelper.ENTITY_NAME, BasicRepoCustomerHelper::block);
+        deleteEntity(id, PgRepoCustomerHelper.ENTITY_NAME, PgRepoCustomerHelper::block);
     }
 
     @Override
     public PaginationSegment<Customer> listCustomerPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException {
-        return listEntityPage(filters, pageParams, BasicRepoCustomerHelper.ENTITY_NAME, BasicRepoCustomerHelper::list);
+        return listEntityPage(filters, pageParams, PgRepoCustomerHelper.ENTITY_NAME, PgRepoCustomerHelper::list);
     }
 
     @Override
     public PaginationSegment<Vehicle> listVehiclePage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException {
-        return listEntityPage(filters, pageParams, BasicRepoVehicleHelper.ENTITY_NAME, BasicRepoVehicleHelper::list);
+        return listEntityPage(filters, pageParams, PgRepoVehicleHelper.ENTITY_NAME, PgRepoVehicleHelper::list);
     }
 
     // Vehicle
     @Override
     public Vehicle getVehicle(UUID id) throws TmsException {
-        return fetchEntity(id, BasicRepoVehicleHelper.ENTITY_NAME, BasicRepoVehicleHelper::fetchById);
+        return fetchEntity(id, PgRepoVehicleHelper.ENTITY_NAME, PgRepoVehicleHelper::fetchById);
     }
 
     @Override
     public UUID createVehicle(Vehicle v) throws TmsException {
-        return saveOrUpdateEntity(v, BasicRepoVehicleHelper.ENTITY_NAME, BasicRepoVehicleHelper::update, true);
+        return saveOrUpdateEntity(v, PgRepoVehicleHelper.ENTITY_NAME, PgRepoVehicleHelper::update, true);
     }
 
     @Override
     public UUID editVehicle(Vehicle v) throws TmsException {
-        return saveOrUpdateEntity(v, BasicRepoVehicleHelper.ENTITY_NAME, BasicRepoVehicleHelper::update, false);
+        return saveOrUpdateEntity(v, PgRepoVehicleHelper.ENTITY_NAME, PgRepoVehicleHelper::update, false);
     }
 
     @Override
     public void deleteVehicle(UUID id) throws TmsException {
-        deleteEntity(id, BasicRepoVehicleHelper.ENTITY_NAME, BasicRepoVehicleHelper::block);
+        deleteEntity(id, PgRepoVehicleHelper.ENTITY_NAME, PgRepoVehicleHelper::block);
     }
 
     @Override
     public Driver getDriver(UUID id) throws TmsException {
-        return fetchEntity(id, BasicRepoDriverHelper.ENTITY_NAME, BasicRepoDriverHelper::fetchById);
+        return fetchEntity(id, PgRepoDriverHelper.ENTITY_NAME, PgRepoDriverHelper::fetchById);
     }
 
     @Override
     public UUID createDriver(Driver d) throws TmsException {
-        return saveOrUpdateEntity(d, BasicRepoDriverHelper.ENTITY_NAME, BasicRepoDriverHelper::update, true);
+        return saveOrUpdateEntity(d, PgRepoDriverHelper.ENTITY_NAME, PgRepoDriverHelper::update, true);
     }
 
     @Override
     public UUID editDriver(Driver d) throws TmsException {
-        return saveOrUpdateEntity(d, BasicRepoDriverHelper.ENTITY_NAME, BasicRepoDriverHelper::update, false);
+        return saveOrUpdateEntity(d, PgRepoDriverHelper.ENTITY_NAME, PgRepoDriverHelper::update, false);
     }
 
     @Override
     public void deleteDriver(UUID id) throws TmsException {
-        deleteEntity(id, BasicRepoDriverHelper.ENTITY_NAME, BasicRepoDriverHelper::block);
+        deleteEntity(id, PgRepoDriverHelper.ENTITY_NAME, PgRepoDriverHelper::block);
     }
 
     @Override
     public PaginationSegment<Driver> listDriverPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException {
-        return listEntityPage(filters, pageParams, BasicRepoDriverHelper.ENTITY_NAME, BasicRepoDriverHelper::list);
+        return listEntityPage(filters, pageParams, PgRepoDriverHelper.ENTITY_NAME, PgRepoDriverHelper::list);
     }
 
     // Patio
     @Override
     public Patio getPatio(UUID id) throws TmsException {
-        return fetchEntity(id, BasicRepoPatioHelper.ENTITY_NAME, BasicRepoPatioHelper::fetchById);
+        return fetchEntity(id, PgRepoPatioHelper.ENTITY_NAME, PgRepoPatioHelper::fetchById);
     }
 
     @Override
     public UUID createPatio(Patio p) throws TmsException {
-        return saveOrUpdateEntity(p, BasicRepoPatioHelper.ENTITY_NAME, BasicRepoPatioHelper::update, true);
+        return saveOrUpdateEntity(p, PgRepoPatioHelper.ENTITY_NAME, PgRepoPatioHelper::update, true);
     }
 
     @Override
     public UUID editPatio(Patio p) throws TmsException {
-        return saveOrUpdateEntity(p, BasicRepoPatioHelper.ENTITY_NAME, BasicRepoPatioHelper::update, false);
+        return saveOrUpdateEntity(p, PgRepoPatioHelper.ENTITY_NAME, PgRepoPatioHelper::update, false);
     }
 
     @Override
     public void deletePatio(UUID id) throws TmsException {
-        deleteEntity(id, BasicRepoPatioHelper.ENTITY_NAME, BasicRepoPatioHelper::block);
+        deleteEntity(id, PgRepoPatioHelper.ENTITY_NAME, PgRepoPatioHelper::block);
     }
 
     @Override
     public PaginationSegment<Patio> listPatioPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException {
-        return listEntityPage(filters, pageParams, BasicRepoPatioHelper.ENTITY_NAME, BasicRepoPatioHelper::list);
+        return listEntityPage(filters, pageParams, PgRepoPatioHelper.ENTITY_NAME, PgRepoPatioHelper::list);
     }
 
     // Agreement
     @Override
     public Agreement getAgreement(UUID id) throws TmsException {
-        return fetchEntity(id, BasicRepoAgreementHelper.ENTITY_NAME, BasicRepoAgreementHelper::fetchById);
+        return fetchEntity(id, PgRepoAgreementHelper.ENTITY_NAME, PgRepoAgreementHelper::fetchById);
     }
 
     @Override
     public UUID createAgreement(Agreement a) throws TmsException {
-        return saveOrUpdateEntity(a, BasicRepoAgreementHelper.ENTITY_NAME, BasicRepoAgreementHelper::update, true);
+        return saveOrUpdateEntity(a, PgRepoAgreementHelper.ENTITY_NAME, PgRepoAgreementHelper::update, true);
     }
 
     @Override
     public UUID editAgreement(Agreement a) throws TmsException {
-        return saveOrUpdateEntity(a, BasicRepoAgreementHelper.ENTITY_NAME, BasicRepoAgreementHelper::update, false);
+        return saveOrUpdateEntity(a, PgRepoAgreementHelper.ENTITY_NAME, PgRepoAgreementHelper::update, false);
     }
 
     @Override
     public void deleteAgreement(UUID id) throws TmsException {
-        deleteEntity(id, BasicRepoAgreementHelper.ENTITY_NAME, BasicRepoAgreementHelper::block);
+        deleteEntity(id, PgRepoAgreementHelper.ENTITY_NAME, PgRepoAgreementHelper::block);
     }
 
     @Override
     public PaginationSegment<Agreement> listAgreementPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException {
-        return listEntityPage(filters, pageParams, BasicRepoAgreementHelper.ENTITY_NAME, BasicRepoAgreementHelper::list);
+        return listEntityPage(filters, pageParams, PgRepoAgreementHelper.ENTITY_NAME, PgRepoAgreementHelper::list);
     }
 
     @Override
     public TransLogRecord getTransLogRecord(UUID id) throws TmsException {
-        return fetchEntity(id, BasicRepoTransLogRecordHelper.ENTITY_NAME, BasicRepoTransLogRecordHelper::fetchById);
+        return fetchEntity(id, PgRepoTransLogRecordHelper.ENTITY_NAME, PgRepoTransLogRecordHelper::fetchById);
     }
 
     @Override
     public UUID createTransLogRecord(TransLogRecord tlr) throws TmsException {
-        return saveOrUpdateEntity(tlr, BasicRepoTransLogRecordHelper.ENTITY_NAME, BasicRepoTransLogRecordHelper::update, true);
+        return saveOrUpdateEntity(tlr, PgRepoTransLogRecordHelper.ENTITY_NAME, PgRepoTransLogRecordHelper::update, true);
     }
 }

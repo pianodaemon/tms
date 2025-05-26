@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-class BasicRepoDriverHelper extends BasicRepoCommonHelper {
+class PgRepoDriverHelper extends PgRepoCommonHelper {
 
     public static final String ENTITY_NAME = "driver";
     public static final String ENTITY_TABLE = "drivers";
@@ -83,11 +83,11 @@ class BasicRepoDriverHelper extends BasicRepoCommonHelper {
 
     public static PaginationSegment<Driver> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
 
-        return new Lister<>(
+        return new PgLister<>(
                 ENTITY_TABLE,
                 Set.of("id", "tenant_id", "name", "first_surname", "second_surname", "license_number"),
                 Arrays.asList("id", "tenant_id", "name", "first_surname", "second_surname", "license_number"),
-                BasicRepoDriverHelper::fromResultSet
+                PgRepoDriverHelper::fromResultSet
         ).list(conn, searchParams, pageParams);
     }
 

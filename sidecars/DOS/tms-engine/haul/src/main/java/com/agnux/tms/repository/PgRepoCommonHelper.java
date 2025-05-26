@@ -8,7 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
-class BasicRepoCommonHelper {
+class PgRepoCommonHelper {
 
     protected static final String FETCH_BY_ID_SQL_QUERY = "SELECT * FROM %s WHERE not blocked AND id = ?";
 

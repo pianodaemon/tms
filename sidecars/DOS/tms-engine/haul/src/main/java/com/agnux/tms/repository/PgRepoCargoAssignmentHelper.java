@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.Optional;
 import java.util.UUID;
 
-class BasicRepoCargoAssignmentHelper extends BasicRepoCommonHelper {
+class PgRepoCargoAssignmentHelper extends PgRepoCommonHelper {
 
     public static final String ENTITY_NAME = "cargo_assignment";
     public static final String ENTITY_TABLE = "cargo_assignments";

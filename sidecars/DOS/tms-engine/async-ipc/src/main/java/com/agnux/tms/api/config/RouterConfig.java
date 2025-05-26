@@ -17,7 +17,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RequestPredicates.PUT;
 
 @Configuration
-public class AIPCRouter {
+public class RouterConfig {
 
     private static final String CATALOGS_API_PATH = "adm";
     private static final String HAUL_API_PATH = "oper";

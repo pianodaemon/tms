@@ -1,7 +1,7 @@
 package com.agnux.tms.api.config;
 
 import com.agnux.tms.core.mgmt.HaulMgmt;
-import com.agnux.tms.repository.BasicRepoImpl;
+import com.agnux.tms.repository.PgRepo;
 import com.agnux.tms.repository.IHaulRepo;
 
 import javax.sql.DataSource;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class DSBridge {
+public class DataSourceConfig {
 
     @Value("${debug.mode:false}")
     private boolean debugMode;
@@ -26,7 +26,7 @@ public class DSBridge {
     private String dbPassword;
 
     @Bean
-    public DataSource dataSource() {
+    public DataSource getDataSource() {
         PGSimpleDataSource ds = new PGSimpleDataSource();
         ds.setUrl(dbUrl);
         ds.setUser(dbUsername);
@@ -35,8 +35,8 @@ public class DSBridge {
     }
 
     @Bean
-    public IHaulRepo getRepoImpl(DataSource dataSource) {
-        return new BasicRepoImpl(dataSource, debugMode);
+    public IHaulRepo getPgRepo(DataSource dataSource) {
+        return new PgRepo(dataSource, debugMode);
     }
 
     @Bean

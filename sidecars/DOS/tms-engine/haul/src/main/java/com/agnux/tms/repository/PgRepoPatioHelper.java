@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-class BasicRepoPatioHelper extends BasicRepoCommonHelper {
+class PgRepoPatioHelper extends PgRepoCommonHelper {
 
     public static final String ENTITY_NAME = "patio";
     public static final String ENTITY_TABLE = "patios";
@@ -80,11 +80,11 @@ class BasicRepoPatioHelper extends BasicRepoCommonHelper {
 
     public static PaginationSegment<Patio> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
 
-        return new Lister<>(
+        return new PgLister<>(
                 ENTITY_TABLE,
                 Set.of("id", "tenant_id", "name"),
                 Arrays.asList("id", "tenant_id", "name", "latitude_location", "longitude_location"),
-                BasicRepoPatioHelper::fromResultSet
+                PgRepoPatioHelper::fromResultSet
         ).list(conn, searchParams, pageParams);
     }
 

@@ -12,7 +12,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @AllArgsConstructor
-public class Lister<T> {
+public class PgLister<T> {
 
     private static final String AND_SORROUNDED_BY_SPACES = " AND ";
     private static final String DEFAULT_COUNTABLE_FIELD = "id";

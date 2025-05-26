@@ -12,7 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
+class PgRepoAgreementHelper extends PgRepoCommonHelper {
 
     public static final String ENTITY_NAME = "agreement";
     public static final String ENTITY_TABLE = "agreements";
@@ -87,12 +87,12 @@ class BasicRepoAgreementHelper extends BasicRepoCommonHelper {
 
     public static PaginationSegment<Agreement> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
 
-        return new Lister<>(
+        return new PgLister<>(
                 ENTITY_TABLE,
                 Set.of("id", "tenant_id", "customer_id", "receiver", "dist_unit"),
                 Arrays.asList("id", "tenant_id", "customer_id", "receiver", "dist_unit",
                         "dist_scalar", "latitude_origin", "longitude_origin", "latitude_destiny", "longitude_destiny"),
-                BasicRepoAgreementHelper::fromResultSet
+                PgRepoAgreementHelper::fromResultSet
         ).list(conn, searchParams, pageParams);
     }
 

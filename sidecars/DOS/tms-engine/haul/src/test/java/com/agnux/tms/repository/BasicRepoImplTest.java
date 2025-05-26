@@ -52,7 +52,7 @@ public class BasicRepoImplTest {
         ds.setPassword(postgresContainer.getPassword());
 
         dataSource = ds;
-        repo = new BasicRepoImpl(dataSource, true);
+        repo = new PgRepo(dataSource, true);
     }
 
     @Test

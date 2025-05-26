@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
-class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
+class PgRepoVehicleHelper extends PgRepoCommonHelper {
 
     public static final String ENTITY_NAME = "vehicule";
     public static final String ENTITY_TABLE = "vehicles";
@@ -91,11 +91,11 @@ class BasicRepoVehicleHelper extends BasicRepoCommonHelper {
     }
 
     public static PaginationSegment<Vehicle> list(Connection conn, Map<String, String> searchParams, Map<String, String> pageParams) throws TmsException {
-        return new Lister<>(
+        return new PgLister<>(
                 ENTITY_TABLE,
                 Set.of("id", "tenant_id", "number_plate", "number_serial", "vehicle_type", "vehicle_color", "federal_conf", "perf_dist_unit", "perf_vol_unit"),
                 Arrays.asList("id", "tenant_id", "number_plate", "number_serial", "vehicle_type", "vehicle_color", "vehicle_year", "federal_conf", "perf_dist_unit", "perf_vol_unit", "perf_scalar"),
-                BasicRepoVehicleHelper::fromResultSet
+                PgRepoVehicleHelper::fromResultSet
         ).list(conn, searchParams, pageParams);
     }
 
