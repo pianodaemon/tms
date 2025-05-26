@@ -14,12 +14,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import lombok.extern.log4j.Log4j2;
 import org.springframework.util.MultiValueMap;
 import com.agnux.tms.api.service.CrudService;
 
-@Log4j2
-public class ScaffoldHandler<T extends TmsBasicModel> extends AbstractCrudHandler<T> implements CrudHandler<Mono<ServerResponse>, ServerRequest> {
+public class ScaffoldHandler<T extends TmsBasicModel> extends AbstractCrudHandler<T, Mono<ServerResponse>, ServerRequest> {
 
     public ScaffoldHandler(CrudService<T> service) {
         super(service);

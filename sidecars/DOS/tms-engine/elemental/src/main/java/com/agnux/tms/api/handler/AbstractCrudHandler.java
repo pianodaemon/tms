@@ -7,11 +7,21 @@ import java.lang.reflect.Type;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-abstract class AbstractCrudHandler<T extends TmsBasicModel> {
+abstract class AbstractCrudHandler<T extends TmsBasicModel, R, W> {
 
     protected final Class<T> clazz;
     protected final CrudService<T> service;
     protected static final ConcurrentMap<Class<?>, Type> typeCache = new ConcurrentHashMap<>();
+
+    public abstract R create(W request);
+
+    public abstract R read(W request);
+
+    public abstract R update(W request);
+
+    public abstract R delete(W request);
+
+    public abstract R listPaginated(W request);
 
     @SuppressWarnings("unchecked")
     public AbstractCrudHandler(CrudService<T> service) {
