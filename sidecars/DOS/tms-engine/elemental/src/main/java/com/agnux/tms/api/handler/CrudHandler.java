@@ -1,6 +1,6 @@
 package com.agnux.tms.api.handler;
 
-interface CrudHandler<W, R> {
+public interface CrudHandler<W, R> {
 
     public abstract R create(W request);
 

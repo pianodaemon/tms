@@ -15,6 +15,8 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RequestPredicates.PUT;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import reactor.core.publisher.Mono;
 
 @Configuration
 public class RouterConfig {
@@ -32,7 +34,7 @@ public class RouterConfig {
 
         return routes;
     }*/
-    private static <T extends TmsBasicModel, D> RouterFunction<ServerResponse> crudRoutes(final String pathPrefix, ScaffoldHandler<T, D> handler) {
+    private static RouterFunction<ServerResponse> crudRoutes(final String pathPrefix, CrudHandler<ServerRequest, Mono<ServerResponse>> handler) {
         RouterFunction<ServerResponse> routes = route(GET(pathPrefix + "/{id}"), handler::read)
                 .andRoute(POST(pathPrefix), handler::create)
                 .andRoute(PUT(pathPrefix), handler::update)
@@ -42,7 +44,7 @@ public class RouterConfig {
         return routes;
     }
 
-    private static <T extends TmsBasicModel, D> RouterFunction<ServerResponse> mtCrudRoutes(final String pathPrefix, ScaffoldHandler<T, D> handler) {
+    private static RouterFunction<ServerResponse> mtCrudRoutes(final String pathPrefix, CrudHandler<ServerRequest, Mono<ServerResponse>> handler) {
         return crudRoutes(pathPrefix + "/{tenantId}", handler);
     }
 
