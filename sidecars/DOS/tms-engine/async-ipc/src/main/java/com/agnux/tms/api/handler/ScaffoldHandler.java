@@ -104,7 +104,7 @@ public class ScaffoldHandler<T extends TmsBasicModel> extends AbstractCrudHandle
         }
     }
 
-    public Mono<ServerResponse> onPaginationFailure(TmsException e) {
+    protected Mono<ServerResponse> onPaginationFailure(TmsException e) {
         if (e.getErrorCode() == ErrorCodes.INVALID_DATA.getCode()) {
             return ServiceResponseHelper.badRequest("invalid request data", e);
         }
