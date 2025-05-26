@@ -1,7 +1,7 @@
 package com.agnux.tms.api.config;
 
 import com.agnux.tms.core.mgmt.HaulMgmt;
-import com.agnux.tms.repository.PgRepo;
+import com.agnux.tms.repository.pg.PgRepo;
 import com.agnux.tms.repository.IHaulRepo;
 
 import javax.sql.DataSource;

@@ -1,7 +1,8 @@
-package com.agnux.tms.repository;
+package com.agnux.tms.repository.pg;
 
 import com.agnux.tms.errors.ErrorCodes;
 import com.agnux.tms.errors.TmsException;
+import com.agnux.tms.repository.PaginationSegment;
 import com.agnux.tms.repository.model.Customer;
 
 import java.sql.Connection;

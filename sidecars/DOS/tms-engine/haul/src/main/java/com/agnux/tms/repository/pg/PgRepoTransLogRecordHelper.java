@@ -1,4 +1,4 @@
-package com.agnux.tms.repository;
+package com.agnux.tms.repository.pg;
 
 import com.agnux.tms.repository.model.DistUnit;
 import com.agnux.tms.repository.model.TransLogRecord;

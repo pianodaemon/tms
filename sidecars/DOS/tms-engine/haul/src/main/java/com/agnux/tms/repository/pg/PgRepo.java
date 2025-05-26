@@ -1,7 +1,9 @@
-package com.agnux.tms.repository;
+package com.agnux.tms.repository.pg;
 
 import com.agnux.tms.errors.ErrorCodes;
 import com.agnux.tms.errors.TmsException;
+import com.agnux.tms.repository.IHaulRepo;
+import com.agnux.tms.repository.PaginationSegment;
 import com.agnux.tms.repository.model.Agreement;
 import com.agnux.tms.repository.model.CargoAssignment;
 import com.agnux.tms.repository.model.Customer;

@@ -1,6 +1,7 @@
-package com.agnux.tms.repository;
+package com.agnux.tms.repository.pg;
 
 import com.agnux.tms.errors.TmsException;
+import com.agnux.tms.repository.PaginationSegment;
 import com.agnux.tms.repository.model.Patio;
 
 import java.sql.Connection;
