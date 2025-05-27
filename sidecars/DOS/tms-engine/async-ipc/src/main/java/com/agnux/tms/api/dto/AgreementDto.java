@@ -15,6 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AgreementDto {
 
+    private UUID id;
     private UUID customerId;
     private String receiver;     // AKA el destinatario
     private double latitudeOrigin;
