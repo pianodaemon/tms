@@ -1,8 +1,8 @@
 package com.agnux.tms.api.handler;
 
-import com.agnux.tms.api.dto.PatioDto;
-import com.agnux.tms.api.service.PatioService;
-import com.agnux.tms.repository.model.Patio;
+import com.agnux.tms.api.dto.DriverDto;
+import com.agnux.tms.api.service.DriverService;
+import com.agnux.tms.repository.model.Driver;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
 
@@ -10,21 +10,21 @@ import lombok.extern.log4j.Log4j2;
 
 @Component
 @Log4j2
-public class PatioHandler extends ScaffoldHandler<Patio, PatioDto> {
+public class DriverHandler extends ScaffoldHandler<Driver, DriverDto> {
 
-    public PatioHandler(PatioService service) {
-        super(service, PatioHandler::entMapper, PatioHandler::dtoMapper, PatioDto.class);
+    public DriverHandler(DriverService service) {
+        super(service, DriverHandler::entMapper, DriverHandler::dtoMapper, DriverDto.class);
     }
 
-    private static Patio entMapper(PatioDto dto, UUID tenantId) {
+    private static Driver entMapper(DriverDto dto, UUID tenantId) {
         UUID id = dto.getId();
         String name = dto.getName();
-        return new Patio(id, tenantId, name, dto.getLatitudeLocation(), dto.getLongitudeLocation());
+        return new Driver(id, tenantId, name, dto.getFirstSurname(), dto.getSecondSurname(), dto.getLicenseNumber());
     }
 
-    private static PatioDto dtoMapper(Patio ent) {
+    private static DriverDto dtoMapper(Driver ent) {
         UUID id = ent.getId().orElseThrow();
         String name = ent.getName();
-        return new PatioDto(id, name, ent.getLatitudeLocation(), ent.getLongitudeLocation());
+        return new DriverDto(id, name, ent.getFirstSurname(), ent.getSecondSurname(), ent.getLicenseNumber());
     }
 }
