@@ -4,8 +4,8 @@ import com.agnux.tms.api.dto.AgreementDto;
 import com.agnux.tms.api.service.AgreementService;
 import com.agnux.tms.repository.model.Agreement;
 import java.util.UUID;
-import org.springframework.stereotype.Component;
 
+import org.springframework.stereotype.Component;
 import lombok.extern.log4j.Log4j2;
 
 @Component
@@ -21,6 +21,16 @@ public class AgreementHandler extends ScaffoldHandler<Agreement, AgreementDto> {
     }
 
     private static AgreementDto dtoMapper(Agreement ent) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        UUID id = ent.getId().orElseThrow();
+        return new AgreementDto(
+                id,
+                ent.getReceiver(),
+                ent.getLatitudeOrigin(),
+                ent.getLongitudeOrigin(),
+                ent.getLatitudeDestiny(),
+                ent.getLongitudeDestiny(),
+                ent.getDistUnit(),
+                ent.getDistScalar()
+        );
     }
 }
