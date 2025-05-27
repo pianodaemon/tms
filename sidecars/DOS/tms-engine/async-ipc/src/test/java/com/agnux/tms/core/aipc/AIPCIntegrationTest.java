@@ -116,32 +116,29 @@ class AIPCRouterIntegrationTest {
                 .uri(prefixPathWithTenant + "/" + newID)
                 .exchange()
                 .expectStatus().isNotFound();
-         /*
+         
         // --- Pagination assertions ---
-        UUID tenantId = UUID.randomUUID();
-
         List<UUID> createdDriverIds = new ArrayList<>();
         for (int i = 1; i <= 6; i++) {
-            Driver d = new Driver(null, tenantId, "Paginated Driver " + i, "RFC" + i, "LIC" + i, "REG" + i);
+            DriverDto d = new DriverDto(null, "Paginated Driver " + i, "RFC" + i, "LIC" + i, "REG" + i);
             var res = webTestClient.post()
-                    .uri("/adm/drivers")
+                    .uri(prefixPathWithTenant)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(d)
                     .exchange()
                     .expectStatus().isOk()
-                    .expectBody(Driver.class)
+                    .expectBody(DriverDto.class)
                     .returnResult();
 
-            Driver created = res.getResponseBody();
+            DriverDto created = res.getResponseBody();
             assert created != null;
-            createdDriverIds.add(created.getId().orElseThrow());
+            createdDriverIds.add(created.getId());
         }
 
         // Page 1, size 4
         webTestClient.get()
                 .uri(uriBuilder -> uriBuilder
-                .path("/adm/drivers")
-                .queryParam("tenant_id", tenantId.toString())
+                .path(prefixPathWithTenant)
                 .queryParam("page_size", "4")
                 .queryParam("page_number", "1")
                 .build())
@@ -156,8 +153,7 @@ class AIPCRouterIntegrationTest {
         // Page 2, size 4
         webTestClient.get()
                 .uri(uriBuilder -> uriBuilder
-                .path("/adm/drivers")
-                .queryParam("tenant_id", tenantId.toString())
+                .path(prefixPathWithTenant)
                 .queryParam("page_size", "4")
                 .queryParam("page_number", "2")
                 .build())
@@ -172,15 +168,15 @@ class AIPCRouterIntegrationTest {
         // Cleanup
         for (UUID id : createdDriverIds) {
             webTestClient.delete()
-                    .uri("/adm/drivers/" + id)
+                    .uri(prefixPathWithTenant + "/" + id)
                     .exchange()
                     .expectStatus().isNoContent();
 
             webTestClient.get()
-                    .uri("/adm/drivers/" + id)
+                    .uri(prefixPathWithTenant + "/" + id)
                     .exchange()
                     .expectStatus().isNotFound();
-        }*/
+        }
     }
 
     @Test
