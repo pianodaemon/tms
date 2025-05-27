@@ -96,13 +96,11 @@ class AIPCRouterIntegrationTest {
         assert "tyson".equals(createdDriver.getFirstSurname());
         assert "wallas".equals(createdDriver.getSecondSurname());
         assert "D123456789".equals(createdDriver.getLicenseNumber());
-        /*
-        final UUID newID = createdDriver.getId().orElseThrow();
-
-        System.out.println("/adm/drivers/" + newID);
+       
+        final UUID newID = createdDriver.getId();
 
         webTestClient.get()
-                .uri("/adm/drivers/" + newID)
+                .uri(prefixPathWithTenant + "/" + newID)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -110,15 +108,15 @@ class AIPCRouterIntegrationTest {
                 .jsonPath("$.name").isEqualTo("Integration Test Driver");
 
         webTestClient.delete()
-                .uri("/adm/drivers/" + newID)
+                .uri(prefixPathWithTenant + "/" + newID)
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient.get()
-                .uri("/adm/drivers/" + newID)
+                .uri(prefixPathWithTenant + "/" + newID)
                 .exchange()
                 .expectStatus().isNotFound();
-
+         /*
         // --- Pagination assertions ---
         UUID tenantId = UUID.randomUUID();
 
