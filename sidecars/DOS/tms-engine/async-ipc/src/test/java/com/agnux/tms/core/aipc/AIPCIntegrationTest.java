@@ -180,10 +180,10 @@ class AIPCRouterIntegrationTest {
                     .expectStatus().isNotFound();
         }
     }
-*/
+     */
     @Test
     void testCreateAndGetPatio() {
-        
+
         UUID tenantId = UUID.randomUUID();
         String prefixPathWithTenant = String.format("/adm/patios/%s", tenantId);
         var newPatio = new PatioDto(null, "Integration Test Patio", 19.4326, -99.1332);
@@ -243,12 +243,11 @@ class AIPCRouterIntegrationTest {
             assert created != null;
             createdPatioIds.add(created.getId());
         }
-/* 
+
         // Page 1, size 3
         webTestClient.get()
                 .uri(uriBuilder -> uriBuilder
-                .path("/adm/patios")
-                .queryParam("tenant_id", tenantId.toString())
+                .path(prefixPathWithTenant)
                 .queryParam("page_size", "3")
                 .queryParam("page_number", "1")
                 .build())
@@ -263,8 +262,7 @@ class AIPCRouterIntegrationTest {
         // Page 2, size 3
         webTestClient.get()
                 .uri(uriBuilder -> uriBuilder
-                .path("/adm/patios")
-                .queryParam("tenant_id", tenantId.toString())
+                .path(prefixPathWithTenant)
                 .queryParam("page_size", "3")
                 .queryParam("page_number", "2")
                 .build())
@@ -279,17 +277,17 @@ class AIPCRouterIntegrationTest {
         // Cleanup
         for (UUID id : createdPatioIds) {
             webTestClient.delete()
-                    .uri("/adm/patios/" + id)
+                    .uri(prefixPathWithTenant + "/" + id)
                     .exchange()
                     .expectStatus().isNoContent();
 
             webTestClient.get()
-                    .uri("/adm/patios/" + id)
+                    .uri(prefixPathWithTenant + "/" + id)
                     .exchange()
                     .expectStatus().isNotFound();
-        }*/
+        }
     }
-     
+
     @Test
     void testCreateAndGetCustomer() {
 
