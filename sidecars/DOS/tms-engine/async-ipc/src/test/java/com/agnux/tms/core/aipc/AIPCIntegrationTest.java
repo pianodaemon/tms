@@ -225,25 +225,25 @@ class AIPCRouterIntegrationTest {
                 .uri(prefixPathWithTenant + "/" + newID)
                 .exchange()
                 .expectStatus().isNotFound();
-/* 
+
         // --- Pagination assertions ---
         List<UUID> createdPatioIds = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
-            Patio patio = new Patio(null, tenantId, "Paginated Patio " + i, 20.0 + i, -100.0 - i);
+            PatioDto patio = new PatioDto(null, "Paginated Patio " + i, 20.0 + i, -100.0 - i);
             var res = webTestClient.post()
-                    .uri("/adm/patios")
+                    .uri(prefixPathWithTenant)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(patio)
                     .exchange()
                     .expectStatus().isOk()
-                    .expectBody(Patio.class)
+                    .expectBody(PatioDto.class)
                     .returnResult();
 
-            Patio created = res.getResponseBody();
+            PatioDto created = res.getResponseBody();
             assert created != null;
-            createdPatioIds.add(created.getId().orElseThrow());
+            createdPatioIds.add(created.getId());
         }
-
+/* 
         // Page 1, size 3
         webTestClient.get()
                 .uri(uriBuilder -> uriBuilder
