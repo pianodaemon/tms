@@ -206,10 +206,8 @@ class AIPCRouterIntegrationTest {
 
         final UUID newID = createdPatio.getId();
 
-       /* System.out.println("/adm/patios/" + newID);
-
         webTestClient.get()
-                .uri("/adm/patios/" + newID)
+                .uri(prefixPathWithTenant + "/" + newID)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -219,15 +217,15 @@ class AIPCRouterIntegrationTest {
                 .jsonPath("$.longitudeLocation").isEqualTo(-99.1332);
 
         webTestClient.delete()
-                .uri("/adm/patios/" + newID)
+                .uri(prefixPathWithTenant + "/" + newID)
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient.get()
-                .uri("/adm/patios/" + newID)
+                .uri(prefixPathWithTenant + "/" + newID)
                 .exchange()
                 .expectStatus().isNotFound();
-
+/* 
         // --- Pagination assertions ---
         List<UUID> createdPatioIds = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {
