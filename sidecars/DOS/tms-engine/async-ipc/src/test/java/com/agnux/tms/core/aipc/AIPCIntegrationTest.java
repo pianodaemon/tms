@@ -1,6 +1,7 @@
 package com.agnux.tms.core.aipc;
 
 import com.agnux.tms.api.dto.CustomerDto;
+import com.agnux.tms.api.dto.DriverDto;
 import com.agnux.tms.api.dto.PatioDto;
 import com.agnux.tms.repository.model.*;
 import java.math.BigDecimal;
@@ -71,28 +72,31 @@ class AIPCRouterIntegrationTest {
         registry.add("db.password", postgresContainer::getPassword);
     }
 
-    /*
     @Test
     void testCreateAndGetDriver() {
-        Driver newDriver = new Driver(null, UUID.randomUUID(), "Integration Test Driver", "tyson", "wallas", "D123456789");
+
+        UUID tenantId = UUID.randomUUID();
+        String prefixPathWithTenant = String.format("/adm/drivers/%s", tenantId);
+
+        DriverDto newDriver = new DriverDto(null, "Integration Test Driver", "tyson", "wallas", "D123456789");
 
         var response = webTestClient.post()
-                .uri("/adm/drivers")
+                .uri(prefixPathWithTenant)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newDriver)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(Driver.class)
+                .expectBody(DriverDto.class)
                 .returnResult();
 
-        Driver createdDriver = response.getResponseBody();
+        DriverDto createdDriver = response.getResponseBody();
         assert createdDriver != null : "Created driver should not be null";
         assert "Integration Test Driver".equals(createdDriver.getName());
         assert "tyson".equals(createdDriver.getFirstSurname());
         assert "wallas".equals(createdDriver.getSecondSurname());
         assert "D123456789".equals(createdDriver.getLicenseNumber());
-
+        /*
         final UUID newID = createdDriver.getId().orElseThrow();
 
         System.out.println("/adm/drivers/" + newID);
@@ -178,9 +182,9 @@ class AIPCRouterIntegrationTest {
                     .uri("/adm/drivers/" + id)
                     .exchange()
                     .expectStatus().isNotFound();
-        }
+        }*/
     }
-     */
+
     @Test
     void testCreateAndGetPatio() {
 
