@@ -630,7 +630,6 @@ class AIPCRouterIntegrationTest {
         }
     }
 
-    /*
     @Test
     void testCreateAndGetAgreement() {
         UUID tenantId = UUID.randomUUID();
@@ -639,19 +638,21 @@ class AIPCRouterIntegrationTest {
         Customer newCustomer = new Customer(null, UUID.randomUUID(), "Integration Test Customer");
 
         var response = webTestClient.post()
-                .uri("/adm/customers")
+                .uri(String.format("/adm/customers/%s", tenantId))
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newCustomer)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(Customer.class)
+                .expectBody(CustomerDto.class)
                 .returnResult();
 
-        Customer createdCustomer = response.getResponseBody();
+        CustomerDto createdCustomer = response.getResponseBody();
         assert createdCustomer != null : "Created customer should not be null";
-        UUID customerId = createdCustomer.getId().orElseThrow();
+        UUID customerId = createdCustomer.getId();
 
+        String prefixPathWithTenant = String.format("/adm/agreements/%s", tenantId);
+        /*
         // --- Create an agreement ---
         Agreement agreement = new Agreement(null, tenantId, customerId, "Receiver X",
                 19.4326, -99.1332, 20.6597, -103.3496, DistUnit.KM, new BigDecimal("533.2"));
@@ -752,14 +753,15 @@ class AIPCRouterIntegrationTest {
                 .uri("/adm/agreements/" + agreementId)
                 .exchange()
                 .expectStatus().isNoContent();
-
+         */
         // --- Delete the customer ---
         webTestClient.delete()
-                .uri("/adm/customers/" + customerId)
+                .uri(String.format("/adm/customers/%s", tenantId) + "/" + customerId)
                 .exchange()
                 .expectStatus().isNoContent();
+
     }
-     */
+
     @AfterAll
     static void tearDown() {
         postgresContainer.stop();
