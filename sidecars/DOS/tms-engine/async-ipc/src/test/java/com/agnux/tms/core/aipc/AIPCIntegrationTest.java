@@ -3,6 +3,7 @@ package com.agnux.tms.core.aipc;
 import com.agnux.tms.api.dto.CustomerDto;
 import com.agnux.tms.api.dto.DriverDto;
 import com.agnux.tms.api.dto.PatioDto;
+import com.agnux.tms.api.dto.VehicleDto;
 import com.agnux.tms.repository.model.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -96,7 +97,7 @@ class AIPCRouterIntegrationTest {
         assert "tyson".equals(createdDriver.getFirstSurname());
         assert "wallas".equals(createdDriver.getSecondSurname());
         assert "D123456789".equals(createdDriver.getLicenseNumber());
-       
+
         final UUID newID = createdDriver.getId();
 
         webTestClient.get()
@@ -116,7 +117,7 @@ class AIPCRouterIntegrationTest {
                 .uri(prefixPathWithTenant + "/" + newID)
                 .exchange()
                 .expectStatus().isNotFound();
-         
+
         // --- Pagination assertions ---
         List<UUID> createdDriverIds = new ArrayList<>();
         for (int i = 1; i <= 6; i++) {
@@ -484,13 +485,14 @@ class AIPCRouterIntegrationTest {
         }
     }
 
-    /*
     @Test
     void testCreateAndGetVehicule() {
+
         UUID tenantId = UUID.randomUUID();
-        Vehicle newVehicle = new Vehicle(
+        String prefixPathWithTenant = String.format("/adm/vehicles/%s", tenantId);
+
+        VehicleDto newVehicle = new VehicleDto(
                 null,
-                tenantId,
                 "ABC-1234",
                 "ASDXXXX001",
                 VehicleType.DRY_VAN,
@@ -503,16 +505,16 @@ class AIPCRouterIntegrationTest {
         );
 
         var response = webTestClient.post()
-                .uri("/adm/vehicles")
+                .uri(prefixPathWithTenant)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newVehicle)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(Vehicle.class)
+                .expectBody(VehicleDto.class)
                 .returnResult();
 
-        Vehicle createdVehicule = response.getResponseBody();
+        VehicleDto createdVehicule = response.getResponseBody();
         assert createdVehicule != null : "Created vehicule should not be null";
         assert "ABC-1234".equals(createdVehicule.getNumberPlate());
         assert "ASDXXXX001".equals(createdVehicule.getNumberSerial());
@@ -521,10 +523,10 @@ class AIPCRouterIntegrationTest {
         assert createdVehicule.getPerfVolUnit() == VolUnit.LT;
         assert createdVehicule.getPerfDistUnit() == DistUnit.KM;
 
-        final UUID newID = createdVehicule.getId().orElseThrow();
+        final UUID newID = createdVehicule.getId();
 
         webTestClient.get()
-                .uri("/adm/vehicles/" + newID)
+                .uri(prefixPathWithTenant + "/" + newID)
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -539,12 +541,12 @@ class AIPCRouterIntegrationTest {
                 .jsonPath("$.perfScalar").isEqualTo(100);
 
         webTestClient.delete()
-                .uri("/adm/vehicles/" + newID)
+                .uri(prefixPathWithTenant + "/" + newID)
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient.get()
-                .uri("/adm/vehicles/" + newID)
+                .uri(prefixPathWithTenant + "/" + newID)
                 .exchange()
                 .expectStatus().isNotFound();
 
@@ -552,9 +554,8 @@ class AIPCRouterIntegrationTest {
         {
             List<UUID> createdVehicleIds = new ArrayList<>();
             for (int i = 1; i <= 7; i++) {
-                Vehicle v = new Vehicle(
+                VehicleDto v = new VehicleDto(
                         null,
-                        tenantId,
                         "PLATE-" + i,
                         "SERIAL-" + i,
                         VehicleType.DRY_VAN,
@@ -567,24 +568,23 @@ class AIPCRouterIntegrationTest {
                 );
 
                 var res = webTestClient.post()
-                        .uri("/adm/vehicles")
+                        .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(v)
                         .exchange()
                         .expectStatus().isOk()
-                        .expectBody(Vehicle.class)
+                        .expectBody(VehicleDto.class)
                         .returnResult();
 
-                Vehicle created = res.getResponseBody();
+                VehicleDto created = res.getResponseBody();
                 assert created != null : "Created vehicule should not be null";
-                createdVehicleIds.add(created.getId().orElseThrow());
+                createdVehicleIds.add(created.getId());
             }
 
             // PAGE 1, size 5
             webTestClient.get()
                     .uri(uriBuilder -> uriBuilder
-                    .path("/adm/vehicles")
-                    .queryParam("tenant_id", tenantId.toString())
+                    .path(prefixPathWithTenant)
                     .queryParam("page_size", "5")
                     .queryParam("page_number", "1")
                     .queryParam("filter_qu_vehicle_type", "DRY_VAN")
@@ -602,7 +602,7 @@ class AIPCRouterIntegrationTest {
             // PAGE 2, size 5
             webTestClient.get()
                     .uri(uriBuilder -> uriBuilder
-                    .path("/adm/vehicles")
+                    .path(prefixPathWithTenant)
                     .queryParam("tenant_id", tenantId.toString())
                     .queryParam("page_size", "5")
                     .queryParam("page_number", "2")
@@ -618,18 +618,19 @@ class AIPCRouterIntegrationTest {
             // Cleanup
             for (UUID id : createdVehicleIds) {
                 webTestClient.delete()
-                        .uri("/adm/vehicles/" + id)
+                        .uri(prefixPathWithTenant + "/" + id)
                         .exchange()
                         .expectStatus().isNoContent();
 
                 webTestClient.get()
-                        .uri("/adm/vehicles/" + id)
+                        .uri(prefixPathWithTenant + "/" + id)
                         .exchange()
                         .expectStatus().isNotFound();
             }
         }
     }
 
+    /*
     @Test
     void testCreateAndGetAgreement() {
         UUID tenantId = UUID.randomUUID();
