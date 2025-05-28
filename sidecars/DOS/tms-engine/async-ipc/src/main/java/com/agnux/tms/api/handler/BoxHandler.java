@@ -21,7 +21,8 @@ public class BoxHandler extends ScaffoldHandler<Box, BoxDto> {
     protected Box entMapper(BoxDto dto, UUID tenantId) throws TmsException {
         UUID id = dto.getId();
         String name = dto.getName();
-        var ent = new Box(id, tenantId, name);
+        String numberPlate = dto.getNumberPlate();
+        var ent = new Box(id, tenantId, name, numberPlate);
         return ent;
     }
 
@@ -32,6 +33,7 @@ public class BoxHandler extends ScaffoldHandler<Box, BoxDto> {
         BoxDto dto = new BoxDto();
         dto.setId(id);
         dto.setName(name);
+        dto.setNumberPlate(ent.getNumberPlate());
         return dto;
     }
 }

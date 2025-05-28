@@ -837,7 +837,7 @@ class AIPCRouterIntegrationTest {
 
         UUID tenantId = UUID.randomUUID();
         String prefixPathWithTenant = String.format("/adm/boxes/%s", tenantId);
-        var newBox = new BoxDto(null, "Integration Test Box");
+        var newBox = new BoxDto(null, "Integration Test Box", "LFU000001");
 
         var response = webTestClient.post()
                 .uri(prefixPathWithTenant)
@@ -876,7 +876,7 @@ class AIPCRouterIntegrationTest {
 
             // Create multiple boxs and collect their IDs
             for (int i = 1; i <= 5; i++) {
-                BoxDto box = new BoxDto(null, "Paginated Box " + i);
+                BoxDto box = new BoxDto(null, "Paginated Box " + i, String.format("LFL00000%s", i));
                 var res = webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -941,7 +941,7 @@ class AIPCRouterIntegrationTest {
 
             // Create boxs and collect their IDs
             for (String name : names) {
-                BoxDto box = new BoxDto(null, name);
+                BoxDto box = new BoxDto(null, name, String.format("LFL40000%c", name.charAt(name.length() - 1)));
                 var res = webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -1046,8 +1046,9 @@ class AIPCRouterIntegrationTest {
                     "Invalid|Chars"
             );
 
+            int counteryy = 0;
             for (String invalidName : invalidNames) {
-                var invalidBox = new BoxDto(null, invalidName);
+                var invalidBox = new BoxDto(null, invalidName, String.format("LFL50000%d", counteryy));
                 webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -1074,8 +1075,9 @@ class AIPCRouterIntegrationTest {
                     "EndsWithSpace " // It will be normalized
             );
 
+            int counterxx = 0;
             for (String validName : validNames) {
-                var validBox = new BoxDto(null, validName);
+                var validBox = new BoxDto(null, validName, String.format("LFL70000%d", counterxx));
                 var validRes = webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
