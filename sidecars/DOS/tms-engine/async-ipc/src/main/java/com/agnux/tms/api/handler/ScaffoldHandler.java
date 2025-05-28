@@ -5,10 +5,10 @@ import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.PaginationSegment;
 
 import com.agnux.tms.repository.model.TmsBasicModel;
-import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.stream.Collectors;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,65 +17,96 @@ import java.util.UUID;
 import org.springframework.util.MultiValueMap;
 import com.agnux.tms.api.service.CrudService;
 
-public class ScaffoldHandler<T extends TmsBasicModel> extends AbstractCrudHandler<T, Mono<ServerResponse>, ServerRequest> {
+import org.springframework.web.reactive.function.server.ServerRequest;
 
+public abstract class ScaffoldHandler<T extends TmsBasicModel, D> extends AbstractCrudHandler<T, D> implements CrudHandler<ServerRequest, Mono<ServerResponse>> {
+
+    protected abstract T entMapper(D dto, UUID tenantId);
+
+    protected abstract D dtoMapper(T ent);
+
+    @SuppressWarnings("unchecked")
     public ScaffoldHandler(CrudService<T> service) {
         super(service);
     }
 
     @Override
     public Mono<ServerResponse> create(ServerRequest request) {
-        return request.bodyToMono(clazz)
-                .flatMap(entity -> {
-                    try {
-                        UUID newId = service.create(entity);
-                        entity.setId(newId);
-                        return ServiceResponseHelper.successWithBody(entity);
-                    } catch (TmsException e) {
-                        return onCreateiFailure(e);
-                    }
-                });
+        UUID tenantId = UUID.fromString(request.pathVariable("tenantId"));
+        return mtCreate(request.bodyToMono(dtoClazz), tenantId);
     }
 
     @Override
     public Mono<ServerResponse> read(ServerRequest request) {
-        UUID id = UUID.fromString(request.pathVariable("id"));
+        UUID tenantId = UUID.fromString(request.pathVariable("tenantId"));
+        UUID entityId = UUID.fromString(request.pathVariable("id"));
+        return mtRead(tenantId, entityId);
+    }
+
+    @Override
+    public Mono<ServerResponse> update(ServerRequest request) {
+        UUID tenantId = UUID.fromString(request.pathVariable("tenantId"));
+        return mtUpdate(request.bodyToMono(dtoClazz), tenantId);
+    }
+
+    @Override
+    public Mono<ServerResponse> delete(ServerRequest request) {
+        UUID tenantId = UUID.fromString(request.pathVariable("tenantId"));
+        UUID entityId = UUID.fromString(request.pathVariable("id"));
+        return mtDelete(tenantId, entityId);
+    }
+
+    @Override
+    public Mono<ServerResponse> listPaginated(ServerRequest request) {
+        UUID tenantId = UUID.fromString(request.pathVariable("tenantId"));
+        return mtListPaginated(tenantId, request.queryParams());
+    }
+
+    protected Mono<ServerResponse> mtCreate(Mono<D> dtoMono, UUID tenantId) {
+        return dtoMono.flatMap(dto -> {
+            try {
+                T entity = entMapper(dto, tenantId);
+                UUID newId = service.create(entity);
+                entity.setId(newId);
+                return ServiceResponseHelper.successWithBody(dtoMapper(entity));
+            } catch (TmsException e) {
+                return onCreateiFailure(e);
+            }
+        });
+    }
+
+    protected Mono<ServerResponse> mtRead(UUID tenantId, UUID entityId) {
         try {
-            T entity = service.read(id);
-            return ServiceResponseHelper.successWithBody(entity);
+            T entity = service.read(entityId);
+            D dto = dtoMapper(entity);
+            return ServiceResponseHelper.successWithBody(dto);
         } catch (TmsException e) {
             return onReadFailure(e);
         }
     }
 
-    @Override
-    public Mono<ServerResponse> update(ServerRequest request) {
-        return request.bodyToMono(clazz)
-                .flatMap(entity -> {
-                    try {
-                        service.update(entity);
-                        return ServiceResponseHelper.successWithBody(entity);
-                    } catch (TmsException e) {
-                        return onUpdateFailure(e);
-                    }
-                });
+    protected Mono<ServerResponse> mtUpdate(Mono<D> dtoMono, UUID tenantId) {
+        return dtoMono.flatMap(dto -> {
+            try {
+                T entity = entMapper(dto, tenantId);
+                service.update(entity);
+                return ServiceResponseHelper.successWithBody(entity);
+            } catch (TmsException e) {
+                return onUpdateFailure(e);
+            }
+        });
     }
 
-    @Override
-    public Mono<ServerResponse> delete(ServerRequest request) {
-        UUID id = UUID.fromString(request.pathVariable("id"));
+    protected Mono<ServerResponse> mtDelete(UUID tenantId, UUID entityId) {
         try {
-            service.delete(id);
+            service.delete(entityId);
             return ServerResponse.noContent().build();
         } catch (TmsException e) {
             return onDeleteFailure(e);
         }
     }
 
-    @Override
-    public Mono<ServerResponse> listPaginated(ServerRequest request) {
-
-        MultiValueMap<String, String> queryParams = request.queryParams();
+    protected Mono<ServerResponse> mtListPaginated(UUID tenantId, MultiValueMap<String, String> queryParams) {
         Map<String, String> searchParams = new HashMap<>();
         Map<String, String> pageParams = new HashMap<>();
 
@@ -92,13 +123,10 @@ public class ScaffoldHandler<T extends TmsBasicModel> extends AbstractCrudHandle
         }
 
         try {
-            UUID tenantId = request.queryParam("tenant_id")
-                    .map(UUID::fromString)
-                    .orElseThrow(() -> new TmsException("missing or invalid tenant identifier", ErrorCodes.INVALID_DATA));
-
-            PaginationSegment<T> segment = service.listPage(tenantId, searchParams, pageParams);
-            return ServiceResponseHelper.successWithBody(segment);
-
+            PaginationSegment<T> segmentEnt = service.listPage(tenantId, searchParams, pageParams);
+            List<D> dtos = segmentEnt.getData().stream().map(this::dtoMapper).collect(Collectors.toList());
+            PaginationSegment<D> segmentDto = new PaginationSegment(dtos, segmentEnt.getTotalElements(), segmentEnt.getTotalPages());
+            return ServiceResponseHelper.successWithBody(segmentDto);
         } catch (TmsException e) {
             return this.onPaginationFailure(e);
         }

@@ -1,7 +1,7 @@
 package com.agnux.tms.api.config;
 
 import com.agnux.tms.api.handler.*;
-import com.agnux.tms.repository.model.TmsBasicModel;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -15,14 +15,16 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 import static org.springframework.web.reactive.function.server.RequestPredicates.PUT;
+import org.springframework.web.reactive.function.server.ServerRequest;
+import reactor.core.publisher.Mono;
 
 @Configuration
 public class RouterConfig {
 
-    private static final String CATALOGS_API_PATH = "adm";
+    private static final String ADM_API_PATH = "adm";
     private static final String HAUL_API_PATH = "oper";
 
-    private static <T extends TmsBasicModel> RouterFunction<ServerResponse> crudRoutes(final String pathPrefix, ScaffoldHandler<T> handler) {
+    private static RouterFunction<ServerResponse> crudRoutes(final String pathPrefix, CrudHandler<ServerRequest, Mono<ServerResponse>> handler) {
         RouterFunction<ServerResponse> routes = route(GET(pathPrefix + "/{id}"), handler::read)
                 .andRoute(POST(pathPrefix), handler::create)
                 .andRoute(PUT(pathPrefix), handler::update)
@@ -32,20 +34,21 @@ public class RouterConfig {
         return routes;
     }
 
+    private static RouterFunction<ServerResponse> mtCrudRoutes(final String pathPrefix, CrudHandler<ServerRequest, Mono<ServerResponse>> handler) {
+        return crudRoutes(pathPrefix + "/{tenantId}", handler);
+    }
+
     @Bean
     public RouterFunction<ServerResponse> admRouter(
-            AgreementHandler agreementHandler,
-            VehicleHandler vehicleHandler,
-            CustomerHandler customerHandler,
-            DriverHandler driverHandler,
-            PatioHandler patioHandler) {
+            AgreementHandler agreementHandler, CustomerHandler customerHandler,
+            DriverHandler driverHandler, PatioHandler patioHandler, VehicleHandler vehicleHandler) {
 
-        return nest(path("/" + CATALOGS_API_PATH),
-                crudRoutes("/vehicles", vehicleHandler)
-                        .and(crudRoutes("/agreements", agreementHandler))
-                        .and(crudRoutes("/customers", customerHandler))
-                        .and(crudRoutes("/drivers", driverHandler))
-                        .and(crudRoutes("/patios", patioHandler)));
+        return nest(path("/" + ADM_API_PATH),
+                mtCrudRoutes("/agreements", agreementHandler)
+                        .and(mtCrudRoutes("/customers", customerHandler))
+                        .and(mtCrudRoutes("/drivers", driverHandler))
+                        .and(mtCrudRoutes("/patios", patioHandler))
+                        .and(mtCrudRoutes("/vehicles", vehicleHandler)));
     }
 
     public static RouterFunction<ServerResponse> haulMgmtRoutes(HaulMgmtHandler handler) {
