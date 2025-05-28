@@ -528,6 +528,7 @@ class AIPCRouterIntegrationTest {
                     "Jane Doe",
                     "Procter & Gamble",
                     "J&P Inc. cars",
+                    " 33 Piano bar ", // It will be normalized
                     "Invalid  Name", // double spaces, It will be normalized
                     "EndsWithSpace " // It will be normalized
             );
