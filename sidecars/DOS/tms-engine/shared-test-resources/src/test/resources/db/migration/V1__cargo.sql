@@ -15,6 +15,16 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 
+CREATE TABLE boxes (
+    id UUID PRIMARY KEY,
+    tenant_id UUID NOT NULL,
+    name VARCHAR(64) NOT NULL,
+    last_touch_time timestamp with time zone NOT NULL,
+    creation_time timestamp with time zone NOT NULL,
+    blocked boolean DEFAULT false NOT NULL
+);
+
+
 CREATE TABLE customers (
     id UUID PRIMARY KEY,
     tenant_id UUID NOT NULL,
