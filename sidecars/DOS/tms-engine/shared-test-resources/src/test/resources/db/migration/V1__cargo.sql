@@ -19,6 +19,7 @@ CREATE TABLE boxes (
     id UUID PRIMARY KEY,
     tenant_id UUID NOT NULL,
     name VARCHAR(64) NOT NULL,
+    number_plate VARCHAR(10) NOT NULL,
     last_touch_time timestamp with time zone NOT NULL,
     creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL
@@ -358,7 +359,8 @@ $$;
 CREATE OR REPLACE FUNCTION alter_box(
     _box_id UUID,
     _tenant_id   UUID,
-    _name        VARCHAR
+    _name        VARCHAR,
+    _number_plate  VARCHAR
 ) RETURNS RECORD
 LANGUAGE plpgsql
 AS $$
@@ -379,6 +381,7 @@ BEGIN
                 id,
                 tenant_id,
                 name,
+                number_plate,
                 last_touch_time,
                 creation_time,
                 blocked
@@ -386,6 +389,7 @@ BEGIN
                 gen_random_uuid(),
                 _tenant_id,
                 _name,
+                _number_plate,
                 current_moment,
                 current_moment,
                 false
@@ -397,7 +401,8 @@ BEGIN
             SET
                 tenant_id = _tenant_id,
                 last_touch_time = current_moment,
-                name      = _name
+                name      = _name,
+                number_plate = _number_plate
             WHERE id = _box_id;
 
         ELSE

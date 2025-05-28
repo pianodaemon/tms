@@ -15,13 +15,15 @@ import lombok.NoArgsConstructor;
 public class Box extends TmsBasicModel {
 
     private String name;
+    private String numberPlate;
 
     private static final Pattern NAME_FIELD_MULT_CONSECUTIVE = Pattern.compile("\\.\\.+|--++");
     private static final Pattern NAME_FIELD_INVALID_SEQUENCES = Pattern.compile("-\\.|\\.-");
 
-    public Box(final UUID boxId, final UUID tenantId, String name) {
+    public Box(final UUID boxId, final UUID tenantId, String name, String numberPlate) {
         this(boxId, tenantId);
         this.name = removeMultipleSpaces(name.trim());
+        this.numberPlate = numberPlate.trim();
     }
 
     public Box(final UUID boxId, final UUID tenantId) {

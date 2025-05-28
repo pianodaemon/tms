@@ -15,4 +15,5 @@ public class BoxDto {
 
     private UUID id;
     private String name;
+    private String numberPlate;
 }
