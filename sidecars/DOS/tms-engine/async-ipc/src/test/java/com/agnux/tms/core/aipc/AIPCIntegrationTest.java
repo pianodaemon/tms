@@ -487,6 +487,73 @@ class AIPCRouterIntegrationTest {
                         .expectStatus().isNotFound();
             }
         }
+        {
+            // ===  Negative Assertion (Invalid names)
+            List<String> invalidNames = List.of(
+                    "",
+                    "   ",
+                    "Middle..Dot",
+                    ".StartsWithDot",
+                    "Miguel && Miguel",
+                    "inV.a.l.i.d.&C.h.a.r.s.",
+                    "invV.a.l.i.d&.C.h.a.r.s.",
+                    "!InvalidChars",
+                    "&InvalidChars",
+                    "|InvalidChars",
+                    "Invalid!Chars",
+                    "Invalid&&Chars",
+                    "Invalid|Chars"
+            );
+
+            for (String invalidName : invalidNames) {
+                var invalidCustomer = new CustomerDto(null, invalidName);
+                webTestClient.post()
+                        .uri(prefixPathWithTenant)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(invalidCustomer)
+                        .exchange()
+                        .expectStatus().isBadRequest(); // assuming INVALID_DATA maps to 400
+            }
+
+            // === Positive Assertion (Valid names)
+            List<String> validNames = List.of(
+                    "Alpha",
+                    "Beta One",
+                    "Gamma.Inc",
+                    "Dr. Who",
+                    "John A. Smith",
+                    "Acme Corp.",
+                    "Z",
+                    "A.B",
+                    "Jane Doe",
+                    "Procter & Gamble",
+                    "J&P Inc. cars",
+                    " 33 Piano bar ", // It will be normalized
+                    "Invalid  Name", // double spaces, It will be normalized
+                    "EndsWithSpace " // It will be normalized
+            );
+
+            for (String validName : validNames) {
+                var validCustomer = new CustomerDto(null, validName);
+                var validRes = webTestClient.post()
+                        .uri(prefixPathWithTenant)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(validCustomer)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectBody(CustomerDto.class)
+                        .returnResult();
+
+                CustomerDto createdValid = validRes.getResponseBody();
+                assert createdValid != null : "Customer creation failed for valid name: " + validName;
+
+                // cleanup
+                webTestClient.delete()
+                        .uri(prefixPathWithTenant + "/" + createdValid.getId())
+                        .exchange()
+                        .expectStatus().isNoContent();
+            }
+        }
     }
 
     @Test

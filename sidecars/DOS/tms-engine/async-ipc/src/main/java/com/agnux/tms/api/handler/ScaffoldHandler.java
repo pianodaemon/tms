@@ -66,6 +66,7 @@ public abstract class ScaffoldHandler<T extends TmsBasicModel, D> extends Abstra
         return dtoMono.flatMap(dto -> {
             try {
                 T entity = entMapper(dto, tenantId);
+                entity.validate();
                 UUID newId = service.create(entity);
                 entity.setId(newId);
                 return ServiceResponseHelper.successWithBody(dtoMapper(entity));
@@ -89,6 +90,7 @@ public abstract class ScaffoldHandler<T extends TmsBasicModel, D> extends Abstra
         return dtoMono.flatMap(dto -> {
             try {
                 T entity = entMapper(dto, tenantId);
+                entity.validate();
                 service.update(entity);
                 return ServiceResponseHelper.successWithBody(entity);
             } catch (TmsException e) {
