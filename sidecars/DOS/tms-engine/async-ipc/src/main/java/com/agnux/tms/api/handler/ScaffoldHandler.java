@@ -21,7 +21,7 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 
 public abstract class ScaffoldHandler<T extends TmsBasicModel, D> extends AbstractCrudHandler<T, D> implements CrudHandler<ServerRequest, Mono<ServerResponse>> {
 
-    protected abstract T entMapper(D dto, UUID tenantId);
+    protected abstract T entMapper(D dto, UUID tenantId) throws TmsException;
 
     protected abstract D dtoMapper(T ent);
 

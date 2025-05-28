@@ -2,6 +2,7 @@ package com.agnux.tms.api.handler;
 
 import com.agnux.tms.api.dto.VehicleDto;
 import com.agnux.tms.api.service.VehicleService;
+import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.Vehicle;
 
 import java.util.UUID;
@@ -18,7 +19,7 @@ public class VehicleHandler extends ScaffoldHandler<Vehicle, VehicleDto> {
     }
 
     @Override
-    protected Vehicle entMapper(VehicleDto dto, UUID tenantId) {
+    protected Vehicle entMapper(VehicleDto dto, UUID tenantId) throws TmsException {
         return new Vehicle(dto.getId(), tenantId,
                 dto.getNumberPlate(), dto.getNumberSerial(),
                 dto.getVehicleType(),

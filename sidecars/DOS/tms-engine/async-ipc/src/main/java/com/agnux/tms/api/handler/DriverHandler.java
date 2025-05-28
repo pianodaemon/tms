@@ -2,6 +2,7 @@ package com.agnux.tms.api.handler;
 
 import com.agnux.tms.api.dto.DriverDto;
 import com.agnux.tms.api.service.DriverService;
+import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.Driver;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
@@ -17,7 +18,7 @@ public class DriverHandler extends ScaffoldHandler<Driver, DriverDto> {
     }
 
     @Override
-    protected Driver entMapper(DriverDto dto, UUID tenantId) {
+    protected Driver entMapper(DriverDto dto, UUID tenantId) throws TmsException {
         UUID id = dto.getId();
         String name = dto.getName();
         return new Driver(id, tenantId, name, dto.getFirstSurname(), dto.getSecondSurname(), dto.getLicenseNumber());

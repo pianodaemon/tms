@@ -2,6 +2,7 @@ package com.agnux.tms.api.handler;
 
 import com.agnux.tms.api.dto.CustomerDto;
 import com.agnux.tms.api.service.CustomerService;
+import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.Customer;
 import java.util.UUID;
 import org.springframework.stereotype.Component;
@@ -17,10 +18,12 @@ public class CustomerHandler extends ScaffoldHandler<Customer, CustomerDto> {
     }
 
     @Override
-    protected Customer entMapper(CustomerDto dto, UUID tenantId) {
+    protected Customer entMapper(CustomerDto dto, UUID tenantId) throws TmsException {
         UUID id = dto.getId();
         String name = dto.getName();
-        return new Customer(id, tenantId, name);
+        var ent = new Customer(id, tenantId, name);
+        ent.validate();
+        return ent;
     }
 
     @Override

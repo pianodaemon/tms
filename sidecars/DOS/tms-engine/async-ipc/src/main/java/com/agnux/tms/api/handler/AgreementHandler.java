@@ -2,6 +2,7 @@ package com.agnux.tms.api.handler;
 
 import com.agnux.tms.api.dto.AgreementDto;
 import com.agnux.tms.api.service.AgreementService;
+import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.Agreement;
 
 import java.util.UUID;
@@ -18,7 +19,7 @@ public class AgreementHandler extends ScaffoldHandler<Agreement, AgreementDto> {
     }
 
     @Override
-    protected Agreement entMapper(AgreementDto dto, UUID tenantId) {
+    protected Agreement entMapper(AgreementDto dto, UUID tenantId) throws TmsException {
         UUID id = dto.getId();
         final Agreement ent = new Agreement(
                 id,
