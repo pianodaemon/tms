@@ -525,6 +525,7 @@ class AIPCRouterIntegrationTest {
                     "A.B",
                     "Jane Doe",
                     "Procter & Gamble",
+                    "V.a.l.i.d&C.h.a.r.s.",
                     "Invalid  Name", // double spaces, It will be normalized
                     "EndsWithSpace " // It will be normalized
             );
