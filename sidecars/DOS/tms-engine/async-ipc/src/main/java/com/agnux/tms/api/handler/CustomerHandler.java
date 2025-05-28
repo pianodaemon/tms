@@ -22,7 +22,6 @@ public class CustomerHandler extends ScaffoldHandler<Customer, CustomerDto> {
         UUID id = dto.getId();
         String name = dto.getName();
         var ent = new Customer(id, tenantId, name);
-        ent.validate();
         return ent;
     }
 
