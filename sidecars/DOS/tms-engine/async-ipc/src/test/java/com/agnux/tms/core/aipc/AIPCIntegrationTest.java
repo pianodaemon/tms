@@ -494,6 +494,7 @@ class AIPCRouterIntegrationTest {
                     "   ",
                     "Middle..Dot",
                     ".StartsWithDot",
+                    "Miguel && Miguel",
                     "!InvalidChars"
             );
 
