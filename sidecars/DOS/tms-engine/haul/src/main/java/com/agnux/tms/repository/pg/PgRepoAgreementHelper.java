@@ -3,7 +3,7 @@ package com.agnux.tms.repository.pg;
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.PaginationSegment;
 import com.agnux.tms.repository.model.Agreement;
-import com.agnux.tms.repository.model.DistUnit;
+import com.agnux.tms.reference.quantitative.DistUnit;
 
 import java.math.BigDecimal;
 import java.sql.*;

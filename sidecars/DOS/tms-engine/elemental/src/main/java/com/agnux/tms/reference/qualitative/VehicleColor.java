@@ -1,4 +1,4 @@
-package com.agnux.tms.repository.model;
+package com.agnux.tms.reference.qualitative;
 
 public enum VehicleColor {
 

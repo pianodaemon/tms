@@ -1,5 +1,6 @@
 package com.agnux.tms.repository.model;
 
+import com.agnux.tms.reference.quantitative.DistUnit;
 import java.math.BigDecimal;
 import java.util.UUID;
 

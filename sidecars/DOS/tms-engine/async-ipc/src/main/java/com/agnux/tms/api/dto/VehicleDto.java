@@ -1,9 +1,9 @@
 package com.agnux.tms.api.dto;
 
-import com.agnux.tms.repository.model.DistUnit;
-import com.agnux.tms.repository.model.VehicleColor;
-import com.agnux.tms.repository.model.VehicleType;
-import com.agnux.tms.repository.model.VolUnit;
+import com.agnux.tms.reference.quantitative.DistUnit;
+import com.agnux.tms.reference.qualitative.VehicleColor;
+import com.agnux.tms.reference.qualitative.VehicleType;
+import com.agnux.tms.reference.quantitative.VolUnit;
 import java.math.BigDecimal;
 import java.util.UUID;
 

@@ -1,5 +1,9 @@
 package com.agnux.tms.repository.model;
 
+import com.agnux.tms.reference.qualitative.VehicleColor;
+import com.agnux.tms.reference.qualitative.VehicleType;
+import com.agnux.tms.reference.quantitative.DistUnit;
+import com.agnux.tms.reference.quantitative.VolUnit;
 import java.math.BigDecimal;
 import java.util.UUID;
 

@@ -2,11 +2,12 @@ package com.agnux.tms.repository.pg;
 
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.PaginationSegment;
-import com.agnux.tms.repository.model.DistUnit;
 import com.agnux.tms.repository.model.Vehicle;
-import com.agnux.tms.repository.model.VehicleColor;
-import com.agnux.tms.repository.model.VehicleType;
-import com.agnux.tms.repository.model.VolUnit;
+import com.agnux.tms.reference.quantitative.DistUnit;
+import com.agnux.tms.reference.qualitative.VehicleColor;
+import com.agnux.tms.reference.qualitative.VehicleType;
+import com.agnux.tms.reference.quantitative.VolUnit;
+
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -5,13 +5,14 @@ import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.model.Agreement;
 import com.agnux.tms.repository.model.CargoAssignment;
 import com.agnux.tms.repository.model.Customer;
-import com.agnux.tms.repository.model.DistUnit;
 import com.agnux.tms.repository.IHaulRepo;
 import com.agnux.tms.repository.model.TransLogRecord;
 import com.agnux.tms.repository.model.Vehicle;
-import com.agnux.tms.repository.model.VehicleColor;
-import com.agnux.tms.repository.model.VehicleType;
-import com.agnux.tms.repository.model.VolUnit;
+import com.agnux.tms.reference.qualitative.VehicleColor;
+import com.agnux.tms.reference.qualitative.VehicleType;
+import com.agnux.tms.reference.quantitative.VolUnit;
+import com.agnux.tms.reference.quantitative.DistUnit;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
