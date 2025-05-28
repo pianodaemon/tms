@@ -355,6 +355,60 @@ END;
 $$;
 
 
+CREATE OR REPLACE FUNCTION alter_box(
+    _box_id UUID,
+    _tenant_id   UUID,
+    _name        VARCHAR
+) RETURNS RECORD
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit box                                              >>
+    -- >> Version:     haul                                                         >>
+    -- >> Date:        28/may/2025                                                  >>
+    -- >> Developer:   Edwin Plauchu for agnux                                      >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    current_moment TIMESTAMP WITH TIME ZONE := now();
+    rmsg TEXT := '';
+BEGIN
+    CASE
+        WHEN _box_id IS NULL THEN
+
+            INSERT INTO boxs (
+                id,
+                tenant_id,
+                name,
+                last_touch_time,
+                creation_time,
+                blocked
+            ) VALUES (
+                gen_random_uuid(),
+                _tenant_id,
+                _name,
+                current_moment,
+                current_moment,
+                false
+            ) RETURNING id INTO _box_id;
+
+        WHEN _box_id IS NOT NULL THEN
+
+            UPDATE boxs
+            SET
+                tenant_id = _tenant_id,
+                last_touch_time = current_moment,
+                name      = _name
+            WHERE id = _box_id;
+
+        ELSE
+            RAISE EXCEPTION 'Invalid box identifier: %', _box_id;
+    END CASE;
+
+    RETURN (_box_id::UUID, ''::TEXT);
+END;
+$$;
+
+
 CREATE OR REPLACE FUNCTION alter_customer(
     _customer_id UUID,
     _tenant_id   UUID,
