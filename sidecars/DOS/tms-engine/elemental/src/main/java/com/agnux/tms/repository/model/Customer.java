@@ -16,7 +16,7 @@ public class Customer extends TmsBasicModel {
 
     private String name;
 
-    private static final Pattern NAME_PATTERN = Pattern.compile("^[A-Za-z0-9](?:[A-Za-z0-9. ]*[A-Za-z0-9.])?$");
+    private static final Pattern NAME_PATTERN = Pattern.compile("^[A-Za-z0-9]+(?:[ .][A-Za-z0-9]+)*$");
 
     public Customer(final UUID customerId, final UUID tenantId, String name) {
         this(customerId, tenantId);

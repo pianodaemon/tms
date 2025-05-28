@@ -492,6 +492,7 @@ class AIPCRouterIntegrationTest {
         List<String> invalidNames = List.of(
                 "",
                 "   ",
+                "Middle..Dot",
                 "Invalid  Name", // double spaces
                 ".StartsWithDot",
                 "EndsWithSpace ",
