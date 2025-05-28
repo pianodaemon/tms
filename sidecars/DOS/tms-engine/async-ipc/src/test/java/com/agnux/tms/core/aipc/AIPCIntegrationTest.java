@@ -487,6 +487,26 @@ class AIPCRouterIntegrationTest {
                         .expectStatus().isNotFound();
             }
         }
+
+        // ===  Negative Assertion (Invalid names)
+        List<String> invalidNames = List.of(
+                "",
+                "   ",
+                "Invalid  Name", // double spaces
+                ".StartsWithDot",
+                "EndsWithSpace ",
+                "!InvalidChars"
+        );
+
+        for (String invalidName : invalidNames) {
+            var invalidCustomer = new CustomerDto(null, invalidName);
+            webTestClient.post()
+                    .uri(prefixPathWithTenant)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(invalidCustomer)
+                    .exchange()
+                    .expectStatus().isBadRequest(); // assuming INVALID_DATA maps to 400
+        }
     }
 
     @Test
