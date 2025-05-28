@@ -375,7 +375,7 @@ BEGIN
     CASE
         WHEN _box_id IS NULL THEN
 
-            INSERT INTO boxs (
+            INSERT INTO boxes (
                 id,
                 tenant_id,
                 name,
@@ -393,7 +393,7 @@ BEGIN
 
         WHEN _box_id IS NOT NULL THEN
 
-            UPDATE boxs
+            UPDATE boxes
             SET
                 tenant_id = _tenant_id,
                 last_touch_time = current_moment,
