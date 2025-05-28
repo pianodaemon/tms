@@ -5,7 +5,10 @@ import com.agnux.tms.api.dto.CustomerDto;
 import com.agnux.tms.api.dto.DriverDto;
 import com.agnux.tms.api.dto.PatioDto;
 import com.agnux.tms.api.dto.VehicleDto;
-import com.agnux.tms.repository.model.*;
+import com.agnux.tms.repository.model.DistUnit;
+import com.agnux.tms.repository.model.VehicleColor;
+import com.agnux.tms.repository.model.VehicleType;
+import com.agnux.tms.repository.model.VolUnit;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -397,7 +400,7 @@ class AIPCRouterIntegrationTest {
 
             // Create customers and collect their IDs
             for (String name : names) {
-                Customer customer = new Customer(null, tenantId, name);
+                CustomerDto customer = new CustomerDto(null, name);
                 var res = webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -636,7 +639,7 @@ class AIPCRouterIntegrationTest {
         UUID tenantId = UUID.randomUUID();
 
         // --- Create a customer first ---
-        Customer newCustomer = new Customer(null, UUID.randomUUID(), "Integration Test Customer");
+        CustomerDto newCustomer = new CustomerDto(null, "Integration Test Customer");
 
         var response = webTestClient.post()
                 .uri(String.format("/adm/customers/%s", tenantId))
