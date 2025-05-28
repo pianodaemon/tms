@@ -493,7 +493,6 @@ class AIPCRouterIntegrationTest {
                     "",
                     "   ",
                     "Middle..Dot",
-                    "Invalid  Name", // double spaces
                     ".StartsWithDot",
                     "!InvalidChars"
             );
@@ -519,6 +518,7 @@ class AIPCRouterIntegrationTest {
                     "Z",
                     "A.B",
                     "Jane Doe",
+                    "Invalid  Name", // double spaces, It will be normalized
                     "EndsWithSpace " // It will be normalized
             );
 

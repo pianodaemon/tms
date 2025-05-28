@@ -20,7 +20,7 @@ public class Customer extends TmsBasicModel {
 
     public Customer(final UUID customerId, final UUID tenantId, String name) {
         this(customerId, tenantId);
-        this.name = name.trim();
+        this.name = removeMultipleSpaces(name.trim());
     }
 
     public Customer(final UUID customerId, final UUID tenantId) {
