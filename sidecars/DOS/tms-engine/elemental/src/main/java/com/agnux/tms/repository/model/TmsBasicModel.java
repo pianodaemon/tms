@@ -28,9 +28,5 @@ public class TmsBasicModel {
         if (tenantId == null) {
             throw new TmsException("tenantId must not be null", ErrorCodes.INVALID_DATA);
         }
-
-        if (!getId().isPresent()) {
-            throw new TmsException("id must not be null", ErrorCodes.INVALID_DATA);
-        }
     }
 }
