@@ -16,7 +16,8 @@ public class Customer extends TmsBasicModel {
 
     private String name;
 
-    private static final Pattern TWICE_IN_A_ROW = Pattern.compile("\\.\\.+|&&+|  +");
+    private static final Pattern NAME_FIELD_MULT_CONSECUTIVE = Pattern.compile("\\.\\.+|&&++");
+    private static final Pattern NAME_FIELD_INVALID_SEQUENCES = Pattern.compile("&\\.|\\.&");
 
     public Customer(final UUID customerId, final UUID tenantId, String name) {
         this(customerId, tenantId);
@@ -35,11 +36,15 @@ public class Customer extends TmsBasicModel {
             throw new TmsException("Customer name must not be null or blank", ErrorCodes.INVALID_DATA);
         }
 
-        if (name.startsWith(".") || name.startsWith("&") ) {
+        if (name.startsWith(".") || name.startsWith("&")) {
             throw new TmsException("Customer name must not start with a dot", ErrorCodes.INVALID_DATA);
         }
 
-        if (TWICE_IN_A_ROW.matcher(name).find()) {
+        if (NAME_FIELD_INVALID_SEQUENCES.matcher(name).find()) {
+            throw new TmsException("Customer name must not contain the sequences '&.' or '.&'", ErrorCodes.INVALID_DATA);
+        }
+
+        if (NAME_FIELD_MULT_CONSECUTIVE.matcher(name).find()) {
             throw new TmsException("Customer name must not contain multiple consecutive dots", ErrorCodes.INVALID_DATA);
         }
 
