@@ -1,13 +1,8 @@
 package com.agnux.tms.repository;
 
 import com.agnux.tms.errors.TmsException;
-import com.agnux.tms.repository.model.CargoAssignment;
-import com.agnux.tms.repository.model.Vehicle;
-import com.agnux.tms.repository.model.Agreement;
-import com.agnux.tms.repository.model.Customer;
-import com.agnux.tms.repository.model.Driver;
-import com.agnux.tms.repository.model.Patio;
-import com.agnux.tms.repository.model.TransLogRecord;
+import com.agnux.tms.repository.model.*;
+
 import java.util.Map;
 import java.util.UUID;
 
@@ -74,4 +69,14 @@ public interface IHaulRepo {
     public UUID editCustomer(Customer c) throws TmsException;
 
     public void deleteCustomer(UUID customerId) throws TmsException;
+
+    public PaginationSegment<Box> listBoxPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException;
+
+    public Box getBox(UUID BoxId) throws TmsException;
+
+    public UUID createBox(Box c) throws TmsException;
+
+    public UUID editBox(Box c) throws TmsException;
+
+    public void deleteBox(UUID BoxId) throws TmsException;
 }

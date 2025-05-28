@@ -5,6 +5,7 @@ import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.repository.IHaulRepo;
 import com.agnux.tms.repository.PaginationSegment;
 import com.agnux.tms.repository.model.Agreement;
+import com.agnux.tms.repository.model.Box;
 import com.agnux.tms.repository.model.CargoAssignment;
 import com.agnux.tms.repository.model.Customer;
 import com.agnux.tms.repository.model.Driver;
@@ -253,5 +254,31 @@ public class PgRepo implements IHaulRepo {
     @Override
     public UUID createTransLogRecord(TransLogRecord tlr) throws TmsException {
         return saveOrUpdateEntity(tlr, PgRepoTransLogRecordHelper.ENTITY_NAME, PgRepoTransLogRecordHelper::update, true);
+    }
+
+    // Box
+    @Override
+    public Box getBox(UUID id) throws TmsException {
+        return fetchEntity(id, PgRepoBoxHelper.ENTITY_NAME, PgRepoBoxHelper::fetchById);
+    }
+
+    @Override
+    public UUID createBox(Box p) throws TmsException {
+        return saveOrUpdateEntity(p, PgRepoBoxHelper.ENTITY_NAME, PgRepoBoxHelper::update, true);
+    }
+
+    @Override
+    public UUID editBox(Box p) throws TmsException {
+        return saveOrUpdateEntity(p, PgRepoBoxHelper.ENTITY_NAME, PgRepoBoxHelper::update, false);
+    }
+
+    @Override
+    public void deleteBox(UUID id) throws TmsException {
+        deleteEntity(id, PgRepoBoxHelper.ENTITY_NAME, PgRepoBoxHelper::block);
+    }
+
+    @Override
+    public PaginationSegment<Box> listBoxPage(Map<String, String> filters, Map<String, String> pageParams) throws TmsException {
+        return listEntityPage(filters, pageParams, PgRepoBoxHelper.ENTITY_NAME, PgRepoBoxHelper::list);
     }
 }

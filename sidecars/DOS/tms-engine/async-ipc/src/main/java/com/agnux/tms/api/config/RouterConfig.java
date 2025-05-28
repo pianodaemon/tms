@@ -40,11 +40,12 @@ public class RouterConfig {
 
     @Bean
     public RouterFunction<ServerResponse> admRouter(
-            AgreementHandler agreementHandler, CustomerHandler customerHandler,
+            AgreementHandler agreementHandler, CustomerHandler customerHandler, BoxHandler boxHandler,
             DriverHandler driverHandler, PatioHandler patioHandler, VehicleHandler vehicleHandler) {
 
         return nest(path("/" + ADM_API_PATH),
                 mtCrudRoutes("/agreements", agreementHandler)
+                        .and(mtCrudRoutes("/boxes", boxHandler))
                         .and(mtCrudRoutes("/customers", customerHandler))
                         .and(mtCrudRoutes("/drivers", driverHandler))
                         .and(mtCrudRoutes("/patios", patioHandler))

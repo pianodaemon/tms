@@ -1,6 +1,7 @@
 package com.agnux.tms.core.aipc;
 
 import com.agnux.tms.api.dto.AgreementDto;
+import com.agnux.tms.api.dto.BoxDto;
 import com.agnux.tms.api.dto.CustomerDto;
 import com.agnux.tms.api.dto.DriverDto;
 import com.agnux.tms.api.dto.PatioDto;
@@ -829,6 +830,271 @@ class AIPCRouterIntegrationTest {
                 .exchange()
                 .expectStatus().isNoContent();
 
+    }
+
+    @Test
+    void testCreateAndGetBox() {
+
+        UUID tenantId = UUID.randomUUID();
+        String prefixPathWithTenant = String.format("/adm/boxes/%s", tenantId);
+        var newBox = new BoxDto(null, "Integration Test Box");
+
+        var response = webTestClient.post()
+                .uri(prefixPathWithTenant)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(newBox)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(BoxDto.class)
+                .returnResult();
+
+        BoxDto createdBox = response.getResponseBody();
+        assert createdBox != null : "Created dto box should not be null";
+        assert "Integration Test Box".equals(createdBox.getName());
+
+        webTestClient.get()
+                .uri(prefixPathWithTenant + "/" + createdBox.getId())
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody()
+                .jsonPath("$.name").isEqualTo("Integration Test Box");
+
+        webTestClient.delete()
+                .uri(prefixPathWithTenant + "/" + createdBox.getId())
+                .exchange()
+                .expectStatus().isNoContent();
+
+        webTestClient.get()
+                .uri(prefixPathWithTenant + "/" + createdBox.getId())
+                .exchange()
+                .expectStatus().isNotFound();
+
+        {
+            List<UUID> createdBoxIds = new ArrayList<>();
+
+            // Create multiple boxs and collect their IDs
+            for (int i = 1; i <= 5; i++) {
+                BoxDto box = new BoxDto(null, "Paginated Box " + i);
+                var res = webTestClient.post()
+                        .uri(prefixPathWithTenant)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(box)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectBody(BoxDto.class)
+                        .returnResult();
+
+                BoxDto created = res.getResponseBody();
+                assert created != null;
+                createdBoxIds.add(created.getId());
+            }
+
+            // Request page 1 with size 3
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                    .path(prefixPathWithTenant)
+                    .queryParam("page_size", "3")
+                    .queryParam("page_number", "1")
+                    .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                    .expectBody()
+                    .jsonPath("$.data.length()").isEqualTo(3)
+                    .jsonPath("$.totalElements").isEqualTo(5)
+                    .jsonPath("$.totalPages").isEqualTo(2);
+
+            // Request page 2 with size 3
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                    .path(prefixPathWithTenant)
+                    .queryParam("page_size", "3")
+                    .queryParam("page_number", "2")
+                    .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                    .expectBody()
+                    .jsonPath("$.data.length()").isEqualTo(2)
+                    .jsonPath("$.totalElements").isEqualTo(5)
+                    .jsonPath("$.totalPages").isEqualTo(2);
+
+            // Cleanup: delete all created boxs
+            for (UUID id : createdBoxIds) {
+                webTestClient.delete()
+                        .uri(prefixPathWithTenant + "/" + id)
+                        .exchange()
+                        .expectStatus().isNoContent();
+
+                webTestClient.get()
+                        .uri(prefixPathWithTenant + "/" + id)
+                        .exchange()
+                        .expectStatus().isNotFound();
+            }
+        }
+
+        {
+            List<String> names = List.of("FalconA", "FalconB", "FalconC", "FalconD", "FalconE");
+            List<UUID> createdBoxIds = new ArrayList<>();
+
+            // Create boxs and collect their IDs
+            for (String name : names) {
+                BoxDto box = new BoxDto(null, name);
+                var res = webTestClient.post()
+                        .uri(prefixPathWithTenant)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(box)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectBody(BoxDto.class)
+                        .returnResult();
+
+                BoxDto created = res.getResponseBody();
+                assert created != null;
+                createdBoxIds.add(created.getId());
+            }
+
+            // === ASCENDING ORDER PAGE 1 ===
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                    .path(prefixPathWithTenant)
+                    .queryParam("page_size", "3")
+                    .queryParam("page_number", "1")
+                    .queryParam("page_order_by", "name")
+                    .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody()
+                    .jsonPath("$.data.length()").isEqualTo(3)
+                    .jsonPath("$.data[0].name").isEqualTo("FalconA")
+                    .jsonPath("$.data[1].name").isEqualTo("FalconB")
+                    .jsonPath("$.data[2].name").isEqualTo("FalconC")
+                    .jsonPath("$.totalElements").isEqualTo(5)
+                    .jsonPath("$.totalPages").isEqualTo(2);
+
+            // === DESCENDING ORDER PAGE 1 ===
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                    .path(prefixPathWithTenant)
+                    .queryParam("page_size", "3")
+                    .queryParam("page_number", "1")
+                    .queryParam("page_order_by", "name")
+                    .queryParam("page_order", "DESC")
+                    .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody()
+                    .jsonPath("$.data.length()").isEqualTo(3)
+                    .jsonPath("$.data[0].name").isEqualTo("FalconE")
+                    .jsonPath("$.data[1].name").isEqualTo("FalconD")
+                    .jsonPath("$.data[2].name").isEqualTo("FalconC");
+
+            // === FILTERS ===
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                    .path(prefixPathWithTenant)
+                    .queryParam("page_number", "1")
+                    .queryParam("page_order_by", "name")
+                    .queryParam("page_order", "DESC")
+                    .queryParam("filter_qu_name", "%conC%")
+                    .build())
+                    .exchange()
+                    .expectStatus().isOk()
+                    .expectBody()
+                    .jsonPath("$.data.length()").isEqualTo(1)
+                    .jsonPath("$.data[0].name").isEqualTo("FalconC");
+
+            // === FILTER: Non-matching query ===
+            webTestClient.get()
+                    .uri(uriBuilder -> uriBuilder
+                    .path(prefixPathWithTenant)
+                    .queryParam("filter_qu_name", "zzzzzz")
+                    .build())
+                    .exchange()
+                    .expectStatus().isNotFound();
+
+            // === Cleanup: Delete all created boxes ===
+            for (UUID id : createdBoxIds) {
+                webTestClient.delete()
+                        .uri(prefixPathWithTenant + "/" + id)
+                        .exchange()
+                        .expectStatus().isNoContent();
+
+                webTestClient.get()
+                        .uri(prefixPathWithTenant + "/" + id)
+                        .exchange()
+                        .expectStatus().isNotFound();
+            }
+        }
+        {
+            // ===  Negative Assertion (Invalid names)
+            List<String> invalidNames = List.of(
+                    "",
+                    "   ",
+                    "Middle..Dot",
+                    ".StartsWithDot",
+                    "White -- Eagle",
+                    "inV.a.l.i.d.-C.h.a.r.s.",
+                    "invV.a.l.i.d-.C.h.a.r.s.",
+                    "!InvalidChars",
+                    "-InvalidChars",
+                    "|InvalidChars",
+                    "Invalid!Chars",
+                    "Invalid--Chars",
+                    "Invalid|Chars"
+            );
+
+            for (String invalidName : invalidNames) {
+                var invalidBox = new BoxDto(null, invalidName);
+                webTestClient.post()
+                        .uri(prefixPathWithTenant)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(invalidBox)
+                        .exchange()
+                        .expectStatus().isBadRequest(); // assuming INVALID_DATA maps to 400
+            }
+
+            // === Positive Assertion (Valid names)
+            List<String> validNames = List.of(
+                    "Alpha",
+                    "Beta One",
+                    "Gamma.Inc",
+                    "Double Hooker",
+                    "Long A. 100-P",
+                    "Acme Corp.",
+                    "Z",
+                    "A.B",
+                    "Jane Doe",
+                    "Procter - Gamble",
+                    "J-P Inc.300",
+                    " 69 Stallone ", // It will be normalized
+                    "Invalid  Name", // double spaces, It will be normalized
+                    "EndsWithSpace " // It will be normalized
+            );
+
+            for (String validName : validNames) {
+                var validBox = new BoxDto(null, validName);
+                var validRes = webTestClient.post()
+                        .uri(prefixPathWithTenant)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(validBox)
+                        .exchange()
+                        .expectStatus().isOk()
+                        .expectBody(BoxDto.class)
+                        .returnResult();
+
+                BoxDto createdValid = validRes.getResponseBody();
+                assert createdValid != null : "Box creation failed for valid name: " + validName;
+
+                // cleanup
+                webTestClient.delete()
+                        .uri(prefixPathWithTenant + "/" + createdValid.getId())
+                        .exchange()
+                        .expectStatus().isNoContent();
+            }
+        }
     }
 
     @AfterAll

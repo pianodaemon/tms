@@ -15,6 +15,16 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 
+CREATE TABLE boxes (
+    id UUID PRIMARY KEY,
+    tenant_id UUID NOT NULL,
+    name VARCHAR(64) NOT NULL,
+    last_touch_time timestamp with time zone NOT NULL,
+    creation_time timestamp with time zone NOT NULL,
+    blocked boolean DEFAULT false NOT NULL
+);
+
+
 CREATE TABLE customers (
     id UUID PRIMARY KEY,
     tenant_id UUID NOT NULL,
@@ -341,6 +351,60 @@ EXCEPTION
     WHEN OTHERS THEN
         GET STACKED DIAGNOSTICS rmsg = MESSAGE_TEXT;
         RETURN (NULL::UUID, rmsg::TEXT);
+END;
+$$;
+
+
+CREATE OR REPLACE FUNCTION alter_box(
+    _box_id UUID,
+    _tenant_id   UUID,
+    _name        VARCHAR
+) RETURNS RECORD
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    -- >> Description: Create/Edit box                                              >>
+    -- >> Version:     haul                                                         >>
+    -- >> Date:        28/may/2025                                                  >>
+    -- >> Developer:   Edwin Plauchu for agnux                                      >>
+    -- >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    current_moment TIMESTAMP WITH TIME ZONE := now();
+    rmsg TEXT := '';
+BEGIN
+    CASE
+        WHEN _box_id IS NULL THEN
+
+            INSERT INTO boxes (
+                id,
+                tenant_id,
+                name,
+                last_touch_time,
+                creation_time,
+                blocked
+            ) VALUES (
+                gen_random_uuid(),
+                _tenant_id,
+                _name,
+                current_moment,
+                current_moment,
+                false
+            ) RETURNING id INTO _box_id;
+
+        WHEN _box_id IS NOT NULL THEN
+
+            UPDATE boxes
+            SET
+                tenant_id = _tenant_id,
+                last_touch_time = current_moment,
+                name      = _name
+            WHERE id = _box_id;
+
+        ELSE
+            RAISE EXCEPTION 'Invalid box identifier: %', _box_id;
+    END CASE;
+
+    RETURN (_box_id::UUID, ''::TEXT);
 END;
 $$;
 
