@@ -1,7 +1,7 @@
 package com.agnux.tms.api.config;
 
 import com.agnux.tms.api.handler.*;
-import com.agnux.tms.repository.model.TmsBasicModel;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -24,16 +24,6 @@ public class RouterConfig {
     private static final String ADM_API_PATH = "adm";
     private static final String HAUL_API_PATH = "oper";
 
-    /*
-    private static <T extends TmsBasicModel> RouterFunction<ServerResponse> crudRoutes(final String pathPrefix, ScaffoldHandler<T> handler) {
-        RouterFunction<ServerResponse> routes = route(GET(pathPrefix + "/{id}"), handler::read)
-                .andRoute(POST(pathPrefix), handler::create)
-                .andRoute(PUT(pathPrefix), handler::update)
-                .andRoute(DELETE(pathPrefix + "/{id}"), handler::delete)
-                .andRoute(GET(pathPrefix), handler::listPaginated);
-
-        return routes;
-    }*/
     private static RouterFunction<ServerResponse> crudRoutes(final String pathPrefix, CrudHandler<ServerRequest, Mono<ServerResponse>> handler) {
         RouterFunction<ServerResponse> routes = route(GET(pathPrefix + "/{id}"), handler::read)
                 .andRoute(POST(pathPrefix), handler::create)
@@ -49,33 +39,18 @@ public class RouterConfig {
     }
 
     @Bean
-    public RouterFunction<ServerResponse> admRouter(CustomerHandler customerHandler,
+    public RouterFunction<ServerResponse> admRouter(
+            AgreementHandler agreementHandler, CustomerHandler customerHandler,
             DriverHandler driverHandler, PatioHandler patioHandler, VehicleHandler vehicleHandler) {
 
         return nest(path("/" + ADM_API_PATH),
-                mtCrudRoutes("/customers", customerHandler)
+                mtCrudRoutes("/agreements", agreementHandler)
+                        .and(mtCrudRoutes("/customers", customerHandler))
                         .and(mtCrudRoutes("/drivers", driverHandler))
                         .and(mtCrudRoutes("/patios", patioHandler))
                         .and(mtCrudRoutes("/vehicles", vehicleHandler)));
     }
 
-    /*
-    @Bean
-    public RouterFunction<ServerResponse> admRouter(
-            AgreementHandler agreementHandler,
-            VehicleHandler vehicleHandler,
-            CustomerHandler customerHandler,
-            DriverHandler driverHandler,
-            PatioHandler patioHandler) {
-
-        return nest(path("/" + ADM_API_PATH),
-                mtCrudRoutes("/vehicles", vehicleHandler)
-                        .and(mtCrudRoutes("/agreements", agreementHandler))
-                        .and(mtCrudRoutes("/customers", customerHandler))
-                        .and(mtCrudRoutes("/drivers", driverHandler))
-                        .and(mtCrudRoutes("/patios", patioHandler)));
-    }
-     */
     public static RouterFunction<ServerResponse> haulMgmtRoutes(HaulMgmtHandler handler) {
         return RouterFunctions
                 .route(POST("/{tenantId}/{userId}/assign-trip"), handler::assignTrip)

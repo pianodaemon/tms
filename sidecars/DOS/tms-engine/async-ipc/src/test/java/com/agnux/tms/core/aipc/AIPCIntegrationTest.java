@@ -1,5 +1,6 @@
 package com.agnux.tms.core.aipc;
 
+import com.agnux.tms.api.dto.AgreementDto;
 import com.agnux.tms.api.dto.CustomerDto;
 import com.agnux.tms.api.dto.DriverDto;
 import com.agnux.tms.api.dto.PatioDto;
@@ -652,27 +653,27 @@ class AIPCRouterIntegrationTest {
         UUID customerId = createdCustomer.getId();
 
         String prefixPathWithTenant = String.format("/adm/agreements/%s", tenantId);
-        /*
+
         // --- Create an agreement ---
-        Agreement agreement = new Agreement(null, tenantId, customerId, "Receiver X",
+        AgreementDto agreement = new AgreementDto(null, customerId, "Receiver X",
                 19.4326, -99.1332, 20.6597, -103.3496, DistUnit.KM, new BigDecimal("533.2"));
 
         var agreementResponse = webTestClient.post()
-                .uri("/adm/agreements")
+                .uri(prefixPathWithTenant)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(agreement)
                 .exchange()
                 .expectStatus().isOk()
-                .expectBody(Agreement.class)
+                .expectBody(AgreementDto.class)
                 .returnResult();
 
-        Agreement createdAgreement = agreementResponse.getResponseBody();
+        AgreementDto createdAgreement = agreementResponse.getResponseBody();
         assert createdAgreement != null;
-        UUID agreementId = createdAgreement.getId().orElseThrow();
+        UUID agreementId = createdAgreement.getId();
 
         // --- Read (GET) the agreement ---
         webTestClient.get()
-                .uri("/adm/agreements/" + agreementId)
+                .uri(prefixPathWithTenant + "/" + agreementId)
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -683,7 +684,7 @@ class AIPCRouterIntegrationTest {
         createdAgreement.setDistScalar(new BigDecimal("999.99"));
 
         webTestClient.put()
-                .uri("/adm/agreements")
+                .uri(prefixPathWithTenant)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(createdAgreement)
                 .exchange()
@@ -695,27 +696,26 @@ class AIPCRouterIntegrationTest {
         // --- Pagination Test ---
         List<UUID> createdAgreementIds = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
-            Agreement ag = new Agreement(null, tenantId, customerId, "Receiver " + i,
+            AgreementDto ag = new AgreementDto(null, customerId, "Receiver " + i,
                     10 + i, -10 - i, 20 + i, -20 - i, DistUnit.KM, new BigDecimal("100." + i));
             var result = webTestClient.post()
-                    .uri("/adm/agreements")
+                    .uri(prefixPathWithTenant)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(ag)
                     .exchange()
                     .expectStatus().isOk()
-                    .expectBody(Agreement.class)
+                    .expectBody(AgreementDto.class)
                     .returnResult();
 
-            Agreement created = result.getResponseBody();
+            AgreementDto created = result.getResponseBody();
             assert created != null;
-            createdAgreementIds.add(created.getId().orElseThrow());
+            createdAgreementIds.add(created.getId());
         }
 
         // Page 1, size 4
         webTestClient.get()
                 .uri(uriBuilder -> uriBuilder
-                .path("/adm/agreements")
-                .queryParam("tenant_id", tenantId.toString())
+                .path(prefixPathWithTenant)
                 .queryParam("page_size", "4")
                 .queryParam("page_number", "1")
                 .build())
@@ -729,8 +729,7 @@ class AIPCRouterIntegrationTest {
         // Page 2, size 4
         webTestClient.get()
                 .uri(uriBuilder -> uriBuilder
-                .path("/adm/agreements")
-                .queryParam("tenant_id", tenantId.toString())
+                .path(prefixPathWithTenant)
                 .queryParam("page_size", "4")
                 .queryParam("page_number", "2")
                 .build())
@@ -744,16 +743,16 @@ class AIPCRouterIntegrationTest {
         // --- Delete all agreements ---
         for (UUID id : createdAgreementIds) {
             webTestClient.delete()
-                    .uri("/adm/agreements/" + id)
+                    .uri(prefixPathWithTenant + "/" + id)
                     .exchange()
                     .expectStatus().isNoContent();
         }
 
         webTestClient.delete()
-                .uri("/adm/agreements/" + agreementId)
+                .uri(prefixPathWithTenant + "/" + agreementId)
                 .exchange()
                 .expectStatus().isNoContent();
-         */
+
         // --- Delete the customer ---
         webTestClient.delete()
                 .uri(String.format("/adm/customers/%s", tenantId) + "/" + customerId)
