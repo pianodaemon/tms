@@ -495,7 +495,12 @@ class AIPCRouterIntegrationTest {
                     "Middle..Dot",
                     ".StartsWithDot",
                     "Miguel && Miguel",
-                    "!InvalidChars"
+                    "!InvalidChars",
+                    "&InvalidChars",
+                    "|InvalidChars",
+                    "Invalid!Chars",
+                    "Invalid&&Chars",
+                    "Invalid|Chars"
             );
 
             for (String invalidName : invalidNames) {

@@ -35,7 +35,7 @@ public class Customer extends TmsBasicModel {
             throw new TmsException("Customer name must not be null or blank", ErrorCodes.INVALID_DATA);
         }
 
-        if (name.startsWith(".")) {
+        if (name.startsWith(".") || name.startsWith("&") ) {
             throw new TmsException("Customer name must not start with a dot", ErrorCodes.INVALID_DATA);
         }
 
