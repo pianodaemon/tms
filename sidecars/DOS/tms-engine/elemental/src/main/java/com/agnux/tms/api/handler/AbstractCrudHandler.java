@@ -8,7 +8,7 @@ import java.lang.reflect.Type;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-public abstract class AbstractCrudHandler<T extends TmsBasicModel, D> {
+abstract class AbstractCrudHandler<T extends TmsBasicModel, D> {
 
     protected final CrudService<T> service;
     protected final Class<D> dtoClazz;
