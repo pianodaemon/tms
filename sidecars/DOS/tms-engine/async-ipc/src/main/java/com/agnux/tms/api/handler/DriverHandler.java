@@ -13,16 +13,18 @@ import lombok.extern.log4j.Log4j2;
 public class DriverHandler extends ScaffoldHandler<Driver, DriverDto> {
 
     public DriverHandler(DriverService service) {
-        super(service, DriverHandler::entMapper, DriverHandler::dtoMapper, DriverDto.class);
+        super(service);
     }
 
-    private static Driver entMapper(DriverDto dto, UUID tenantId) {
+    @Override
+    protected Driver entMapper(DriverDto dto, UUID tenantId) {
         UUID id = dto.getId();
         String name = dto.getName();
         return new Driver(id, tenantId, name, dto.getFirstSurname(), dto.getSecondSurname(), dto.getLicenseNumber());
     }
 
-    private static DriverDto dtoMapper(Driver ent) {
+    @Override
+    protected DriverDto dtoMapper(Driver ent) {
         UUID id = ent.getId().orElseThrow();
         String name = ent.getName();
         return new DriverDto(id, name, ent.getFirstSurname(), ent.getSecondSurname(), ent.getLicenseNumber());

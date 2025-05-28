@@ -14,10 +14,11 @@ import lombok.extern.log4j.Log4j2;
 public class VehicleHandler extends ScaffoldHandler<Vehicle, VehicleDto> {
 
     public VehicleHandler(VehicleService service) {
-        super(service, VehicleHandler::entMapper, VehicleHandler::dtoMapper, VehicleDto.class);
+        super(service);
     }
 
-    private static Vehicle entMapper(VehicleDto dto, UUID tenantId) {
+    @Override
+    protected Vehicle entMapper(VehicleDto dto, UUID tenantId) {
         return new Vehicle(dto.getId(), tenantId,
                 dto.getNumberPlate(), dto.getNumberSerial(),
                 dto.getVehicleType(),
@@ -26,7 +27,8 @@ public class VehicleHandler extends ScaffoldHandler<Vehicle, VehicleDto> {
                 dto.getPerfDistUnit(), dto.getPerfVolUnit(), dto.getPerfScalar());
     }
 
-    private static VehicleDto dtoMapper(Vehicle ent) {
+    @Override
+    protected VehicleDto dtoMapper(Vehicle ent) {
         UUID id = ent.getId().orElseThrow();
         VehicleDto dto = new VehicleDto(
                 id,

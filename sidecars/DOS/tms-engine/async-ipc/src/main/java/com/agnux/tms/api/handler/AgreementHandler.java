@@ -14,10 +14,11 @@ import lombok.extern.log4j.Log4j2;
 public class AgreementHandler extends ScaffoldHandler<Agreement, AgreementDto> {
 
     public AgreementHandler(AgreementService service) {
-        super(service, AgreementHandler::entMapper, AgreementHandler::dtoMapper, AgreementDto.class);
+        super(service);
     }
 
-    private static Agreement entMapper(AgreementDto dto, UUID tenantId) {
+    @Override
+    protected Agreement entMapper(AgreementDto dto, UUID tenantId) {
         UUID id = dto.getId();
         final Agreement ent = new Agreement(
                 id,
@@ -34,7 +35,8 @@ public class AgreementHandler extends ScaffoldHandler<Agreement, AgreementDto> {
         return ent;
     }
 
-    private static AgreementDto dtoMapper(Agreement ent) {
+    @Override
+    protected AgreementDto dtoMapper(Agreement ent) {
         UUID id = ent.getId().orElseThrow();
         return new AgreementDto(
                 id,

@@ -15,19 +15,45 @@ import java.util.UUID;
 
 import org.springframework.util.MultiValueMap;
 import com.agnux.tms.api.service.CrudService;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
+
 import org.springframework.web.reactive.function.server.ServerRequest;
 
-@AllArgsConstructor
-public class ScaffoldHandler<T extends TmsBasicModel, D> implements CrudHandler<ServerRequest, Mono<ServerResponse>> {
+public abstract class ScaffoldHandler<T extends TmsBasicModel, D> implements CrudHandler<ServerRequest, Mono<ServerResponse>> {
 
     protected final CrudService<T> service;
-    protected final BiFunction<D, UUID, T> entMapper;
-    protected final Function<T, D> dtoMapper;
     protected final Class<D> dtoClazz;
+
+    protected static final ConcurrentMap<Class<?>, Type> typeCache = new ConcurrentHashMap<>();
+    
+    protected abstract T entMapper(D dto, UUID tenantId);
+    
+    protected abstract D dtoMapper(T ent);
+
+    @SuppressWarnings("unchecked")
+    public ScaffoldHandler(CrudService<T> service) {
+        this.service = service;
+        this.dtoClazz = (Class<D>) extractGenericType();
+    }
+
+    private Type extractGenericType() {
+        return typeCache.computeIfAbsent(getClass(), cls -> {
+            Type type = cls.getGenericSuperclass();
+            Class<?> current = cls;
+            while (!(type instanceof ParameterizedType pt)) {
+                current = current.getSuperclass();
+                type = current.getGenericSuperclass();
+            }
+            return pt.getActualTypeArguments()[1]; // [1] for D
+        });
+    }
 
     @Override
     public Mono<ServerResponse> create(ServerRequest request) {
@@ -64,10 +90,10 @@ public class ScaffoldHandler<T extends TmsBasicModel, D> implements CrudHandler<
     protected Mono<ServerResponse> mtCreate(Mono<D> dtoMono, UUID tenantId) {
         return dtoMono.flatMap(dto -> {
             try {
-                T entity = entMapper.apply(dto, tenantId);
+                T entity = entMapper(dto, tenantId);
                 UUID newId = service.create(entity);
                 entity.setId(newId);
-                return ServiceResponseHelper.successWithBody(dtoMapper.apply(entity));
+                return ServiceResponseHelper.successWithBody(dtoMapper(entity));
             } catch (TmsException e) {
                 return onCreateiFailure(e);
             }
@@ -77,7 +103,7 @@ public class ScaffoldHandler<T extends TmsBasicModel, D> implements CrudHandler<
     protected Mono<ServerResponse> mtRead(UUID tenantId, UUID entityId) {
         try {
             T entity = service.read(entityId);
-            D dto = dtoMapper.apply(entity);
+            D dto = dtoMapper(entity);
             return ServiceResponseHelper.successWithBody(dto);
         } catch (TmsException e) {
             return onReadFailure(e);
@@ -87,7 +113,7 @@ public class ScaffoldHandler<T extends TmsBasicModel, D> implements CrudHandler<
     protected Mono<ServerResponse> mtUpdate(Mono<D> dtoMono, UUID tenantId) {
         return dtoMono.flatMap(dto -> {
             try {
-                T entity = entMapper.apply(dto, tenantId);
+                T entity = entMapper(dto, tenantId);
                 service.update(entity);
                 return ServiceResponseHelper.successWithBody(entity);
             } catch (TmsException e) {
@@ -123,7 +149,7 @@ public class ScaffoldHandler<T extends TmsBasicModel, D> implements CrudHandler<
 
         try {
             PaginationSegment<T> segmentEnt = service.listPage(tenantId, searchParams, pageParams);
-            List<D> dtos = segmentEnt.getData().stream().map(dtoMapper).collect(Collectors.toList());
+            List<D> dtos = segmentEnt.getData().stream().map(this::dtoMapper).collect(Collectors.toList());
             PaginationSegment<D> segmentDto = new PaginationSegment(dtos, segmentEnt.getTotalElements(), segmentEnt.getTotalPages());
             return ServiceResponseHelper.successWithBody(segmentDto);
         } catch (TmsException e) {

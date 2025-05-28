@@ -13,16 +13,18 @@ import lombok.extern.log4j.Log4j2;
 public class CustomerHandler extends ScaffoldHandler<Customer, CustomerDto> {
 
     public CustomerHandler(CustomerService service) {
-        super(service, CustomerHandler::entMapper, CustomerHandler::dtoMapper, CustomerDto.class);
+        super(service);
     }
 
-    private static Customer entMapper(CustomerDto dto, UUID tenantId) {
+    @Override
+    protected Customer entMapper(CustomerDto dto, UUID tenantId) {
         UUID id = dto.getId();
         String name = dto.getName();
         return new Customer(id, tenantId, name);
     }
 
-    private static CustomerDto dtoMapper(Customer ent) {
+    @Override
+    protected CustomerDto dtoMapper(Customer ent) {
         UUID id = ent.getId().orElseThrow();
         String name = ent.getName();
         CustomerDto dto = new CustomerDto();
