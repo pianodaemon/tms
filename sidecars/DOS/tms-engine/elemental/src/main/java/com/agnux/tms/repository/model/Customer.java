@@ -16,11 +16,11 @@ public class Customer extends TmsBasicModel {
 
     private String name;
 
-    private static final Pattern NAME_PATTERN = Pattern.compile("^[A-Za-z0-9]+(?:[ .][A-Za-z0-9]+)*$");
+    private static final Pattern TWICE_IN_A_ROW = Pattern.compile("\\.\\.+|&&+|  +");
 
     public Customer(final UUID customerId, final UUID tenantId, String name) {
         this(customerId, tenantId);
-        this.name = name;
+        this.name = name.trim();
     }
 
     public Customer(final UUID customerId, final UUID tenantId) {
@@ -35,12 +35,18 @@ public class Customer extends TmsBasicModel {
             throw new TmsException("Customer name must not be null or blank", ErrorCodes.INVALID_DATA);
         }
 
-        if (name.contains("  ")) {
-            throw new TmsException("Customer name must not contain multiple consecutive spaces", ErrorCodes.INVALID_DATA);
+        if (name.startsWith(".")) {
+            throw new TmsException("Customer name must not start with a dot", ErrorCodes.INVALID_DATA);
         }
 
-        if (!NAME_PATTERN.matcher(name).matches()) {
-            throw new TmsException("Customer name must be alphanumeric and may contain single spaces and dots, but must not start with a dot", ErrorCodes.INVALID_DATA);
+        if (TWICE_IN_A_ROW.matcher(name).find()) {
+            throw new TmsException("Customer name must not contain multiple consecutive dots", ErrorCodes.INVALID_DATA);
+        }
+
+        for (char c : name.toCharArray()) {
+            if (!(Character.isLetterOrDigit(c) || c == ' ' || c == '.' || c == '&')) {
+                throw new TmsException("Customer name must be alphanumeric and may contain a few single special characters only", ErrorCodes.INVALID_DATA);
+            }
         }
     }
 }
