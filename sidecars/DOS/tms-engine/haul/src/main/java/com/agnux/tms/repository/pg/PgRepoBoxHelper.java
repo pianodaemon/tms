@@ -63,8 +63,6 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
 
             stmt.setInt(7, c.getBoxYear());               // _box_year
 
-            stmt.setInt(6, c.getBoxYear());               // _box_year
-
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     UUID returnedBoxId = (UUID) rs.getObject(1);
