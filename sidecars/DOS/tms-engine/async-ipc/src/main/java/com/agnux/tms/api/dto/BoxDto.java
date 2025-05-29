@@ -18,4 +18,5 @@ public class BoxDto {
     private String name;
     private String numberPlate;
     private Date numberPlateExpiration;
+    private int boxYear;
 }
