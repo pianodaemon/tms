@@ -42,7 +42,7 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_box");
         }
 
-        String sql = "SELECT * FROM alter_box(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::DATE, ?::INT) AS (box_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_box(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::DATE, ?::INT, ?::BOOLEAN) AS (box_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -62,6 +62,7 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
             stmt.setDate(6, expirationDate);              // _number_plate_expiration
 
             stmt.setInt(7, c.getBoxYear());               // _box_year
+            stmt.setBoolean(8, c.isLease());             // _lease
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -104,6 +105,6 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
         String serial = rs.getString("number_serial");
         String numberPlate = rs.getString("number_plate");
         Date expirationDate = rs.getDate("number_plate_expiration");
-        return new Box(id, tenantId, name, serial, numberPlate, expirationDate, rs.getInt("box_year"));
+        return new Box(id, tenantId, name, serial, numberPlate, expirationDate, rs.getInt("box_year"), rs.getBoolean("lease"));
     }
 }

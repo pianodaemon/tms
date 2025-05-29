@@ -20,4 +20,5 @@ public class BoxDto {
     private String numberPlate;
     private Date numberPlateExpiration;
     private int boxYear;
+    private boolean lease;
 }
