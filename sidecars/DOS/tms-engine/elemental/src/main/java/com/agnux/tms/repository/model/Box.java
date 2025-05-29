@@ -3,6 +3,7 @@ package com.agnux.tms.repository.model;
 import com.agnux.tms.errors.ErrorCodes;
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.reference.qualitative.BoxBrand;
+import com.agnux.tms.reference.qualitative.BoxType;
 import java.util.Date;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 public class Box extends TmsBasicModel {
 
     private String name;
+    private BoxType boxType;
     private BoxBrand brand;
     private String numberSerial;
     private String numberPlate;
@@ -28,10 +30,11 @@ public class Box extends TmsBasicModel {
     private static final Pattern NAME_FIELD_INVALID_SEQUENCES = Pattern.compile("-\\.|\\.-");
 
     public Box(final UUID boxId, final UUID tenantId,
-            String name, BoxBrand brand, String numberSerial,
+            String name, final BoxType boxType, BoxBrand brand, String numberSerial,
             String numberPlate, Date numberPlateExpiration, int boxYear, boolean lease) {
         this(boxId, tenantId);
         this.name = removeMultipleSpaces(name.trim());
+        this.boxType = boxType;
         this.brand = brand;
         this.numberSerial = numberSerial.trim();
         this.numberPlate = numberPlate.trim();
