@@ -840,6 +840,7 @@ class AIPCRouterIntegrationTest {
 
         UUID tenantId = UUID.randomUUID();
         String prefixPathWithTenant = String.format("/adm/boxes/%s", tenantId);
+
         var newBox = new BoxDto(null, "Integration Test Box", RandomStringUtils.randomAlphanumeric(20), "LFU000001", Calendar.getInstance().getTime(), 2025);
 
         var response = webTestClient.post()
