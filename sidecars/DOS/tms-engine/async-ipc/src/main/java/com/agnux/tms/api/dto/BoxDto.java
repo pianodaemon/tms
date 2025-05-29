@@ -1,6 +1,7 @@
 package com.agnux.tms.api.dto;
 
 import com.agnux.tms.reference.qualitative.BoxBrand;
+import com.agnux.tms.reference.qualitative.BoxType;
 
 import java.util.Date;
 import java.util.UUID;
@@ -18,6 +19,7 @@ public class BoxDto {
 
     private UUID id;
     private String name;
+    private BoxType boxType;
     private BoxBrand brand;
     private String numberSerial;
     private String numberPlate;

@@ -7,6 +7,7 @@ import com.agnux.tms.api.dto.DriverDto;
 import com.agnux.tms.api.dto.PatioDto;
 import com.agnux.tms.api.dto.VehicleDto;
 import com.agnux.tms.reference.qualitative.BoxBrand;
+import com.agnux.tms.reference.qualitative.BoxType;
 import com.agnux.tms.reference.quantitative.DistUnit;
 import com.agnux.tms.reference.qualitative.VehicleColor;
 import com.agnux.tms.reference.qualitative.VehicleType;
@@ -842,7 +843,7 @@ class AIPCRouterIntegrationTest {
         UUID tenantId = UUID.randomUUID();
         String prefixPathWithTenant = String.format("/adm/boxes/%s", tenantId);
 
-        var newBox = new BoxDto(null, "Integration Test Box", BoxBrand.CIMC ,RandomStringUtils.randomAlphanumeric(20), "LFU000001", Calendar.getInstance().getTime(), 2025, false);
+        var newBox = new BoxDto(null, "Integration Test Box", BoxType.UNKNOWN_A, BoxBrand.CIMC ,RandomStringUtils.randomAlphanumeric(20), "LFU000001", Calendar.getInstance().getTime(), 2025, false);
 
         var response = webTestClient.post()
                 .uri(prefixPathWithTenant)
@@ -881,7 +882,7 @@ class AIPCRouterIntegrationTest {
 
             // Create multiple boxs and collect their IDs
             for (int i = 1; i <= 5; i++) {
-                BoxDto box = new BoxDto(null, "Paginated Box " + i, BoxBrand.FRUEHAUF, RandomStringUtils.randomAlphanumeric(20), String.format("LFL00000%s", i), Calendar.getInstance().getTime(), 2025, false);
+                BoxDto box = new BoxDto(null, "Paginated Box " + i, BoxType.UNKNOWN_A, BoxBrand.FRUEHAUF, RandomStringUtils.randomAlphanumeric(20), String.format("LFL00000%s", i), Calendar.getInstance().getTime(), 2025, false);
                 var res = webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -946,7 +947,7 @@ class AIPCRouterIntegrationTest {
 
             // Create boxs and collect their IDs
             for (String name : names) {
-                BoxDto box = new BoxDto(null, name, BoxBrand.GREAT_DANE, RandomStringUtils.randomAlphanumeric(20), String.format("LFL40000%c", name.charAt(name.length() - 1)), Calendar.getInstance().getTime(), 2025, false);
+                BoxDto box = new BoxDto(null, name, BoxType.UNKNOWN_A, BoxBrand.GREAT_DANE, RandomStringUtils.randomAlphanumeric(20), String.format("LFL40000%c", name.charAt(name.length() - 1)), Calendar.getInstance().getTime(), 2025, false);
                 var res = webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -1053,7 +1054,7 @@ class AIPCRouterIntegrationTest {
 
             int counteryy = 0;
             for (String invalidName : invalidNames) {
-                var invalidBox = new BoxDto(null, invalidName, BoxBrand.SCHMITZ_CARGOBULL,  RandomStringUtils.randomAlphanumeric(20), String.format("LFL50000%d", counteryy), Calendar.getInstance().getTime(), 2025, false);
+                var invalidBox = new BoxDto(null, invalidName, BoxType.UNKNOWN_A, BoxBrand.SCHMITZ_CARGOBULL,  RandomStringUtils.randomAlphanumeric(20), String.format("LFL50000%d", counteryy), Calendar.getInstance().getTime(), 2025, false);
                 webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -1085,7 +1086,7 @@ class AIPCRouterIntegrationTest {
             calendar.add(Calendar.HOUR, 24);
             Date utilDate = calendar.getTime();
             for (String validName : validNames) {
-                var validBox = new BoxDto(null, validName, BoxBrand.UTILITY_TRAILER, RandomStringUtils.randomAlphanumeric(20) ,String.format("LFL70000%d", counterxx), utilDate, 2025, false);
+                var validBox = new BoxDto(null, validName, BoxType.UNKNOWN_A, BoxBrand.UTILITY_TRAILER, RandomStringUtils.randomAlphanumeric(20) ,String.format("LFL70000%d", counterxx), utilDate, 2025, false);
                 var validRes = webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
