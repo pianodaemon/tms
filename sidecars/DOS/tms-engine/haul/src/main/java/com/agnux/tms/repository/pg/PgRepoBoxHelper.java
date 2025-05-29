@@ -5,6 +5,7 @@ import com.agnux.tms.repository.PaginationSegment;
 import com.agnux.tms.repository.model.Box;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,7 +42,7 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_box");
         }
 
-        String sql = "SELECT * FROM alter_box(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR) AS (box_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_box(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::DATE) AS (box_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -55,6 +56,9 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
             stmt.setObject(2, c.getTenantId());           // _tenant_id
             stmt.setString(3, c.getName());               // _name
             stmt.setString(4, c.getNumberPlate());        // _number_plate
+
+            var expirationDate = new java.sql.Date(c.getNumberPlateExpiration().getTime());
+            stmt.setDate(5, expirationDate);              // _number_plate_expiration
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -95,6 +99,7 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
         UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
         String name = rs.getString("name");
         String numberPlate = rs.getString("number_plate");
-        return new Box(id, tenantId, name, numberPlate);
+        Date expirationDate = rs.getDate("number_plate_expiration");
+        return new Box(id, tenantId, name, numberPlate, expirationDate);
     }
 }

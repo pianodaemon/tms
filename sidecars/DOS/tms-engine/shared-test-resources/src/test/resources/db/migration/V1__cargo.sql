@@ -20,6 +20,7 @@ CREATE TABLE boxes (
     tenant_id UUID NOT NULL,
     name VARCHAR(64) NOT NULL,
     number_plate VARCHAR(10) NOT NULL,
+    number_plate_expiration date NOT NULL,
     last_touch_time timestamp with time zone NOT NULL,
     creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL
@@ -360,7 +361,8 @@ CREATE OR REPLACE FUNCTION alter_box(
     _box_id UUID,
     _tenant_id   UUID,
     _name        VARCHAR,
-    _number_plate  VARCHAR
+    _number_plate  VARCHAR,
+    _number_plate_expiration date
 ) RETURNS RECORD
 LANGUAGE plpgsql
 AS $$
@@ -382,6 +384,7 @@ BEGIN
                 tenant_id,
                 name,
                 number_plate,
+                number_plate_expiration,
                 last_touch_time,
                 creation_time,
                 blocked
@@ -390,6 +393,7 @@ BEGIN
                 _tenant_id,
                 _name,
                 _number_plate,
+                _number_plate_expiration,
                 current_moment,
                 current_moment,
                 false
@@ -402,7 +406,8 @@ BEGIN
                 tenant_id = _tenant_id,
                 last_touch_time = current_moment,
                 name      = _name,
-                number_plate = _number_plate
+                number_plate = _number_plate,
+                number_plate_expiration = _number_plate_expiration
             WHERE id = _box_id;
 
         ELSE

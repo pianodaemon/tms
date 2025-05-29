@@ -12,6 +12,8 @@ import com.agnux.tms.reference.qualitative.VehicleType;
 import com.agnux.tms.reference.quantitative.VolUnit;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import java.util.UUID;
@@ -837,7 +839,7 @@ class AIPCRouterIntegrationTest {
 
         UUID tenantId = UUID.randomUUID();
         String prefixPathWithTenant = String.format("/adm/boxes/%s", tenantId);
-        var newBox = new BoxDto(null, "Integration Test Box", "LFU000001");
+        var newBox = new BoxDto(null, "Integration Test Box", "LFU000001", Calendar.getInstance().getTime());
 
         var response = webTestClient.post()
                 .uri(prefixPathWithTenant)
@@ -876,7 +878,7 @@ class AIPCRouterIntegrationTest {
 
             // Create multiple boxs and collect their IDs
             for (int i = 1; i <= 5; i++) {
-                BoxDto box = new BoxDto(null, "Paginated Box " + i, String.format("LFL00000%s", i));
+                BoxDto box = new BoxDto(null, "Paginated Box " + i, String.format("LFL00000%s", i), Calendar.getInstance().getTime());
                 var res = webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -941,7 +943,7 @@ class AIPCRouterIntegrationTest {
 
             // Create boxs and collect their IDs
             for (String name : names) {
-                BoxDto box = new BoxDto(null, name, String.format("LFL40000%c", name.charAt(name.length() - 1)));
+                BoxDto box = new BoxDto(null, name, String.format("LFL40000%c", name.charAt(name.length() - 1)), Calendar.getInstance().getTime());
                 var res = webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -1048,7 +1050,7 @@ class AIPCRouterIntegrationTest {
 
             int counteryy = 0;
             for (String invalidName : invalidNames) {
-                var invalidBox = new BoxDto(null, invalidName, String.format("LFL50000%d", counteryy));
+                var invalidBox = new BoxDto(null, invalidName, String.format("LFL50000%d", counteryy), Calendar.getInstance().getTime());
                 webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -1076,8 +1078,11 @@ class AIPCRouterIntegrationTest {
             );
 
             int counterxx = 0;
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.HOUR, 24);
+            Date utilDate = calendar.getTime();
             for (String validName : validNames) {
-                var validBox = new BoxDto(null, validName, String.format("LFL70000%d", counterxx));
+                var validBox = new BoxDto(null, validName, String.format("LFL70000%d", counterxx), utilDate);
                 var validRes = webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
