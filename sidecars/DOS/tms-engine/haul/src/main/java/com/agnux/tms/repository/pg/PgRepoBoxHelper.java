@@ -1,6 +1,7 @@
 package com.agnux.tms.repository.pg;
 
 import com.agnux.tms.errors.TmsException;
+import com.agnux.tms.reference.qualitative.BoxBrand;
 import com.agnux.tms.repository.PaginationSegment;
 import com.agnux.tms.repository.model.Box;
 
@@ -42,7 +43,7 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_box");
         }
 
-        String sql = "SELECT * FROM alter_box(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::DATE, ?::INT, ?::BOOLEAN) AS (box_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_box(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::DATE, ?::INT, ?::BOOLEAN) AS (box_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -55,14 +56,15 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
 
             stmt.setObject(2, c.getTenantId());           // _tenant_id
             stmt.setString(3, c.getName());               // _name
-            stmt.setString(4, c.getNumberSerial());       // _number_serial            
-            stmt.setString(5, c.getNumberPlate());        // _number_plate
+            stmt.setString(4, c.getBrand().toString());   // _box_brand
+            stmt.setString(5, c.getNumberSerial());       // _number_serial            
+            stmt.setString(6, c.getNumberPlate());        // _number_plate
 
             var expirationDate = new java.sql.Date(c.getNumberPlateExpiration().getTime());
-            stmt.setDate(6, expirationDate);              // _number_plate_expiration
+            stmt.setDate(7, expirationDate);              // _number_plate_expiration
 
-            stmt.setInt(7, c.getBoxYear());               // _box_year
-            stmt.setBoolean(8, c.isLease());             // _lease
+            stmt.setInt(8, c.getBoxYear());               // _box_year
+            stmt.setBoolean(9, c.isLease());             // _lease
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -105,6 +107,7 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
         String serial = rs.getString("number_serial");
         String numberPlate = rs.getString("number_plate");
         Date expirationDate = rs.getDate("number_plate_expiration");
-        return new Box(id, tenantId, name, serial, numberPlate, expirationDate, rs.getInt("box_year"), rs.getBoolean("lease"));
+        BoxBrand brand = BoxBrand.valueOf(rs.getString("box_brand"));
+        return new Box(id, tenantId, name, brand, serial, numberPlate, expirationDate, rs.getInt("box_year"), rs.getBoolean("lease"));
     }
 }
