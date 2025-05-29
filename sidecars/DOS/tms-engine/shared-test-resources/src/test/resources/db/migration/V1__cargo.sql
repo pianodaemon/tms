@@ -23,6 +23,7 @@ CREATE TABLE boxes (
     number_plate VARCHAR(10) NOT NULL,
     number_plate_expiration date NOT NULL,
     box_year INT NOT NULL,
+    lease BOOLEAN DEFAULT false NOT NULL,
     last_touch_time timestamp with time zone NOT NULL,
     creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL
@@ -366,7 +367,8 @@ CREATE OR REPLACE FUNCTION alter_box(
     _number_serial VARCHAR,
     _number_plate  VARCHAR,
     _number_plate_expiration date,
-    _box_year      INT
+    _box_year      INT,
+    _lease         BOOLEAN
 ) RETURNS RECORD
 LANGUAGE plpgsql
 AS $$
@@ -391,6 +393,7 @@ BEGIN
                 number_plate,
                 number_plate_expiration,
                 box_year,
+                lease,
                 last_touch_time,
                 creation_time,
                 blocked
@@ -402,6 +405,7 @@ BEGIN
                 _number_plate,
                 _number_plate_expiration,
                 _box_year,
+                _lease,
                 current_moment,
                 current_moment,
                 false
@@ -417,6 +421,7 @@ BEGIN
                 number_serial = _number_serial,
                 number_plate = _number_plate,
                 box_year = _box_year,
+                lease = _lease,
                 number_plate_expiration = _number_plate_expiration
             WHERE id = _box_id;
 
