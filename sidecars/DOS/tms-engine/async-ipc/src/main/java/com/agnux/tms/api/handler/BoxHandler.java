@@ -22,7 +22,9 @@ public class BoxHandler extends ScaffoldHandler<Box, BoxDto> {
         UUID id = dto.getId();
         String name = dto.getName();
         String numberPlate = dto.getNumberPlate();
-        var ent = new Box(id, tenantId, name, dto.getNumberSerial(), numberPlate, dto.getNumberPlateExpiration(), dto.getBoxYear(), dto.isLease());
+        var ent = new Box(id, tenantId, name,
+                dto.getBrand(), dto.getNumberSerial(), numberPlate,
+                dto.getNumberPlateExpiration(), dto.getBoxYear(), dto.isLease());
         return ent;
     }
 
@@ -33,6 +35,7 @@ public class BoxHandler extends ScaffoldHandler<Box, BoxDto> {
         BoxDto dto = new BoxDto();
         dto.setId(id);
         dto.setName(name);
+        dto.setBrand(ent.getBrand());
         dto.setNumberSerial(ent.getNumberSerial());
         dto.setNumberPlate(ent.getNumberPlate());
         dto.setNumberPlateExpiration(ent.getNumberPlateExpiration());
