@@ -2,6 +2,7 @@ package com.agnux.tms.repository.model;
 
 import com.agnux.tms.errors.ErrorCodes;
 import com.agnux.tms.errors.TmsException;
+import java.util.Date;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -16,14 +17,16 @@ public class Box extends TmsBasicModel {
 
     private String name;
     private String numberPlate;
+    private Date numberPlateExpiration;
 
     private static final Pattern NAME_FIELD_MULT_CONSECUTIVE = Pattern.compile("\\.\\.+|--++");
     private static final Pattern NAME_FIELD_INVALID_SEQUENCES = Pattern.compile("-\\.|\\.-");
 
-    public Box(final UUID boxId, final UUID tenantId, String name, String numberPlate) {
+    public Box(final UUID boxId, final UUID tenantId, String name, String numberPlate, Date numberPlateExpiration) {
         this(boxId, tenantId);
         this.name = removeMultipleSpaces(name.trim());
         this.numberPlate = numberPlate.trim();
+        this.numberPlateExpiration = numberPlateExpiration;
     }
 
     public Box(final UUID boxId, final UUID tenantId) {
