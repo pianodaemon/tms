@@ -16,6 +16,7 @@ public class BoxDto {
 
     private UUID id;
     private String name;
+    private String numberSerial;
     private String numberPlate;
     private Date numberPlateExpiration;
     private int boxYear;
