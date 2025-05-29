@@ -54,7 +54,7 @@ CREATE TABLE drivers (
 CREATE TABLE vehicles (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
     tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
-    number_plate VARCHAR(50) NOT NULL,
+    number_plate VARCHAR(10) NOT NULL,
     number_serial VARCHAR(128) NOT NULL,
     vehicle_type VARCHAR(50) NOT NULL,  -- Store as a string (enum values)
     vehicle_color VARCHAR(50) NOT NULL, -- Store as a string (enum values)
