@@ -25,7 +25,6 @@ public abstract class ScaffoldHandler<T extends TmsBasicModel, D> extends Abstra
 
     protected abstract D dtoMapper(T ent);
 
-    @SuppressWarnings("unchecked")
     public ScaffoldHandler(CrudService<T> service) {
         super(service);
     }
