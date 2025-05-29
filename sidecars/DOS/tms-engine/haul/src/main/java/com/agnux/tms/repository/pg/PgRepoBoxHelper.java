@@ -42,7 +42,7 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_box");
         }
 
-        String sql = "SELECT * FROM alter_box(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::DATE) AS (box_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_box(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::DATE, ?::INT) AS (box_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -59,6 +59,8 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
 
             var expirationDate = new java.sql.Date(c.getNumberPlateExpiration().getTime());
             stmt.setDate(5, expirationDate);              // _number_plate_expiration
+
+            stmt.setInt(6, c.getBoxYear());               // _box_year
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -100,6 +102,6 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
         String name = rs.getString("name");
         String numberPlate = rs.getString("number_plate");
         Date expirationDate = rs.getDate("number_plate_expiration");
-        return new Box(id, tenantId, name, numberPlate, expirationDate);
+        return new Box(id, tenantId, name, numberPlate, expirationDate, rs.getInt("box_year"));
     }
 }
