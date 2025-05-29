@@ -126,7 +126,7 @@ public abstract class ScaffoldHandler<T extends TmsBasicModel, D> extends Abstra
         try {
             PaginationSegment<T> segmentEnt = service.listPage(tenantId, searchParams, pageParams);
             List<D> dtos = segmentEnt.getData().stream().map(this::dtoMapper).collect(Collectors.toList());
-            PaginationSegment<D> segmentDto = new PaginationSegment(dtos, segmentEnt.getTotalElements(), segmentEnt.getTotalPages());
+            PaginationSegment<D> segmentDto = new PaginationSegment<>(dtos, segmentEnt.getTotalElements(), segmentEnt.getTotalPages());
             return ServiceResponseHelper.successWithBody(segmentDto);
         } catch (TmsException e) {
             return this.onPaginationFailure(e);
