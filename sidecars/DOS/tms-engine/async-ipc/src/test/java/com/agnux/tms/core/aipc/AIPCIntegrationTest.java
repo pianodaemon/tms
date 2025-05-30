@@ -51,6 +51,8 @@ import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 @Testcontainers
 class AIPCRouterIntegrationTest {
 
+    private static final String AUTH_HEADER_NAME = "Authorization";
+
     @Autowired
     private WebTestClient webTestClient;
 
@@ -99,7 +101,7 @@ class AIPCRouterIntegrationTest {
 
         var response = webTestClient.post()
                 .uri(prefixPathWithTenant)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newDriver)
                 .exchange()
@@ -119,7 +121,7 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + newID)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -128,13 +130,13 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.delete()
                 .uri(prefixPathWithTenant + "/" + newID)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + newID)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isNotFound();
 
@@ -144,7 +146,7 @@ class AIPCRouterIntegrationTest {
             DriverDto d = new DriverDto(null, "Paginated Driver " + i, "RFC" + i, "LIC" + i, "REG" + i);
             var res = webTestClient.post()
                     .uri(prefixPathWithTenant)
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(d)
                     .exchange()
@@ -164,7 +166,7 @@ class AIPCRouterIntegrationTest {
                 .queryParam("page_size", "4")
                 .queryParam("page_number", "1")
                 .build())
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -180,7 +182,7 @@ class AIPCRouterIntegrationTest {
                 .queryParam("page_size", "4")
                 .queryParam("page_number", "2")
                 .build())
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -193,13 +195,13 @@ class AIPCRouterIntegrationTest {
         for (UUID id : createdDriverIds) {
             webTestClient.delete()
                     .uri(prefixPathWithTenant + "/" + id)
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .exchange()
                     .expectStatus().isNoContent();
 
             webTestClient.get()
                     .uri(prefixPathWithTenant + "/" + id)
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .exchange()
                     .expectStatus().isNotFound();
         }
