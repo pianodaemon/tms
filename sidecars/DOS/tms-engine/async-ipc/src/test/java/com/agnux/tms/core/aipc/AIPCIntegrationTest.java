@@ -1,5 +1,6 @@
 package com.agnux.tms.core.aipc;
 
+import com.agnux.tms.api.config.TestJwtDecoderConfig;
 import com.agnux.tms.api.dto.AgreementDto;
 import com.agnux.tms.api.dto.BoxDto;
 import com.agnux.tms.api.dto.CustomerDto;
@@ -39,7 +40,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = AIPCApplication.class, properties = {
+@SpringBootTest(classes = {AIPCApplication.class, TestJwtDecoderConfig.class}, properties = {
     "debug=true",
     "logging.level.org.springframework.web=DEBUG",
     "logging.level.org.springframework.web.reactive=DEBUG",
