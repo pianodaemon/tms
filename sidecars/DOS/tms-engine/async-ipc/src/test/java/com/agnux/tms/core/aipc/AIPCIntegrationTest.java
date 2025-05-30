@@ -1,6 +1,5 @@
 package com.agnux.tms.core.aipc;
 
-import com.agnux.tms.api.config.TestJwtDecoderConfig;
 import com.agnux.tms.api.dto.AgreementDto;
 import com.agnux.tms.api.dto.BoxDto;
 import com.agnux.tms.api.dto.CustomerDto;
@@ -40,7 +39,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.shaded.org.apache.commons.lang3.RandomStringUtils;
 
 @ActiveProfiles("test")
-@SpringBootTest(classes = {AIPCApplication.class, TestJwtDecoderConfig.class}, properties = {
+@SpringBootTest(classes = {AIPCApplication.class}, properties = {
     "debug=true",
     "logging.level.org.springframework.web=DEBUG",
     "logging.level.org.springframework.web.reactive=DEBUG",
@@ -89,13 +88,14 @@ class AIPCRouterIntegrationTest {
     @Test
     void testCreateAndGetDriver() {
 
-        UUID tenantId = UUID.randomUUID();
-        String prefixPathWithTenant = String.format("/adm/drivers/%s", tenantId);
+        UUID tenantId = UUID.fromString("0e4a2f68-1a9a-474e-872f-b8afb3a9b275");
+        String prefixPathWithTenant = String.format("/adm/%s/drivers", tenantId);
 
         DriverDto newDriver = new DriverDto(null, "Integration Test Driver", "tyson", "wallas", "D123456789");
 
         var response = webTestClient.post()
                 .uri(prefixPathWithTenant)
+                .header("Authorization", "Bearer fake-token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newDriver)
                 .exchange()
@@ -115,6 +115,7 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + newID)
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -123,11 +124,13 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.delete()
                 .uri(prefixPathWithTenant + "/" + newID)
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + newID)
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isNotFound();
 
@@ -137,6 +140,7 @@ class AIPCRouterIntegrationTest {
             DriverDto d = new DriverDto(null, "Paginated Driver " + i, "RFC" + i, "LIC" + i, "REG" + i);
             var res = webTestClient.post()
                     .uri(prefixPathWithTenant)
+                    .header("Authorization", "Bearer fake-token")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(d)
                     .exchange()
@@ -156,6 +160,7 @@ class AIPCRouterIntegrationTest {
                 .queryParam("page_size", "4")
                 .queryParam("page_number", "1")
                 .build())
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -171,6 +176,7 @@ class AIPCRouterIntegrationTest {
                 .queryParam("page_size", "4")
                 .queryParam("page_number", "2")
                 .build())
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -183,11 +189,13 @@ class AIPCRouterIntegrationTest {
         for (UUID id : createdDriverIds) {
             webTestClient.delete()
                     .uri(prefixPathWithTenant + "/" + id)
+                    .header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isNoContent();
 
             webTestClient.get()
                     .uri(prefixPathWithTenant + "/" + id)
+                    .header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isNotFound();
         }
@@ -195,13 +203,13 @@ class AIPCRouterIntegrationTest {
 
     @Test
     void testCreateAndGetPatio() {
+        UUID tenantId = UUID.fromString("0e4a2f68-1a9a-474e-872f-b8afb3a9b275");
+        String prefixPathWithTenant = String.format("/adm/%s/patios", tenantId);
 
-        UUID tenantId = UUID.randomUUID();
-        String prefixPathWithTenant = String.format("/adm/patios/%s", tenantId);
         var newPatio = new PatioDto(null, "Integration Test Patio", 19.4326, -99.1332);
 
         var response = webTestClient.post()
-                .uri(prefixPathWithTenant)
+                .uri(prefixPathWithTenant).header("Authorization", "Bearer fake-token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newPatio)
                 .exchange()
@@ -219,7 +227,7 @@ class AIPCRouterIntegrationTest {
         final UUID newID = createdPatio.getId();
 
         webTestClient.get()
-                .uri(prefixPathWithTenant + "/" + newID)
+                .uri(prefixPathWithTenant + "/" + newID).header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -229,12 +237,12 @@ class AIPCRouterIntegrationTest {
                 .jsonPath("$.longitudeLocation").isEqualTo(-99.1332);
 
         webTestClient.delete()
-                .uri(prefixPathWithTenant + "/" + newID)
+                .uri(prefixPathWithTenant + "/" + newID).header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient.get()
-                .uri(prefixPathWithTenant + "/" + newID)
+                .uri(prefixPathWithTenant + "/" + newID).header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isNotFound();
 
@@ -245,7 +253,7 @@ class AIPCRouterIntegrationTest {
             var res = webTestClient.post()
                     .uri(prefixPathWithTenant)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(patio)
+                    .bodyValue(patio).header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody(PatioDto.class)
@@ -262,7 +270,7 @@ class AIPCRouterIntegrationTest {
                 .path(prefixPathWithTenant)
                 .queryParam("page_size", "3")
                 .queryParam("page_number", "1")
-                .build())
+                .build()).header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -277,7 +285,7 @@ class AIPCRouterIntegrationTest {
                 .path(prefixPathWithTenant)
                 .queryParam("page_size", "3")
                 .queryParam("page_number", "2")
-                .build())
+                .build()).header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -289,12 +297,12 @@ class AIPCRouterIntegrationTest {
         // Cleanup
         for (UUID id : createdPatioIds) {
             webTestClient.delete()
-                    .uri(prefixPathWithTenant + "/" + id)
+                    .uri(prefixPathWithTenant + "/" + id).header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isNoContent();
 
             webTestClient.get()
-                    .uri(prefixPathWithTenant + "/" + id)
+                    .uri(prefixPathWithTenant + "/" + id).header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isNotFound();
         }
@@ -303,12 +311,13 @@ class AIPCRouterIntegrationTest {
     @Test
     void testCreateAndGetCustomer() {
 
-        UUID tenantId = UUID.randomUUID();
-        String prefixPathWithTenant = String.format("/adm/customers/%s", tenantId);
+        UUID tenantId = UUID.fromString("0e4a2f68-1a9a-474e-872f-b8afb3a9b275");
+        String prefixPathWithTenant = String.format("/adm/%s/customers", tenantId);
+
         var newCustomer = new CustomerDto(null, "Integration Test Customer");
 
         var response = webTestClient.post()
-                .uri(prefixPathWithTenant)
+                .uri(prefixPathWithTenant).header("Authorization", "Bearer fake-token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newCustomer)
                 .exchange()
@@ -322,7 +331,7 @@ class AIPCRouterIntegrationTest {
         assert "Integration Test Customer".equals(createdCustomer.getName());
 
         webTestClient.get()
-                .uri(prefixPathWithTenant + "/" + createdCustomer.getId())
+                .uri(prefixPathWithTenant + "/" + createdCustomer.getId()).header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -330,12 +339,12 @@ class AIPCRouterIntegrationTest {
                 .jsonPath("$.name").isEqualTo("Integration Test Customer");
 
         webTestClient.delete()
-                .uri(prefixPathWithTenant + "/" + createdCustomer.getId())
+                .uri(prefixPathWithTenant + "/" + createdCustomer.getId()).header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient.get()
-                .uri(prefixPathWithTenant + "/" + createdCustomer.getId())
+                .uri(prefixPathWithTenant + "/" + createdCustomer.getId()).header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isNotFound();
 
@@ -348,7 +357,7 @@ class AIPCRouterIntegrationTest {
                 var res = webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(customer)
+                        .bodyValue(customer).header("Authorization", "Bearer fake-token")
                         .exchange()
                         .expectStatus().isOk()
                         .expectBody(CustomerDto.class)
@@ -365,7 +374,7 @@ class AIPCRouterIntegrationTest {
                     .path(prefixPathWithTenant)
                     .queryParam("page_size", "3")
                     .queryParam("page_number", "1")
-                    .build())
+                    .build()).header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isOk()
                     .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -380,7 +389,7 @@ class AIPCRouterIntegrationTest {
                     .path(prefixPathWithTenant)
                     .queryParam("page_size", "3")
                     .queryParam("page_number", "2")
-                    .build())
+                    .build()).header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isOk()
                     .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -392,12 +401,12 @@ class AIPCRouterIntegrationTest {
             // Cleanup: delete all created customers
             for (UUID id : createdCustomerIds) {
                 webTestClient.delete()
-                        .uri(prefixPathWithTenant + "/" + id)
+                        .uri(prefixPathWithTenant + "/" + id).header("Authorization", "Bearer fake-token")
                         .exchange()
                         .expectStatus().isNoContent();
 
                 webTestClient.get()
-                        .uri(prefixPathWithTenant + "/" + id)
+                        .uri(prefixPathWithTenant + "/" + id).header("Authorization", "Bearer fake-token")
                         .exchange()
                         .expectStatus().isNotFound();
             }
@@ -411,7 +420,7 @@ class AIPCRouterIntegrationTest {
             for (String name : names) {
                 CustomerDto customer = new CustomerDto(null, name);
                 var res = webTestClient.post()
-                        .uri(prefixPathWithTenant)
+                        .uri(prefixPathWithTenant).header("Authorization", "Bearer fake-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(customer)
                         .exchange()
@@ -431,7 +440,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_size", "3")
                     .queryParam("page_number", "1")
                     .queryParam("page_order_by", "name")
-                    .build())
+                    .build()).header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody()
@@ -450,7 +459,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_number", "1")
                     .queryParam("page_order_by", "name")
                     .queryParam("page_order", "DESC")
-                    .build())
+                    .build()).header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody()
@@ -467,7 +476,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_order_by", "name")
                     .queryParam("page_order", "DESC")
                     .queryParam("filter_qu_name", "%arl%")
-                    .build())
+                    .build()).header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody()
@@ -479,19 +488,19 @@ class AIPCRouterIntegrationTest {
                     .uri(uriBuilder -> uriBuilder
                     .path(prefixPathWithTenant)
                     .queryParam("filter_qu_name", "zzzzzz")
-                    .build())
+                    .build()).header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isNotFound();
 
             // === Cleanup: Delete all created customers ===
             for (UUID id : createdCustomerIds) {
                 webTestClient.delete()
-                        .uri(prefixPathWithTenant + "/" + id)
+                        .uri(prefixPathWithTenant + "/" + id).header("Authorization", "Bearer fake-token")
                         .exchange()
                         .expectStatus().isNoContent();
 
                 webTestClient.get()
-                        .uri(prefixPathWithTenant + "/" + id)
+                        .uri(prefixPathWithTenant + "/" + id).header("Authorization", "Bearer fake-token")
                         .exchange()
                         .expectStatus().isNotFound();
             }
@@ -519,7 +528,7 @@ class AIPCRouterIntegrationTest {
                 webTestClient.post()
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .bodyValue(invalidCustomer)
+                        .bodyValue(invalidCustomer).header("Authorization", "Bearer fake-token")
                         .exchange()
                         .expectStatus().isBadRequest(); // assuming INVALID_DATA maps to 400
             }
@@ -545,7 +554,7 @@ class AIPCRouterIntegrationTest {
             for (String validName : validNames) {
                 var validCustomer = new CustomerDto(null, validName);
                 var validRes = webTestClient.post()
-                        .uri(prefixPathWithTenant)
+                        .uri(prefixPathWithTenant).header("Authorization", "Bearer fake-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(validCustomer)
                         .exchange()
@@ -558,7 +567,7 @@ class AIPCRouterIntegrationTest {
 
                 // cleanup
                 webTestClient.delete()
-                        .uri(prefixPathWithTenant + "/" + createdValid.getId())
+                        .uri(prefixPathWithTenant + "/" + createdValid.getId()).header("Authorization", "Bearer fake-token")
                         .exchange()
                         .expectStatus().isNoContent();
             }
@@ -568,8 +577,8 @@ class AIPCRouterIntegrationTest {
     @Test
     void testCreateAndGetVehicule() {
 
-        UUID tenantId = UUID.randomUUID();
-        String prefixPathWithTenant = String.format("/adm/vehicles/%s", tenantId);
+        UUID tenantId = UUID.fromString("0e4a2f68-1a9a-474e-872f-b8afb3a9b275");
+        String prefixPathWithTenant = String.format("/adm/%s/vehicles", tenantId);
 
         VehicleDto newVehicle = new VehicleDto(
                 null,
@@ -586,6 +595,7 @@ class AIPCRouterIntegrationTest {
 
         var response = webTestClient.post()
                 .uri(prefixPathWithTenant)
+                .header("Authorization", "Bearer fake-token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newVehicle)
                 .exchange()
@@ -607,6 +617,7 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + newID)
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -622,11 +633,13 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.delete()
                 .uri(prefixPathWithTenant + "/" + newID)
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + newID)
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isNotFound();
 
@@ -649,6 +662,7 @@ class AIPCRouterIntegrationTest {
 
                 var res = webTestClient.post()
                         .uri(prefixPathWithTenant)
+                        .header("Authorization", "Bearer fake-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(v)
                         .exchange()
@@ -671,6 +685,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("filter_qu_vehicle_color", "%RAY")
                     .queryParam("filter_ge_vehicle_year", 2023)
                     .build())
+                    .header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isOk()
                     .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -687,6 +702,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_size", "5")
                     .queryParam("page_number", "2")
                     .build())
+                    .header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isOk()
                     .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -699,11 +715,13 @@ class AIPCRouterIntegrationTest {
             for (UUID id : createdVehicleIds) {
                 webTestClient.delete()
                         .uri(prefixPathWithTenant + "/" + id)
+                        .header("Authorization", "Bearer fake-token")
                         .exchange()
                         .expectStatus().isNoContent();
 
                 webTestClient.get()
                         .uri(prefixPathWithTenant + "/" + id)
+                        .header("Authorization", "Bearer fake-token")
                         .exchange()
                         .expectStatus().isNotFound();
             }
@@ -712,13 +730,14 @@ class AIPCRouterIntegrationTest {
 
     @Test
     void testCreateAndGetAgreement() {
-        UUID tenantId = UUID.randomUUID();
+        UUID tenantId = UUID.fromString("0e4a2f68-1a9a-474e-872f-b8afb3a9b275");
 
         // --- Create a customer first ---
         CustomerDto newCustomer = new CustomerDto(null, "Integration Test Customer");
 
         var response = webTestClient.post()
-                .uri(String.format("/adm/customers/%s", tenantId))
+                .uri(String.format("/adm/%s/customers", tenantId))
+                .header("Authorization", "Bearer fake-token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newCustomer)
                 .exchange()
@@ -731,7 +750,7 @@ class AIPCRouterIntegrationTest {
         assert createdCustomer != null : "Created customer should not be null";
         UUID customerId = createdCustomer.getId();
 
-        String prefixPathWithTenant = String.format("/adm/agreements/%s", tenantId);
+        String prefixPathWithTenant = String.format("/adm/%s/agreements", tenantId);
 
         // --- Create an agreement ---
         AgreementDto agreement = new AgreementDto(null, customerId, "Receiver X",
@@ -739,6 +758,7 @@ class AIPCRouterIntegrationTest {
 
         var agreementResponse = webTestClient.post()
                 .uri(prefixPathWithTenant)
+                .header("Authorization", "Bearer fake-token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(agreement)
                 .exchange()
@@ -753,6 +773,7 @@ class AIPCRouterIntegrationTest {
         // --- Read (GET) the agreement ---
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + agreementId)
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -764,6 +785,7 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.put()
                 .uri(prefixPathWithTenant)
+                .header("Authorization", "Bearer fake-token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(createdAgreement)
                 .exchange()
@@ -779,6 +801,7 @@ class AIPCRouterIntegrationTest {
                     10 + i, -10 - i, 20 + i, -20 - i, DistUnit.KM, new BigDecimal("100." + i));
             var result = webTestClient.post()
                     .uri(prefixPathWithTenant)
+                    .header("Authorization", "Bearer fake-token")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(ag)
                     .exchange()
@@ -798,6 +821,7 @@ class AIPCRouterIntegrationTest {
                 .queryParam("page_size", "4")
                 .queryParam("page_number", "1")
                 .build())
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -812,6 +836,7 @@ class AIPCRouterIntegrationTest {
                 .queryParam("page_size", "4")
                 .queryParam("page_number", "2")
                 .build())
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -823,33 +848,36 @@ class AIPCRouterIntegrationTest {
         for (UUID id : createdAgreementIds) {
             webTestClient.delete()
                     .uri(prefixPathWithTenant + "/" + id)
+                    .header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isNoContent();
         }
 
         webTestClient.delete()
                 .uri(prefixPathWithTenant + "/" + agreementId)
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isNoContent();
 
         // --- Delete the customer ---
         webTestClient.delete()
-                .uri(String.format("/adm/customers/%s", tenantId) + "/" + customerId)
+                .uri(String.format("/adm/%s/customers", tenantId) + "/" + customerId)
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isNoContent();
-
     }
 
     @Test
     void testCreateAndGetBox() {
 
-        UUID tenantId = UUID.randomUUID();
-        String prefixPathWithTenant = String.format("/adm/boxes/%s", tenantId);
+        UUID tenantId = UUID.fromString("0e4a2f68-1a9a-474e-872f-b8afb3a9b275");
+        String prefixPathWithTenant = String.format("/adm/%s/boxes", tenantId);
 
         var newBox = new BoxDto(null, "Integration Test Box", BoxType.UNKNOWN_A, BoxBrand.CIMC ,RandomStringUtils.randomAlphanumeric(20), "LFU000001", Calendar.getInstance().getTime(), 2025, false);
 
         var response = webTestClient.post()
                 .uri(prefixPathWithTenant)
+                .header("Authorization", "Bearer fake-token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newBox)
                 .exchange()
@@ -864,6 +892,7 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + createdBox.getId())
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -872,11 +901,13 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.delete()
                 .uri(prefixPathWithTenant + "/" + createdBox.getId())
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + createdBox.getId())
+                .header("Authorization", "Bearer fake-token")
                 .exchange()
                 .expectStatus().isNotFound();
 
@@ -888,6 +919,7 @@ class AIPCRouterIntegrationTest {
                 BoxDto box = new BoxDto(null, "Paginated Box " + i, BoxType.UNKNOWN_A, BoxBrand.FRUEHAUF, RandomStringUtils.randomAlphanumeric(20), String.format("LFL00000%s", i), Calendar.getInstance().getTime(), 2025, false);
                 var res = webTestClient.post()
                         .uri(prefixPathWithTenant)
+                        .header("Authorization", "Bearer fake-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(box)
                         .exchange()
@@ -907,6 +939,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_size", "3")
                     .queryParam("page_number", "1")
                     .build())
+                    .header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isOk()
                     .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -922,6 +955,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_size", "3")
                     .queryParam("page_number", "2")
                     .build())
+                    .header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isOk()
                     .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -934,11 +968,13 @@ class AIPCRouterIntegrationTest {
             for (UUID id : createdBoxIds) {
                 webTestClient.delete()
                         .uri(prefixPathWithTenant + "/" + id)
+                        .header("Authorization", "Bearer fake-token")
                         .exchange()
                         .expectStatus().isNoContent();
 
                 webTestClient.get()
                         .uri(prefixPathWithTenant + "/" + id)
+                        .header("Authorization", "Bearer fake-token")
                         .exchange()
                         .expectStatus().isNotFound();
             }
@@ -953,6 +989,7 @@ class AIPCRouterIntegrationTest {
                 BoxDto box = new BoxDto(null, name, BoxType.UNKNOWN_A, BoxBrand.GREAT_DANE, RandomStringUtils.randomAlphanumeric(20), String.format("LFL40000%c", name.charAt(name.length() - 1)), Calendar.getInstance().getTime(), 2025, false);
                 var res = webTestClient.post()
                         .uri(prefixPathWithTenant)
+                        .header("Authorization", "Bearer fake-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(box)
                         .exchange()
@@ -973,6 +1010,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_number", "1")
                     .queryParam("page_order_by", "name")
                     .build())
+                    .header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody()
@@ -992,6 +1030,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_order_by", "name")
                     .queryParam("page_order", "DESC")
                     .build())
+                    .header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody()
@@ -1009,6 +1048,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_order", "DESC")
                     .queryParam("filter_qu_name", "%conC%")
                     .build())
+                    .header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody()
@@ -1021,6 +1061,7 @@ class AIPCRouterIntegrationTest {
                     .path(prefixPathWithTenant)
                     .queryParam("filter_qu_name", "zzzzzz")
                     .build())
+                    .header("Authorization", "Bearer fake-token")
                     .exchange()
                     .expectStatus().isNotFound();
 
@@ -1028,11 +1069,13 @@ class AIPCRouterIntegrationTest {
             for (UUID id : createdBoxIds) {
                 webTestClient.delete()
                         .uri(prefixPathWithTenant + "/" + id)
+                        .header("Authorization", "Bearer fake-token")
                         .exchange()
                         .expectStatus().isNoContent();
 
                 webTestClient.get()
                         .uri(prefixPathWithTenant + "/" + id)
+                        .header("Authorization", "Bearer fake-token")
                         .exchange()
                         .expectStatus().isNotFound();
             }
@@ -1060,6 +1103,7 @@ class AIPCRouterIntegrationTest {
                 var invalidBox = new BoxDto(null, invalidName, BoxType.UNKNOWN_A, BoxBrand.SCHMITZ_CARGOBULL,  RandomStringUtils.randomAlphanumeric(20), String.format("LFL50000%d", counteryy), Calendar.getInstance().getTime(), 2025, false);
                 webTestClient.post()
                         .uri(prefixPathWithTenant)
+                        .header("Authorization", "Bearer fake-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(invalidBox)
                         .exchange()
@@ -1092,6 +1136,7 @@ class AIPCRouterIntegrationTest {
                 var validBox = new BoxDto(null, validName, BoxType.UNKNOWN_A, BoxBrand.UTILITY_TRAILER, RandomStringUtils.randomAlphanumeric(20) ,String.format("LFL70000%d", counterxx), utilDate, 2025, false);
                 var validRes = webTestClient.post()
                         .uri(prefixPathWithTenant)
+                        .header("Authorization", "Bearer fake-token")
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(validBox)
                         .exchange()
@@ -1105,6 +1150,7 @@ class AIPCRouterIntegrationTest {
                 // cleanup
                 webTestClient.delete()
                         .uri(prefixPathWithTenant + "/" + createdValid.getId())
+                        .header("Authorization", "Bearer fake-token")
                         .exchange()
                         .expectStatus().isNoContent();
             }
