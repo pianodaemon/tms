@@ -216,7 +216,7 @@ class AIPCRouterIntegrationTest {
 
         var response = webTestClient.post()
                 .uri(prefixPathWithTenant)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newPatio)
                 .exchange()
@@ -235,7 +235,7 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + newID)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -246,13 +246,13 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.delete()
                 .uri(prefixPathWithTenant + "/" + newID)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + newID)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isNotFound();
 
@@ -264,7 +264,7 @@ class AIPCRouterIntegrationTest {
                     .uri(prefixPathWithTenant)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(patio)
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody(PatioDto.class)
@@ -282,7 +282,7 @@ class AIPCRouterIntegrationTest {
                 .queryParam("page_size", "3")
                 .queryParam("page_number", "1")
                 .build())
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -298,7 +298,7 @@ class AIPCRouterIntegrationTest {
                 .queryParam("page_size", "3")
                 .queryParam("page_number", "2")
                 .build())
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -311,13 +311,13 @@ class AIPCRouterIntegrationTest {
         for (UUID id : createdPatioIds) {
             webTestClient.delete()
                     .uri(prefixPathWithTenant + "/" + id)
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .exchange()
                     .expectStatus().isNoContent();
 
             webTestClient.get()
                     .uri(prefixPathWithTenant + "/" + id)
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .exchange()
                     .expectStatus().isNotFound();
         }
@@ -333,7 +333,7 @@ class AIPCRouterIntegrationTest {
 
         var response = webTestClient.post()
                 .uri(prefixPathWithTenant)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newCustomer)
                 .exchange()
