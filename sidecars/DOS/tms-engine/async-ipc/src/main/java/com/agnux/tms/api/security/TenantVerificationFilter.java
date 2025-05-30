@@ -1,11 +1,13 @@
 package com.agnux.tms.api.security;
 
-import static com.agnux.tms.api.handler.ServiceResponseHelper.*;
 import com.agnux.tms.errors.TmsException;
-
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.*;
 import reactor.core.publisher.Mono;
+
+import static com.agnux.tms.api.handler.ServiceResponseHelper.*;
 
 @Component
 public class TenantVerificationFilter implements HandlerFilterFunction<ServerResponse, ServerResponse> {
@@ -21,6 +23,18 @@ public class TenantVerificationFilter implements HandlerFilterFunction<ServerRes
             return badRequest("Tenant verification invalid",
                     new TmsException("missing tenantId path variable", ex));
         }
-        return next.handle(request);
+
+        return ReactiveSecurityContextHolder.getContext()
+                .map(securityContext -> (Jwt) securityContext.getAuthentication().getPrincipal())
+                .flatMap(jwt -> {
+                    String tokenTenantId = jwt.getClaimAsString(TENANT_CLAIM);
+
+                    if (!pathTenantId.equals(tokenTenantId)) {
+                        return ServerResponse.status(403).bodyValue("Tenant ID mismatch");
+                    }
+
+                    return next.handle(request);
+                })
+                .switchIfEmpty(ServerResponse.status(401).bodyValue("Unauthorized"));
     }
 }
