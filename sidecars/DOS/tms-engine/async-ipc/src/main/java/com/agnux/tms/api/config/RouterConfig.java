@@ -34,7 +34,7 @@ public class RouterConfig {
     }
 
     private static RouterFunction<ServerResponse> mtCrudRoutes(final String pathPrefix, CrudHandler<ServerRequest, Mono<ServerResponse>> handler) {
-        return crudRoutes(pathPrefix + "/{tenantId}", handler);
+        return crudRoutes("/{tenantId}" + pathPrefix, handler);
     }
 
     @Bean
