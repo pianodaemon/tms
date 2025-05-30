@@ -17,6 +17,7 @@ import java.util.Map;
 @Profile("test")
 public class TestSecurityConfig {
 
+    private static final String FAKE_TENANT_ID = "0e4a2f68-1a9a-474e-872f-b8afb3a9b275";
     private static final String FAKE_TOKEN = "fake-token";
 
     public String getFakeToken() {
