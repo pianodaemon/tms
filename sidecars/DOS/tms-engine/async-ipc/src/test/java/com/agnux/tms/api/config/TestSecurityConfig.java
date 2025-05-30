@@ -12,6 +12,7 @@ import reactor.core.publisher.Mono;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Configuration
 @Profile("test")
@@ -20,7 +21,11 @@ public class TestSecurityConfig {
     private static final String FAKE_TENANT_ID = "0e4a2f68-1a9a-474e-872f-b8afb3a9b275";
     private static final String FAKE_TOKEN = "fake-token";
 
-    public String getFakeToken() {
+    public UUID getFakeTenantId() {
+        return UUID.fromString(FAKE_TENANT_ID);
+    }
+
+    public String getFakeAuthHeaderVal() {
         return String.format("Bearer %s", FAKE_TOKEN);
     }
 
@@ -45,7 +50,7 @@ public class TestSecurityConfig {
             Map<String, Object> claims = new HashMap<>();
             claims.put("sub", "test-user");
             claims.put("scope", "ROLE_ADMIN");
-            claims.put("tenantId", "0e4a2f68-1a9a-474e-872f-b8afb3a9b275");
+            claims.put("tenantId", FAKE_TENANT_ID);
 
             Jwt jwt = new Jwt(
                     token,
