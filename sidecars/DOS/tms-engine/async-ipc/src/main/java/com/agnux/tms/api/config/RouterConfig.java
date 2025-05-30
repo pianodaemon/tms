@@ -1,13 +1,13 @@
 package com.agnux.tms.api.config;
 
 import com.agnux.tms.api.handler.*;
+import com.agnux.tms.api.security.TenantVerificationFilter;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import org.springframework.web.reactive.function.server.RouterFunctions;
-
 import static org.springframework.web.reactive.function.server.RequestPredicates.path;
 import static org.springframework.web.reactive.function.server.RouterFunctions.nest;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
@@ -34,13 +34,14 @@ public class RouterConfig {
     }
 
     private static RouterFunction<ServerResponse> mtCrudRoutes(final String pathPrefix, CrudHandler<ServerRequest, Mono<ServerResponse>> handler) {
-        return crudRoutes(pathPrefix + "/{tenantId}", handler);
+        return crudRoutes("/{tenantId}" + pathPrefix, handler);
     }
 
     @Bean
     public RouterFunction<ServerResponse> admRouter(
             AgreementHandler agreementHandler, CustomerHandler customerHandler, BoxHandler boxHandler,
-            DriverHandler driverHandler, PatioHandler patioHandler, VehicleHandler vehicleHandler) {
+            DriverHandler driverHandler, PatioHandler patioHandler, VehicleHandler vehicleHandler,
+            TenantVerificationFilter tenantVerificationFilter) {
 
         return nest(path("/" + ADM_API_PATH),
                 mtCrudRoutes("/agreements", agreementHandler)
@@ -48,8 +49,10 @@ public class RouterConfig {
                         .and(mtCrudRoutes("/customers", customerHandler))
                         .and(mtCrudRoutes("/drivers", driverHandler))
                         .and(mtCrudRoutes("/patios", patioHandler))
-                        .and(mtCrudRoutes("/vehicles", vehicleHandler)));
+                        .and(mtCrudRoutes("/vehicles", vehicleHandler))
+        ).filter(tenantVerificationFilter);
     }
+
 
     public static RouterFunction<ServerResponse> haulMgmtRoutes(HaulMgmtHandler handler) {
         return RouterFunctions

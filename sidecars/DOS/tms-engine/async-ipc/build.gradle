@@ -19,6 +19,8 @@ dependencies {
     // For working with the PG data source
     implementation "org.postgresql:postgresql:${pg_jdbc_driver_version}"
 
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     testImplementation project(path: ':shared-test-resources', configuration: 'testResources')

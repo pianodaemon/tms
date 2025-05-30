@@ -6,7 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-class ServiceResponseHelper {
+public class ServiceResponseHelper {
 
     public static Mono<ServerResponse> success() {
         return successWithBody(Map.of("message", "success"));
