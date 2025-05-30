@@ -41,7 +41,7 @@ public class RouterConfig {
     public RouterFunction<ServerResponse> admRouter(
             AgreementHandler agreementHandler, CustomerHandler customerHandler, BoxHandler boxHandler,
             DriverHandler driverHandler, PatioHandler patioHandler, VehicleHandler vehicleHandler,
-            TenantVerificationFilter tenantValidationFilter) {
+            TenantVerificationFilter tenantVerificationFilter) {
 
         return nest(path("/" + ADM_API_PATH),
                 mtCrudRoutes("/agreements", agreementHandler)
@@ -50,7 +50,7 @@ public class RouterConfig {
                         .and(mtCrudRoutes("/drivers", driverHandler))
                         .and(mtCrudRoutes("/patios", patioHandler))
                         .and(mtCrudRoutes("/vehicles", vehicleHandler))
-        ).filter(tenantValidationFilter);
+        ).filter(tenantVerificationFilter);
     }
 
 
