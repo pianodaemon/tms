@@ -629,7 +629,7 @@ class AIPCRouterIntegrationTest {
 
         var response = webTestClient.post()
                 .uri(prefixPathWithTenant)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newVehicle)
                 .exchange()
@@ -651,7 +651,7 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + newID)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -667,13 +667,13 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.delete()
                 .uri(prefixPathWithTenant + "/" + newID)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + newID)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isNotFound();
 
@@ -696,7 +696,7 @@ class AIPCRouterIntegrationTest {
 
                 var res = webTestClient.post()
                         .uri(prefixPathWithTenant)
-                        .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                        .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(v)
                         .exchange()
@@ -719,7 +719,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("filter_qu_vehicle_color", "%RAY")
                     .queryParam("filter_ge_vehicle_year", 2023)
                     .build())
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .exchange()
                     .expectStatus().isOk()
                     .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -736,7 +736,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_size", "5")
                     .queryParam("page_number", "2")
                     .build())
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .exchange()
                     .expectStatus().isOk()
                     .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -749,13 +749,13 @@ class AIPCRouterIntegrationTest {
             for (UUID id : createdVehicleIds) {
                 webTestClient.delete()
                         .uri(prefixPathWithTenant + "/" + id)
-                        .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                        .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                         .exchange()
                         .expectStatus().isNoContent();
 
                 webTestClient.get()
                         .uri(prefixPathWithTenant + "/" + id)
-                        .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                        .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                         .exchange()
                         .expectStatus().isNotFound();
             }
@@ -771,7 +771,7 @@ class AIPCRouterIntegrationTest {
 
         var response = webTestClient.post()
                 .uri(String.format("/adm/%s/customers", tenantId))
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newCustomer)
                 .exchange()
@@ -792,7 +792,7 @@ class AIPCRouterIntegrationTest {
 
         var agreementResponse = webTestClient.post()
                 .uri(prefixPathWithTenant)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(agreement)
                 .exchange()
@@ -807,7 +807,7 @@ class AIPCRouterIntegrationTest {
         // --- Read (GET) the agreement ---
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + agreementId)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -819,7 +819,7 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.put()
                 .uri(prefixPathWithTenant)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(createdAgreement)
                 .exchange()
@@ -835,7 +835,7 @@ class AIPCRouterIntegrationTest {
                     10 + i, -10 - i, 20 + i, -20 - i, DistUnit.KM, new BigDecimal("100." + i));
             var result = webTestClient.post()
                     .uri(prefixPathWithTenant)
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(ag)
                     .exchange()
@@ -855,7 +855,7 @@ class AIPCRouterIntegrationTest {
                 .queryParam("page_size", "4")
                 .queryParam("page_number", "1")
                 .build())
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -870,7 +870,7 @@ class AIPCRouterIntegrationTest {
                 .queryParam("page_size", "4")
                 .queryParam("page_number", "2")
                 .build())
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isOk()
                 .expectBody()
@@ -882,21 +882,21 @@ class AIPCRouterIntegrationTest {
         for (UUID id : createdAgreementIds) {
             webTestClient.delete()
                     .uri(prefixPathWithTenant + "/" + id)
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .exchange()
                     .expectStatus().isNoContent();
         }
 
         webTestClient.delete()
                 .uri(prefixPathWithTenant + "/" + agreementId)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isNoContent();
 
         // --- Delete the customer ---
         webTestClient.delete()
                 .uri(String.format("/adm/%s/customers", tenantId) + "/" + customerId)
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isNoContent();
     }
