@@ -25,13 +25,12 @@ public class RouterConfig {
     private static final String HAUL_API_PATH = "oper";
 
     private static RouterFunction<ServerResponse> crudRoutes(final String pathPrefix, CrudHandler<ServerRequest, Mono<ServerResponse>> handler) {
-        RouterFunction<ServerResponse> routes = route(GET(pathPrefix + "/{id}"), handler::read)
+
+        return route(GET(pathPrefix + "/{id}"), handler::read)
                 .andRoute(POST(pathPrefix), handler::create)
                 .andRoute(PUT(pathPrefix), handler::update)
                 .andRoute(DELETE(pathPrefix + "/{id}"), handler::delete)
                 .andRoute(GET(pathPrefix), handler::listPaginated);
-
-        return routes;
     }
 
     private static RouterFunction<ServerResponse> mtCrudRoutes(final String pathPrefix, CrudHandler<ServerRequest, Mono<ServerResponse>> handler) {
@@ -65,5 +64,4 @@ public class RouterConfig {
                 haulMgmtRoutes(haulHandler)
         );
     }
-
 }
