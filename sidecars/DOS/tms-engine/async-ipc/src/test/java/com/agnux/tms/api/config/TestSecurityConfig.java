@@ -17,7 +17,11 @@ import java.util.Map;
 @Profile("test")
 public class TestSecurityConfig {
 
-    public static final String FAKE_TOKEN = "fake-token";
+    private static final String FAKE_TOKEN = "fake-token";
+
+    public String getFakeToken() {
+        return String.format("Bearer %s", FAKE_TOKEN);
+    }
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {

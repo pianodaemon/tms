@@ -1,5 +1,6 @@
 package com.agnux.tms.core.aipc;
 
+import com.agnux.tms.api.config.TestSecurityConfig;
 import com.agnux.tms.api.dto.AgreementDto;
 import com.agnux.tms.api.dto.BoxDto;
 import com.agnux.tms.api.dto.CustomerDto;
@@ -53,6 +54,9 @@ class AIPCRouterIntegrationTest {
     @Autowired
     private WebTestClient webTestClient;
 
+    @Autowired
+    private TestSecurityConfig tsConfig;
+
     @Container
     static final PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:16")
             .withDatabaseName("aipctestdb")
@@ -95,7 +99,7 @@ class AIPCRouterIntegrationTest {
 
         var response = webTestClient.post()
                 .uri(prefixPathWithTenant)
-                .header("Authorization", "Bearer fake-token")
+                .header("Authorization", tsConfig.getFakeToken())
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(newDriver)
                 .exchange()
@@ -115,7 +119,7 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + newID)
-                .header("Authorization", "Bearer fake-token")
+                .header("Authorization", tsConfig.getFakeToken())
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -124,13 +128,13 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.delete()
                 .uri(prefixPathWithTenant + "/" + newID)
-                .header("Authorization", "Bearer fake-token")
+                .header("Authorization", tsConfig.getFakeToken())
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + newID)
-                .header("Authorization", "Bearer fake-token")
+                .header("Authorization", tsConfig.getFakeToken())
                 .exchange()
                 .expectStatus().isNotFound();
 
@@ -140,7 +144,7 @@ class AIPCRouterIntegrationTest {
             DriverDto d = new DriverDto(null, "Paginated Driver " + i, "RFC" + i, "LIC" + i, "REG" + i);
             var res = webTestClient.post()
                     .uri(prefixPathWithTenant)
-                    .header("Authorization", "Bearer fake-token")
+                    .header("Authorization", tsConfig.getFakeToken())
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(d)
                     .exchange()
@@ -160,7 +164,7 @@ class AIPCRouterIntegrationTest {
                 .queryParam("page_size", "4")
                 .queryParam("page_number", "1")
                 .build())
-                .header("Authorization", "Bearer fake-token")
+                .header("Authorization", tsConfig.getFakeToken())
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -176,7 +180,7 @@ class AIPCRouterIntegrationTest {
                 .queryParam("page_size", "4")
                 .queryParam("page_number", "2")
                 .build())
-                .header("Authorization", "Bearer fake-token")
+                .header("Authorization", tsConfig.getFakeToken())
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -189,13 +193,13 @@ class AIPCRouterIntegrationTest {
         for (UUID id : createdDriverIds) {
             webTestClient.delete()
                     .uri(prefixPathWithTenant + "/" + id)
-                    .header("Authorization", "Bearer fake-token")
+                    .header("Authorization", tsConfig.getFakeToken())
                     .exchange()
                     .expectStatus().isNoContent();
 
             webTestClient.get()
                     .uri(prefixPathWithTenant + "/" + id)
-                    .header("Authorization", "Bearer fake-token")
+                    .header("Authorization", tsConfig.getFakeToken())
                     .exchange()
                     .expectStatus().isNotFound();
         }
