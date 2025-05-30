@@ -17,6 +17,8 @@ import java.util.Map;
 @Profile("test")
 public class TestSecurityConfig {
 
+    public static final String FAKE_TOKEN = "fake-token";
+
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         return http
@@ -31,7 +33,7 @@ public class TestSecurityConfig {
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
         return token -> {
-            if (!"fake-token".equals(token)) {
+            if (!FAKE_TOKEN.equals(token)) {
                 return Mono.error(new RuntimeException("Invalid token"));
             }
 
