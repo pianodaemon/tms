@@ -348,7 +348,7 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + createdCustomer.getId())
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -357,13 +357,13 @@ class AIPCRouterIntegrationTest {
 
         webTestClient.delete()
                 .uri(prefixPathWithTenant + "/" + createdCustomer.getId())
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isNoContent();
 
         webTestClient.get()
                 .uri(prefixPathWithTenant + "/" + createdCustomer.getId())
-                .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                 .exchange()
                 .expectStatus().isNotFound();
 
@@ -377,7 +377,7 @@ class AIPCRouterIntegrationTest {
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(customer)
-                        .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                        .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                         .exchange()
                         .expectStatus().isOk()
                         .expectBody(CustomerDto.class)
@@ -395,7 +395,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_size", "3")
                     .queryParam("page_number", "1")
                     .build())
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .exchange()
                     .expectStatus().isOk()
                     .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -411,7 +411,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_size", "3")
                     .queryParam("page_number", "2")
                     .build())
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .exchange()
                     .expectStatus().isOk()
                     .expectHeader().contentType(MediaType.APPLICATION_JSON)
@@ -424,13 +424,13 @@ class AIPCRouterIntegrationTest {
             for (UUID id : createdCustomerIds) {
                 webTestClient.delete()
                         .uri(prefixPathWithTenant + "/" + id)
-                        .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                        .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                         .exchange()
                         .expectStatus().isNoContent();
 
                 webTestClient.get()
                         .uri(prefixPathWithTenant + "/" + id)
-                        .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                        .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                         .exchange()
                         .expectStatus().isNotFound();
             }
@@ -445,7 +445,7 @@ class AIPCRouterIntegrationTest {
                 CustomerDto customer = new CustomerDto(null, name);
                 var res = webTestClient.post()
                         .uri(prefixPathWithTenant)
-                        .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                        .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(customer)
                         .exchange()
@@ -466,7 +466,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_number", "1")
                     .queryParam("page_order_by", "name")
                     .build())
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody()
@@ -486,7 +486,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_order_by", "name")
                     .queryParam("page_order", "DESC")
                     .build())
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody()
@@ -504,7 +504,7 @@ class AIPCRouterIntegrationTest {
                     .queryParam("page_order", "DESC")
                     .queryParam("filter_qu_name", "%arl%")
                     .build())
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .exchange()
                     .expectStatus().isOk()
                     .expectBody()
@@ -517,7 +517,7 @@ class AIPCRouterIntegrationTest {
                     .path(prefixPathWithTenant)
                     .queryParam("filter_qu_name", "zzzzzz")
                     .build())
-                    .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                    .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .exchange()
                     .expectStatus().isNotFound();
 
@@ -525,13 +525,13 @@ class AIPCRouterIntegrationTest {
             for (UUID id : createdCustomerIds) {
                 webTestClient.delete()
                         .uri(prefixPathWithTenant + "/" + id)
-                        .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                        .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                         .exchange()
                         .expectStatus().isNoContent();
 
                 webTestClient.get()
                         .uri(prefixPathWithTenant + "/" + id)
-                        .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                        .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                         .exchange()
                         .expectStatus().isNotFound();
             }
@@ -560,7 +560,7 @@ class AIPCRouterIntegrationTest {
                         .uri(prefixPathWithTenant)
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(invalidCustomer)
-                        .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                        .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                         .exchange()
                         .expectStatus().isBadRequest(); // assuming INVALID_DATA maps to 400
             }
@@ -587,7 +587,7 @@ class AIPCRouterIntegrationTest {
                 var validCustomer = new CustomerDto(null, validName);
                 var validRes = webTestClient.post()
                         .uri(prefixPathWithTenant)
-                        .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                        .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(validCustomer)
                         .exchange()
@@ -601,7 +601,7 @@ class AIPCRouterIntegrationTest {
                 // cleanup
                 webTestClient.delete()
                         .uri(prefixPathWithTenant + "/" + createdValid.getId())
-                        .header("Authorization", tsConfig.getFakeAuthHeaderVal())
+                        .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                         .exchange()
                         .expectStatus().isNoContent();
             }
