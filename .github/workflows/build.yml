@@ -34,7 +34,7 @@ jobs:
       - name: Test tms-engine
         run: |
           cd sidecars/DOS/tms-engine
-          sh ./gradlew test jacocoTestReport --info
+          sh ./gradlew clean test jacocoTestReport --info
 
       - name: Test cfdi-processor
         run: |

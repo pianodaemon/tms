@@ -38,7 +38,7 @@ public class HaulMgmt {
 
         if (!ship.getTenantId().equals(tenantDetails.getTenantId())) {
             final String emsg = "The assigned vehicle does not pertain to tenant " + tenantDetails.getTenantId();
-            throw new TmsException(emsg, ErrorCodes.LACKOF_DATA_INTEGRITY);
+            throw new TmsException(emsg, ErrorCodes.LACK_OF_DATA_INTEGRITY);
         }
 
         // Si el convenio no esta disponible 
@@ -48,7 +48,7 @@ public class HaulMgmt {
 
         if (!agreement.getTenantId().equals(tenantDetails.getTenantId())) {
             final String emsg = "The assigned agreement does not pertain to tenant " + tenantDetails.getTenantId();
-            throw new TmsException(emsg, ErrorCodes.LACKOF_DATA_INTEGRITY);
+            throw new TmsException(emsg, ErrorCodes.LACK_OF_DATA_INTEGRITY);
         }
 
         // calcular consumo de combustible en base a variables
