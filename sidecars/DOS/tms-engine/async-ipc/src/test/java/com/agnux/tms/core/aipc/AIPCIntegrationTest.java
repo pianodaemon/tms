@@ -619,7 +619,7 @@ class AIPCRouterIntegrationTest {
 
         VehicleDto newVehicle = new VehicleDto(
                 null,
-                "ABC-1234",
+                "ABC1234",
                 new Date(),
                 "ASDXXXX001",
                 VehicleType.DRY_VAN,
@@ -644,7 +644,7 @@ class AIPCRouterIntegrationTest {
 
         VehicleDto createdVehicule = response.getResponseBody();
         assert createdVehicule != null : "Created vehicle should not be null";
-        assert "ABC-1234".equals(createdVehicule.getNumberPlate());
+        assert "ABC1234".equals(createdVehicule.getNumberPlate());
         assert "ASDXXXX001".equals(createdVehicule.getNumberSerial());
         assert 2025 == createdVehicule.getVehicleYear();
         assert createdVehicule.getVehicleColor() == VehicleColor.GRAY;
@@ -660,7 +660,7 @@ class AIPCRouterIntegrationTest {
                 .expectStatus().isOk()
                 .expectHeader().contentType(MediaType.APPLICATION_JSON)
                 .expectBody()
-                .jsonPath("$.numberPlate").isEqualTo("ABC-1234")
+                .jsonPath("$.numberPlate").isEqualTo("ABC1234")
                 .jsonPath("$.numberSerial").isEqualTo("ASDXXXX001")
                 .jsonPath("$.vehicleType").isEqualTo("DRY_VAN")
                 .jsonPath("$.vehicleColor").isEqualTo("GRAY")
@@ -687,7 +687,7 @@ class AIPCRouterIntegrationTest {
             for (int i = 1; i <= 7; i++) {
                 VehicleDto v = new VehicleDto(
                         null,
-                        "PLATE-" + i,
+                        "PLATE" + i,
                         new Date(),
                         "SERIAL-" + i,
                         VehicleType.DRY_VAN,
