@@ -17,7 +17,7 @@ import lombok.extern.log4j.Log4j2;
 public class TenantVerificationFilter implements HandlerFilterFunction<ServerResponse, ServerResponse> {
 
     private static final String TENANT_CLAIM = "tenantId";
-    private static final String FILTER_CONTEXT = "Tenant verification filter";
+    private static final String E_MSG_CONTEXT = "Tenant verification filter";
 
     @Override
     public Mono<ServerResponse> filter(ServerRequest request, HandlerFunction<ServerResponse> next) {
@@ -25,7 +25,7 @@ public class TenantVerificationFilter implements HandlerFilterFunction<ServerRes
         try {
             pathTenantId = request.pathVariable("tenantId");
         } catch (IllegalArgumentException ex) {
-            return badRequest(FILTER_CONTEXT, new TmsException("missing tenantId path variable", ex));
+            return badRequest(E_MSG_CONTEXT, new TmsException("missing tenantId path variable", ex));
         }
 
         return ReactiveSecurityContextHolder.getContext()
@@ -35,17 +35,17 @@ public class TenantVerificationFilter implements HandlerFilterFunction<ServerRes
 
                     if (!pathTenantId.equals(tokenTenantId)) {
                         log.error("Preventing tenant identifier spoofing");
-                        return forbidden(FILTER_CONTEXT, new TmsException("Tenant identifier mismatch", ErrorCodes.LACK_OF_DATA_INTEGRITY));
+                        return forbidden(E_MSG_CONTEXT, new TmsException("Tenant identifier mismatch", ErrorCodes.LACK_OF_DATA_INTEGRITY));
                     }
 
                     if (jwt.getExpiresAt() != null && jwt.getExpiresAt().isBefore(java.time.Instant.now())) {
                         log.debug("Token has expired");
-                        return unauthorized(FILTER_CONTEXT, new TmsException("Token expired", ErrorCodes.LACK_OF_PERMISSIONS));
+                        return unauthorized(E_MSG_CONTEXT, new TmsException("Token expired", ErrorCodes.LACK_OF_PERMISSIONS));
                     }
 
                     return next.handle(request);
                 })
-                .switchIfEmpty(unauthorized(FILTER_CONTEXT, new TmsException("Unauthorized to access this resource", ErrorCodes.LACK_OF_PERMISSIONS)));
+                .switchIfEmpty(unauthorized(E_MSG_CONTEXT, new TmsException("Unauthorized to access this resource", ErrorCodes.LACK_OF_PERMISSIONS)));
     }
 
 }
