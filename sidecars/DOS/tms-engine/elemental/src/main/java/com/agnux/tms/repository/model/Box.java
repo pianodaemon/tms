@@ -50,7 +50,10 @@ public class Box extends TmsBasicModel {
     @Override
     public void validate() throws TmsException {
         super.validate();
+        this.validateName();
+    }
 
+    public void validateName() throws TmsException {
         if (name == null || name.isBlank()) {
             throw new TmsException("Box name must not be null or blank", ErrorCodes.INVALID_DATA);
         }
