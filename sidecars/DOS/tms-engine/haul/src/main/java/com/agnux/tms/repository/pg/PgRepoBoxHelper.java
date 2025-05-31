@@ -40,7 +40,7 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_box");
         }
 
-        String sql = "SELECT * FROM alter_box(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::DATE, ?::INT, ?::BOOLEAN) AS (box_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_box(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::INT, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::DATE, ?::INT, ?::BOOLEAN) AS (box_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -50,19 +50,19 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
             } else {
                 stmt.setNull(1, Types.OTHER); // _box_id
             }
-
             stmt.setObject(2, c.getTenantId());           // _tenant_id
             stmt.setString(3, c.getName());               // _name
             stmt.setString(4, c.getBoxType().toString()); // _box_type
-            stmt.setString(5, c.getBrand().toString());   // _box_brand
-            stmt.setString(6, c.getNumberSerial());       // _number_serial            
-            stmt.setString(7, c.getNumberPlate());        // _number_plate
+            stmt.setInt(5, c.getNumberOfAxis());          // _number_axis
+            stmt.setString(6, c.getBrand().toString());   // _box_brand
+            stmt.setString(7, c.getNumberSerial());       // _number_serial
+            stmt.setString(8, c.getNumberPlate());        // _number_plate
 
             var expirationDate = new java.sql.Date(c.getNumberPlateExpiration().getTime());
-            stmt.setDate(8, expirationDate);              // _number_plate_expiration
+            stmt.setDate(9, expirationDate);              // _number_plate_expiration
 
-            stmt.setInt(9, c.getBoxYear());               // _box_year
-            stmt.setBoolean(10, c.isLease());             // _lease
+            stmt.setInt(10, c.getBoxYear());               // _box_year
+            stmt.setBoolean(11, c.isLease());             // _lease
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -108,6 +108,7 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
         BoxBrand brand = BoxBrand.valueOf(rs.getString("box_brand"));
         BoxType type = BoxType.valueOf(rs.getString("box_type"));
         int numberOfAxis = rs.getInt("number_axis");
+
         return new Box(id, tenantId, name, type, brand, numberOfAxis, serial, numberPlate, expirationDate, rs.getInt("box_year"), rs.getBoolean("lease"));
     }
 }
