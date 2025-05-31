@@ -22,6 +22,14 @@ public class ServiceResponseHelper {
         return errorResponse(400, context, e);
     }
 
+    public static Mono<ServerResponse> unauthorized(String context, TmsException e) {
+        return errorResponse(401, context, e);
+    }
+
+    public static Mono<ServerResponse> forbidden(String context, TmsException e) {
+        return errorResponse(403, context, e);
+    }
+
     public static Mono<ServerResponse> notFound(String context, TmsException e) {
         return errorResponse(404, context, e);
     }
