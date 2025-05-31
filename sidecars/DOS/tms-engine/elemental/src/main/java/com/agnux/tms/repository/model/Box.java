@@ -51,6 +51,7 @@ public class Box extends TmsBasicModel {
     public void validate() throws TmsException {
         super.validate();
         this.validateName();
+        this.validateBoxYear();
     }
 
     public void validateName() throws TmsException {
@@ -74,6 +75,17 @@ public class Box extends TmsBasicModel {
             if (!(Character.isLetterOrDigit(c) || c == ' ' || c == '.' || c == '-')) {
                 throw new TmsException("Box name must be alphanumeric and may contain a few single special characters only", ErrorCodes.INVALID_DATA);
             }
+        }
+    }
+
+    private void validateBoxYear() throws TmsException {
+        if (boxYear < 1970) {
+            throw new TmsException("Box year must be no earlier than 1970 (Unix epoch start)", ErrorCodes.INVALID_DATA);
+        }
+
+        int currentYear = java.time.Year.now().getValue();
+        if (boxYear > currentYear + 1) {
+            throw new TmsException("Box year cannot be in the far future", ErrorCodes.INVALID_DATA);
         }
     }
 }
