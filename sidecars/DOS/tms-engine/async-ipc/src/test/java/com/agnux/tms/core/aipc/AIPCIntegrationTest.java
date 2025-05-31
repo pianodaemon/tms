@@ -609,7 +609,7 @@ class AIPCRouterIntegrationTest {
     }
 
     @Test
-    void testCreateAndGetVehicule() {
+    void testCreateAndGetVehicle() {
 
         UUID tenantId = tsConfig.getFakeTenantId();
         String prefixPathWithTenant = String.format("/adm/%s/vehicles", tenantId);
@@ -617,6 +617,7 @@ class AIPCRouterIntegrationTest {
         VehicleDto newVehicle = new VehicleDto(
                 null,
                 "ABC-1234",
+                new Date(),
                 "ASDXXXX001",
                 VehicleType.DRY_VAN,
                 VehicleColor.GRAY,
@@ -639,7 +640,7 @@ class AIPCRouterIntegrationTest {
                 .returnResult();
 
         VehicleDto createdVehicule = response.getResponseBody();
-        assert createdVehicule != null : "Created vehicule should not be null";
+        assert createdVehicule != null : "Created vehicle should not be null";
         assert "ABC-1234".equals(createdVehicule.getNumberPlate());
         assert "ASDXXXX001".equals(createdVehicule.getNumberSerial());
         assert 2025 == createdVehicule.getVehicleYear();
@@ -684,6 +685,7 @@ class AIPCRouterIntegrationTest {
                 VehicleDto v = new VehicleDto(
                         null,
                         "PLATE-" + i,
+                        new Date(),
                         "SERIAL-" + i,
                         VehicleType.DRY_VAN,
                         VehicleColor.GRAY,
@@ -705,7 +707,7 @@ class AIPCRouterIntegrationTest {
                         .returnResult();
 
                 VehicleDto created = res.getResponseBody();
-                assert created != null : "Created vehicule should not be null";
+                assert created != null : "Created vehicle should not be null";
                 createdVehicleIds.add(created.getId());
             }
 

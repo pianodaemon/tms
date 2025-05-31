@@ -9,16 +9,9 @@ import com.agnux.tms.reference.qualitative.VehicleType;
 import com.agnux.tms.reference.quantitative.VolUnit;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.sql.*;
+import java.sql.Date;
+import java.util.*;
 
 class PgRepoVehicleHelper extends PgRepoCommonHelper {
 
@@ -46,7 +39,7 @@ class PgRepoVehicleHelper extends PgRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_vehicle");
         }
 
-        String sql = "SELECT * FROM alter_vehicle(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::INT, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::NUMERIC) AS (vehicle_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_vehicle(?::UUID, ?::UUID, ?::VARCHAR, ?::DATE, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::INT, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::NUMERIC) AS (vehicle_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -59,14 +52,18 @@ class PgRepoVehicleHelper extends PgRepoCommonHelper {
 
             stmt.setObject(2, v.getTenantId());                   // _tenant_id
             stmt.setString(3, v.getNumberPlate());                // _number_plate
-            stmt.setString(4, v.getNumberSerial());               // _number_serial
-            stmt.setString(5, v.getVehicleType().toString());     // _vehicle_type
-            stmt.setString(6, v.getVehicleColor().toString());     // _vehicle_color
-            stmt.setInt(7, v.getVehicleYear());                   // _vehicle_year
-            stmt.setString(8, v.getFederalConf());                // _federal_conf
-            stmt.setString(9, v.getPerfDistUnit().toString());    // _perf_dist_unit
-            stmt.setString(10, v.getPerfVolUnit().toString());     // _perf_vol_unit
-            stmt.setBigDecimal(11, v.getPerfScalar());             // _perf_scalar
+
+            var expirationDate = new java.sql.Date(v.getNumberPlateExpiration().getTime());
+            stmt.setDate(4, expirationDate);                      // _number_plate_expiration
+
+            stmt.setString(5, v.getNumberSerial());               // _number_serial
+            stmt.setString(6, v.getVehicleType().toString());     // _vehicle_type
+            stmt.setString(7, v.getVehicleColor().toString());     // _vehicle_color
+            stmt.setInt(8, v.getVehicleYear());                   // _vehicle_year
+            stmt.setString(9, v.getFederalConf());                // _federal_conf
+            stmt.setString(10, v.getPerfDistUnit().toString());    // _perf_dist_unit
+            stmt.setString(11, v.getPerfVolUnit().toString());     // _perf_vol_unit
+            stmt.setBigDecimal(12, v.getPerfScalar());             // _perf_scalar
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
@@ -96,7 +93,7 @@ class PgRepoVehicleHelper extends PgRepoCommonHelper {
         return new PgLister<>(
                 ENTITY_TABLE,
                 Set.of("id", "tenant_id", "number_plate", "number_serial", "vehicle_type", "vehicle_color", "federal_conf", "perf_dist_unit", "perf_vol_unit"),
-                Arrays.asList("id", "tenant_id", "number_plate", "number_serial", "vehicle_type", "vehicle_color", "vehicle_year", "federal_conf", "perf_dist_unit", "perf_vol_unit", "perf_scalar"),
+                List.of("*"),
                 PgRepoVehicleHelper::fromResultSet
         ).list(conn, searchParams, pageParams);
     }
@@ -106,16 +103,17 @@ class PgRepoVehicleHelper extends PgRepoCommonHelper {
         UUID vehicleId = UUID.fromString(rs.getString("id"));
         UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
         String numberPlate = rs.getString("number_plate");
+        Date expirationDate = rs.getDate("number_plate_expiration");
         String numberSerial = rs.getString("number_serial");
         VehicleType vehicleType = VehicleType.valueOf(rs.getString("vehicle_type"));
         VehicleColor vehicleColor = VehicleColor.valueOf(rs.getString("vehicle_color"));
-        Integer vehicleYear = rs.getInt("vehicle_year");
+        int vehicleYear = rs.getInt("vehicle_year");
         String federalConf = rs.getString("federal_conf");
         String distUnitStr = rs.getString("perf_dist_unit");
         String volUnitStr = rs.getString("perf_vol_unit");
         BigDecimal scalar = rs.getBigDecimal("perf_scalar");
 
-        return new Vehicle(vehicleId, tenantId, numberPlate, numberSerial,
+        return new Vehicle(vehicleId, tenantId, numberPlate, expirationDate, numberSerial,
                 vehicleType, vehicleColor, vehicleYear, federalConf, DistUnit.valueOf(distUnitStr),
                 VolUnit.valueOf(volUnitStr), scalar);
     }

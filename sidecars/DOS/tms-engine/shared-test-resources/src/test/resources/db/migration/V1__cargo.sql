@@ -61,6 +61,7 @@ CREATE TABLE vehicles (
     tenant_id UUID NOT NULL,       -- corresponds to TmsBasicModel.tenantId
     number_plate VARCHAR(10) NOT NULL,
     number_serial VARCHAR(128) NOT NULL,
+    number_plate_expiration date NOT NULL,
     vehicle_type VARCHAR(50) NOT NULL,  -- Store as a string (enum values)
     vehicle_color VARCHAR(50) NOT NULL, -- Store as a string (enum values)
     vehicle_year INT NOT NULL,
@@ -136,6 +137,7 @@ CREATE OR REPLACE FUNCTION alter_vehicle(
     _vehicle_id        UUID,
     _tenant_id         UUID,
     _number_plate      VARCHAR,
+    _number_plate_expiration DATE,
     _number_serial     VARCHAR,
     _vehicle_type      VARCHAR,
     _vehicle_color     VARCHAR,
@@ -164,6 +166,7 @@ BEGIN
                 id,
                 tenant_id,
                 number_plate,
+                number_plate_expiration,
                 number_serial,
                 vehicle_type,
                 vehicle_color,
@@ -179,6 +182,7 @@ BEGIN
                 gen_random_uuid(),
                 _tenant_id,
                 _number_plate,
+                _number_plate_expiration,
                 _number_serial,
                 _vehicle_type,
                 _vehicle_color,
@@ -198,6 +202,7 @@ BEGIN
             SET
                 tenant_id      = _tenant_id,
                 number_plate   = _number_plate,
+                number_plate_expiration = _number_plate_expiration,
                 number_serial  = _number_serial,
                 vehicle_type   = _vehicle_type,
                 vehicle_color  = _vehicle_color,

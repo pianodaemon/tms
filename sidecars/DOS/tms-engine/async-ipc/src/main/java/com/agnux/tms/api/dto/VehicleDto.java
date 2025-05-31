@@ -5,6 +5,7 @@ import com.agnux.tms.reference.qualitative.VehicleColor;
 import com.agnux.tms.reference.qualitative.VehicleType;
 import com.agnux.tms.reference.quantitative.VolUnit;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ public class VehicleDto {
 
     private UUID id;
     private String numberPlate;
+    private Date numberPlateExpiration;
     private String numberSerial;
     private VehicleType vehicleType;
     private VehicleColor vehicleColor;
