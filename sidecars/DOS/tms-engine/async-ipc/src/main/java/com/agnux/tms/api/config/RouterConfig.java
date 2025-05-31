@@ -1,7 +1,7 @@
 package com.agnux.tms.api.config;
 
 import com.agnux.tms.api.handler.*;
-import com.agnux.tms.api.security.TenantVerificationFilter;
+import com.agnux.tms.api.security.*;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,17 +39,21 @@ public class RouterConfig {
 
     @Bean
     public RouterFunction<ServerResponse> admRouter(
-            AgreementHandler agreementHandler, CustomerHandler customerHandler, BoxHandler boxHandler,
-            DriverHandler driverHandler, PatioHandler patioHandler, VehicleHandler vehicleHandler,
+            AgreementHandler agreementHandler, AgreementRoleFilter agreementRoleFilter,
+            CustomerHandler customerHandler, CustomerRoleFilter customerRoleFilter,
+            BoxHandler boxHandler, BoxRoleFilter boxRoleFilter,
+            DriverHandler driverHandler, DriverRoleFilter driverRoleFilter,
+            PatioHandler patioHandler, PatioRoleFilter patioRoleFilter,
+            VehicleHandler vehicleHandler, VehicleRoleFilter vehicleRoleFilter,
             TenantVerificationFilter tenantVerificationFilter) {
 
         return nest(path("/" + ADM_API_PATH),
-                mtCrudRoutes("/agreements", agreementHandler)
-                        .and(mtCrudRoutes("/boxes", boxHandler))
-                        .and(mtCrudRoutes("/customers", customerHandler))
-                        .and(mtCrudRoutes("/drivers", driverHandler))
-                        .and(mtCrudRoutes("/patios", patioHandler))
-                        .and(mtCrudRoutes("/vehicles", vehicleHandler))
+                mtCrudRoutes("/agreements", agreementHandler).filter(agreementRoleFilter)
+                        .and(mtCrudRoutes("/boxes", boxHandler)).filter(boxRoleFilter)
+                        .and(mtCrudRoutes("/customers", customerHandler)).filter(customerRoleFilter)
+                        .and(mtCrudRoutes("/drivers", driverHandler)).filter(driverRoleFilter)
+                        .and(mtCrudRoutes("/patios", patioHandler)).filter(patioRoleFilter)
+                        .and(mtCrudRoutes("/vehicles", vehicleHandler)).filter(vehicleRoleFilter)
         ).filter(tenantVerificationFilter);
     }
 

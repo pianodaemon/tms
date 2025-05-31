@@ -11,6 +11,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -49,7 +50,7 @@ public class TestSecurityConfig {
 
             Map<String, Object> claims = new HashMap<>();
             claims.put("sub", "test-user");
-            claims.put("scope", "ROLE_ADMIN");
+            claims.put("cognito:groups", List.of("Admin"));
             claims.put("tenantId", FAKE_TENANT_ID);
 
             Jwt jwt = new Jwt(
