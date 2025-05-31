@@ -9,6 +9,7 @@ import com.agnux.tms.reference.quantitative.VolUnit;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
+import java.util.regex.Pattern;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +35,8 @@ public class Vehicle extends TmsBasicModel {
     private DistUnit perfDistUnit;
     private VolUnit perfVolUnit;
     private BigDecimal perfScalar;
+
+    private static final Pattern NUMBER_PLATE_PATTERN = Pattern.compile("^[A-Za-z0-9]{4,10}$");
 
     public Vehicle(final UUID vehicleId, final UUID tenantId,
             final String numberPlate, final Date numberPlateExpiration, final String numberSerial,
@@ -71,6 +74,16 @@ public class Vehicle extends TmsBasicModel {
         int currentYear = java.time.Year.now().getValue();
         if (vehicleYear > currentYear + 1) {
             throw new TmsException("Vehicle year cannot be in the far future", ErrorCodes.INVALID_DATA);
+        }
+    }
+
+    private void validateNumberPlate() throws TmsException {
+        if (numberPlate == null) {
+            throw new TmsException("Number plate must not be null", ErrorCodes.INVALID_DATA);
+        }
+
+        if (!NUMBER_PLATE_PATTERN.matcher(numberPlate).matches()) {
+            throw new TmsException("Number plate must be greater than 3 and less than 11 alphanumeric characters with no spaces", ErrorCodes.INVALID_DATA);
         }
     }
 }
