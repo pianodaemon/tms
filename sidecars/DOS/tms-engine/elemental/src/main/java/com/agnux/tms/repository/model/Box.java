@@ -52,9 +52,16 @@ public class Box extends TmsBasicModel {
     public void validate() throws TmsException {
         super.validate();
         this.validateName();
+        this.validateNumSerial();
         this.validateNumberPlate();
         this.validateNumberPlateExpiration();
         this.validateBoxYear();
+    }
+
+    public void validateNumSerial() throws TmsException {
+        if (numberSerial == null || numberSerial.isBlank()) {
+            throw new TmsException("Box serial number must not be null or blank", ErrorCodes.INVALID_DATA);
+        }
     }
 
     public void validateName() throws TmsException {
