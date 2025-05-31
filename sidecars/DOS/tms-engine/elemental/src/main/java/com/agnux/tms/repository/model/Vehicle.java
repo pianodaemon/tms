@@ -5,6 +5,7 @@ import com.agnux.tms.reference.qualitative.VehicleType;
 import com.agnux.tms.reference.quantitative.DistUnit;
 import com.agnux.tms.reference.quantitative.VolUnit;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.UUID;
 
 import lombok.Getter;
@@ -17,6 +18,7 @@ import lombok.NoArgsConstructor;
 public class Vehicle extends TmsBasicModel {
 
     private String numberPlate;
+    private Date numberPlateExpiration;
     private String numberSerial;
     private VehicleType vehicleType;
     private VehicleColor vehicleColor;
