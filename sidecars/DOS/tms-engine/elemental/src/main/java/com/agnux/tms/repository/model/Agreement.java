@@ -1,5 +1,7 @@
 package com.agnux.tms.repository.model;
 
+import com.agnux.tms.errors.ErrorCodes;
+import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.reference.quantitative.DistUnit;
 import java.math.BigDecimal;
 import java.util.UUID;
@@ -34,7 +36,7 @@ public class Agreement extends TmsBasicModel {
             DistUnit distUnit, BigDecimal distScalar) {
         this(agreementId, tenantId);
         this.customerId = customerId;
-        this.receiver = receiver;
+        this.receiver = removeMultipleSpaces(receiver.trim());
         this.latitudeOrigin = latitudeOrigin;
         this.longitudeOrigin = longitudeOrigin;
         this.latitudeDestiny = latitudeDestiny;
@@ -45,5 +47,17 @@ public class Agreement extends TmsBasicModel {
 
     public Agreement(UUID agreementId, UUID tenantId) {
         super(agreementId, tenantId);
+    }
+
+    @Override
+    public void validate() throws TmsException {
+        super.validate();
+        this.validateNumSerial();
+    }
+
+    public void validateNumSerial() throws TmsException {
+        if (receiver == null || receiver.isBlank()) {
+            throw new TmsException("Agreement receiver must not be null or blank", ErrorCodes.INVALID_DATA);
+        }
     }
 }
