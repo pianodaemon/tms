@@ -80,7 +80,7 @@ public class Box extends TmsBasicModel {
 
     private void validateBoxYear() throws TmsException {
         if (boxYear < 1970) {
-            throw new TmsException("Box year must be no earlier than 1970 (Unix epoch start)", ErrorCodes.INVALID_DATA);
+            throw new TmsException("Box year must be no earlier than 1970", ErrorCodes.INVALID_DATA);
         }
 
         int currentYear = java.time.Year.now().getValue();
