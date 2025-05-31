@@ -2,6 +2,7 @@ package com.agnux.tms.api.config;
 
 import com.agnux.tms.api.handler.*;
 import com.agnux.tms.api.security.CustomerRoleFilter;
+import com.agnux.tms.api.security.PatioRoleFilter;
 import com.agnux.tms.api.security.TenantVerificationFilter;
 
 import org.springframework.context.annotation.Bean;
@@ -43,7 +44,9 @@ public class RouterConfig {
             AgreementHandler agreementHandler,
             CustomerHandler customerHandler, CustomerRoleFilter customerRoleFilter,
             BoxHandler boxHandler,
-            DriverHandler driverHandler, PatioHandler patioHandler, VehicleHandler vehicleHandler,
+            DriverHandler driverHandler,
+            PatioHandler patioHandler, PatioRoleFilter patioRoleFilter,
+            VehicleHandler vehicleHandler,
             TenantVerificationFilter tenantVerificationFilter) {
 
         return nest(path("/" + ADM_API_PATH),
@@ -51,7 +54,7 @@ public class RouterConfig {
                         .and(mtCrudRoutes("/boxes", boxHandler))
                         .and(mtCrudRoutes("/customers", customerHandler)).filter(customerRoleFilter)
                         .and(mtCrudRoutes("/drivers", driverHandler))
-                        .and(mtCrudRoutes("/patios", patioHandler))
+                        .and(mtCrudRoutes("/patios", patioHandler)).filter(patioRoleFilter)
                         .and(mtCrudRoutes("/vehicles", vehicleHandler))
         ).filter(tenantVerificationFilter);
     }
