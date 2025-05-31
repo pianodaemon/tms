@@ -3,6 +3,7 @@ package com.agnux.tms.api.security;
 import org.springframework.security.oauth2.jwt.Jwt;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public abstract class CognitoRoleFilter extends AbstractRoleFilter {
@@ -15,18 +16,6 @@ public abstract class CognitoRoleFilter extends AbstractRoleFilter {
 
     @Override
     protected List<String> extractUserRoles(Jwt jwt) {
-        List<String> result;
-        Object rolesObj = jwt.getClaim(GROUP_CLAIM);
-
-        if (rolesObj instanceof List<?> list) {
-            result = list.stream()
-                    .filter(String.class::isInstance)
-                    .map(String.class::cast)
-                    .toList();
-        } else {
-            result = List.of();
-        }
-
-        return result;
+        return Optional.ofNullable(jwt.getClaimAsStringList(GROUP_CLAIM)).orElse(List.of());
     }
 }
