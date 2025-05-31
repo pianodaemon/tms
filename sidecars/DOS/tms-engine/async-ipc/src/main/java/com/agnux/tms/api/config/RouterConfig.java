@@ -1,10 +1,7 @@
 package com.agnux.tms.api.config;
 
 import com.agnux.tms.api.handler.*;
-import com.agnux.tms.api.security.BoxRoleFilter;
-import com.agnux.tms.api.security.CustomerRoleFilter;
-import com.agnux.tms.api.security.PatioRoleFilter;
-import com.agnux.tms.api.security.TenantVerificationFilter;
+import com.agnux.tms.api.security.*;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,7 +42,7 @@ public class RouterConfig {
             AgreementHandler agreementHandler,
             CustomerHandler customerHandler, CustomerRoleFilter customerRoleFilter,
             BoxHandler boxHandler, BoxRoleFilter boxRoleFilter,
-            DriverHandler driverHandler,
+            DriverHandler driverHandler, DriverRoleFilter driverRoleFilter,
             PatioHandler patioHandler, PatioRoleFilter patioRoleFilter,
             VehicleHandler vehicleHandler,
             TenantVerificationFilter tenantVerificationFilter) {
@@ -54,7 +51,7 @@ public class RouterConfig {
                 mtCrudRoutes("/agreements", agreementHandler)
                         .and(mtCrudRoutes("/boxes", boxHandler)).filter(boxRoleFilter)
                         .and(mtCrudRoutes("/customers", customerHandler)).filter(customerRoleFilter)
-                        .and(mtCrudRoutes("/drivers", driverHandler))
+                        .and(mtCrudRoutes("/drivers", driverHandler)).filter(driverRoleFilter)
                         .and(mtCrudRoutes("/patios", patioHandler)).filter(patioRoleFilter)
                         .and(mtCrudRoutes("/vehicles", vehicleHandler))
         ).filter(tenantVerificationFilter);
