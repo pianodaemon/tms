@@ -23,6 +23,7 @@ import org.flywaydb.core.Flyway;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -102,6 +103,7 @@ public class BasicRepoImplTest {
                 null,
                 tenantId,
                 "ABC-123",
+                new Date(),
                 "AXD00000000A",
                 VehicleType.REFRIGERATED_VAN,
                 VehicleColor.GREEN,
@@ -327,11 +329,11 @@ public class BasicRepoImplTest {
         UUID tenantId = UUID.randomUUID();
 
         // Create the first Vehicle
-        Vehicle vehicle1 = new Vehicle(null, tenantId, "XYZ-999", "AXD00000000A", VehicleType.DELIVERY_TRUCK, VehicleColor.BROWN, 2022, "VL", DistUnit.KM, VolUnit.LT, new BigDecimal("5.5"));
+        Vehicle vehicle1 = new Vehicle(null, tenantId, "XYZ-999", new Date(),"AXD00000000A", VehicleType.DELIVERY_TRUCK, VehicleColor.BROWN, 2022, "VL", DistUnit.KM, VolUnit.LT, new BigDecimal("5.5"));
         final UUID vehicle1Id = repo.createVehicle(vehicle1);
 
         // Create the second Vehicle
-        Vehicle vehicle2 = new Vehicle(null, tenantId, "ABC-123", "AXD00000000B", VehicleType.DELIVERY_TRUCK, VehicleColor.RED, 2023, "VL", DistUnit.KM, VolUnit.LT, new BigDecimal("6.5"));
+        Vehicle vehicle2 = new Vehicle(null, tenantId, "ABC-123", new Date(),"AXD00000000B", VehicleType.DELIVERY_TRUCK, VehicleColor.RED, 2023, "VL", DistUnit.KM, VolUnit.LT, new BigDecimal("6.5"));
         final UUID vehicle2Id = repo.createVehicle(vehicle2);
 
         // Create the first Driver

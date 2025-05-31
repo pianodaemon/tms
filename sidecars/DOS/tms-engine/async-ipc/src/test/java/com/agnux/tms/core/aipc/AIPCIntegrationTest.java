@@ -617,6 +617,7 @@ class AIPCRouterIntegrationTest {
         VehicleDto newVehicle = new VehicleDto(
                 null,
                 "ABC-1234",
+                new Date(),
                 "ASDXXXX001",
                 VehicleType.DRY_VAN,
                 VehicleColor.GRAY,
@@ -684,6 +685,7 @@ class AIPCRouterIntegrationTest {
                 VehicleDto v = new VehicleDto(
                         null,
                         "PLATE-" + i,
+                        new Date(),
                         "SERIAL-" + i,
                         VehicleType.DRY_VAN,
                         VehicleColor.GRAY,
