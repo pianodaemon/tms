@@ -44,13 +44,13 @@ class SQSClientHelper {
         Optional<String> secret = Optional.ofNullable(System.getenv("AWS_SECRET_ACCESS_KEY"));
 
         // Validate and create AWS credentials
-        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(key.orElseThrow(() -> new TmsException("AWS key was not provided", ErrorCodes.FIFO_PROVIDEER_ISSUES)),
-                secret.orElseThrow(() -> new TmsException("AWS secret was not provided", ErrorCodes.FIFO_PROVIDEER_ISSUES))
+        AwsBasicCredentials awsCredentials = AwsBasicCredentials.create(key.orElseThrow(() -> new TmsException("AWS key was not provided", ErrorCodes.FIFO_PROVIDER_ISSUES)),
+                secret.orElseThrow(() -> new TmsException("AWS secret was not provided", ErrorCodes.FIFO_PROVIDER_ISSUES))
         );
 
         // Configure and build the SQS client
         return SqsClient.builder()
-                .region(Region.of(region.orElseThrow(() -> new TmsException("AWS region was not provided", ErrorCodes.FIFO_PROVIDEER_ISSUES))))
+                .region(Region.of(region.orElseThrow(() -> new TmsException("AWS region was not provided", ErrorCodes.FIFO_PROVIDER_ISSUES))))
                 .credentialsProvider(StaticCredentialsProvider.create(awsCredentials))
                 .build();
     }

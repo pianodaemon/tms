@@ -90,7 +90,7 @@ class HaulMgmtTest {
                 -> haulMgmt.assignTrip(tenantDetails, tripDetails)
         );
 
-        assertEquals(ErrorCodes.LACKOF_DATA_INTEGRITY.getCode(), ex.getErrorCode());
+        assertEquals(ErrorCodes.LACK_OF_DATA_INTEGRITY.getCode(), ex.getErrorCode());
         assertTrue(ex.getMessage().contains("does not pertain to tenant"));
     }
 }
