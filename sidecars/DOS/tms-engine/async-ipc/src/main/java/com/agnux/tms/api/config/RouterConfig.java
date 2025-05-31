@@ -44,7 +44,7 @@ public class RouterConfig {
             BoxHandler boxHandler, BoxRoleFilter boxRoleFilter,
             DriverHandler driverHandler, DriverRoleFilter driverRoleFilter,
             PatioHandler patioHandler, PatioRoleFilter patioRoleFilter,
-            VehicleHandler vehicleHandler,
+            VehicleHandler vehicleHandler, VehicleRoleFilter vehicleRoleFilter,
             TenantVerificationFilter tenantVerificationFilter) {
 
         return nest(path("/" + ADM_API_PATH),
@@ -53,7 +53,7 @@ public class RouterConfig {
                         .and(mtCrudRoutes("/customers", customerHandler)).filter(customerRoleFilter)
                         .and(mtCrudRoutes("/drivers", driverHandler)).filter(driverRoleFilter)
                         .and(mtCrudRoutes("/patios", patioHandler)).filter(patioRoleFilter)
-                        .and(mtCrudRoutes("/vehicles", vehicleHandler))
+                        .and(mtCrudRoutes("/vehicles", vehicleHandler)).filter(vehicleRoleFilter)
         ).filter(tenantVerificationFilter);
     }
 
