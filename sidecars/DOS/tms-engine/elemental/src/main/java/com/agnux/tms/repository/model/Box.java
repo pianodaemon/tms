@@ -64,11 +64,11 @@ public class Box extends TmsBasicModel {
         }
 
         if (NAME_FIELD_INVALID_SEQUENCES.matcher(name).find()) {
-            throw new TmsException("Box name must not contain the sequences '&.' or '.&'", ErrorCodes.INVALID_DATA);
+            throw new TmsException("Box name must not contain the sequences '-.' or '.-'", ErrorCodes.INVALID_DATA);
         }
 
         if (NAME_FIELD_MULT_CONSECUTIVE.matcher(name).find()) {
-            throw new TmsException("Box name must not contain multiple consecutive dots", ErrorCodes.INVALID_DATA);
+            throw new TmsException("Box name must not contain multiple consecutive dots/hyphens", ErrorCodes.INVALID_DATA);
         }
 
         for (char c : name.toCharArray()) {
