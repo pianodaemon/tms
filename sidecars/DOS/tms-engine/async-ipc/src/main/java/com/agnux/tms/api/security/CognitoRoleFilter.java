@@ -7,7 +7,7 @@ import java.util.Set;
 
 public abstract class CognitoRoleFilter extends AbstractRoleFilter {
 
-    private static final String COGNITO_GROUP_CLAIM = "cognito:groups";
+    private static final String GROUP_CLAIM = "cognito:groups";
 
     protected CognitoRoleFilter(Set<String> requiredRoles) {
         super(requiredRoles);
@@ -16,7 +16,7 @@ public abstract class CognitoRoleFilter extends AbstractRoleFilter {
     @Override
     protected List<String> extractUserRoles(Jwt jwt) {
         List<String> result;
-        Object rolesObj = jwt.getClaim(COGNITO_GROUP_CLAIM);
+        Object rolesObj = jwt.getClaim(GROUP_CLAIM);
 
         if (rolesObj instanceof List<?> list) {
             result = list.stream()
