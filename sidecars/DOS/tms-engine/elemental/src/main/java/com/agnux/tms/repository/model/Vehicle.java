@@ -23,6 +23,7 @@ public class Vehicle extends TmsBasicModel {
     private String numberPlate;
     private Date numberPlateExpiration;
     private String numberSerial;
+    private int numberOfAxis;
     private VehicleType vehicleType;
     private VehicleColor vehicleColor;
     private int vehicleYear;
@@ -39,14 +40,17 @@ public class Vehicle extends TmsBasicModel {
     private static final Pattern NUMBER_PLATE_PATTERN = Pattern.compile("^[A-Za-z0-9]{4,10}$");
 
     public Vehicle(final UUID vehicleId, final UUID tenantId,
-            final String numberPlate, final Date numberPlateExpiration, final String numberSerial,
-            final VehicleType vehicleType, final VehicleColor vehicleColor,
-            final int vehicleYear, final String federalConf,
-            DistUnit perfDistUnit, VolUnit perfVolUnit, BigDecimal perfScalar) {
+                   final String numberPlate, final Date numberPlateExpiration,
+                   final String numberSerial,
+                   final int numberOfAxis, final VehicleType vehicleType,
+                   final VehicleColor vehicleColor, final int vehicleYear,
+                   final String federalConf, DistUnit perfDistUnit,
+                   VolUnit perfVolUnit, BigDecimal perfScalar) {
         this(vehicleId, tenantId);
         this.numberPlate = removeMultipleSpaces(numberPlate.trim());
         this.numberPlateExpiration = numberPlateExpiration;
         this.numberSerial = removeMultipleSpaces(numberSerial.trim());
+        this.numberOfAxis = numberOfAxis;
         this.vehicleType = vehicleType;
         this.vehicleColor = vehicleColor;
         this.vehicleYear = vehicleYear;
