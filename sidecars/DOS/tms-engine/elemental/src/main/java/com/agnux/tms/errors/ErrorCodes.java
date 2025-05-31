@@ -1,5 +1,7 @@
 package com.agnux.tms.errors;
 
+import lombok.Getter;
+
 /**
  * Enum representing the different error codes used within the SPEI system.
  * <p>
@@ -9,6 +11,7 @@ package com.agnux.tms.errors;
  * specific issues, making error handling and debugging easier.
  * </p>
  */
+@Getter
 public enum ErrorCodes {
 
     /**
@@ -23,7 +26,7 @@ public enum ErrorCodes {
     /**
      * Error code indicating that a lack of data integrity has been spotted.
      */
-    LACKOF_DATA_INTEGRITY(1001),
+    LACK_OF_DATA_INTEGRITY(1001),
     /**
      * Error code indicating that a required configuration element was not
      * found. This error typically occurs when an expected environment variable
@@ -51,14 +54,13 @@ public enum ErrorCodes {
      * entity. This error occurs when there are problems related to pushing or
      * pulling data from the FIFO queue.
      */
-    FIFO_PROVIDEER_ISSUES(1006), // Lack of interaction with FIFO provider entity
+    FIFO_PROVIDER_ISSUES(1006), // Lack of interaction with FIFO provider entity
 
-    INVALID_DATA(1007);
+    LACK_OF_PERMISSIONS(1007),
 
-    /**
-     * The integer code representing this error.
-     */
-    protected int code;
+    INVALID_DATA(1008);
+
+    private final int code;
 
     /**
      * Constructor for creating an error code with a specific integer value.
@@ -67,14 +69,5 @@ public enum ErrorCodes {
      */
     ErrorCodes(final int code) {
         this.code = code;
-    }
-
-    /**
-     * Retrieves the integer code associated with this error code.
-     *
-     * @return The integer error code.
-     */
-    public int getCode() {
-        return code;
     }
 }
