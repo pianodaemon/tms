@@ -10,11 +10,8 @@ import com.agnux.tms.reference.quantitative.VolUnit;
 
 import java.math.BigDecimal;
 import java.sql.*;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.sql.Date;
+import java.util.*;
 
 class PgRepoVehicleHelper extends PgRepoCommonHelper {
 
@@ -96,7 +93,7 @@ class PgRepoVehicleHelper extends PgRepoCommonHelper {
         return new PgLister<>(
                 ENTITY_TABLE,
                 Set.of("id", "tenant_id", "number_plate", "number_serial", "vehicle_type", "vehicle_color", "federal_conf", "perf_dist_unit", "perf_vol_unit"),
-                Arrays.asList("id", "tenant_id", "number_plate", "number_serial", "vehicle_type", "vehicle_color", "vehicle_year", "federal_conf", "perf_dist_unit", "perf_vol_unit", "perf_scalar"),
+                List.of("*"),
                 PgRepoVehicleHelper::fromResultSet
         ).list(conn, searchParams, pageParams);
     }
