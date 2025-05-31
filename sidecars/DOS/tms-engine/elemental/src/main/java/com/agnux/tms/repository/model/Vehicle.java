@@ -44,13 +44,13 @@ public class Vehicle extends TmsBasicModel {
             final int vehicleYear, final String federalConf,
             DistUnit perfDistUnit, VolUnit perfVolUnit, BigDecimal perfScalar) {
         this(vehicleId, tenantId);
-        this.numberPlate = numberPlate;
+        this.numberPlate = removeMultipleSpaces(numberPlate.trim());
         this.numberPlateExpiration = numberPlateExpiration;
-        this.numberSerial = numberSerial;
+        this.numberSerial = removeMultipleSpaces(numberSerial.trim());
         this.vehicleType = vehicleType;
         this.vehicleColor = vehicleColor;
         this.vehicleYear = vehicleYear;
-        this.federalConf = federalConf;
+        this.federalConf = removeMultipleSpaces(federalConf.trim());
         this.perfScalar = perfScalar;
         this.perfDistUnit = perfDistUnit;
         this.perfVolUnit = perfVolUnit;
