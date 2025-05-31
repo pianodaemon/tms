@@ -42,7 +42,7 @@ class PgRepoVehicleHelper extends PgRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_vehicle");
         }
 
-        String sql = "SELECT * FROM alter_vehicle(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::INT, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::NUMERIC) AS (vehicle_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_vehicle(?::UUID, ?::UUID, ?::VARCHAR, ?::DATE, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::INT, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::NUMERIC) AS (vehicle_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -55,14 +55,18 @@ class PgRepoVehicleHelper extends PgRepoCommonHelper {
 
             stmt.setObject(2, v.getTenantId());                   // _tenant_id
             stmt.setString(3, v.getNumberPlate());                // _number_plate
-            stmt.setString(4, v.getNumberSerial());               // _number_serial
-            stmt.setString(5, v.getVehicleType().toString());     // _vehicle_type
-            stmt.setString(6, v.getVehicleColor().toString());     // _vehicle_color
-            stmt.setInt(7, v.getVehicleYear());                   // _vehicle_year
-            stmt.setString(8, v.getFederalConf());                // _federal_conf
-            stmt.setString(9, v.getPerfDistUnit().toString());    // _perf_dist_unit
-            stmt.setString(10, v.getPerfVolUnit().toString());     // _perf_vol_unit
-            stmt.setBigDecimal(11, v.getPerfScalar());             // _perf_scalar
+
+            var expirationDate = new java.sql.Date(v.getNumberPlateExpiration().getTime());
+            stmt.setDate(4, expirationDate);                      // _number_plate_expiration
+
+            stmt.setString(5, v.getNumberSerial());               // _number_serial
+            stmt.setString(6, v.getVehicleType().toString());     // _vehicle_type
+            stmt.setString(7, v.getVehicleColor().toString());     // _vehicle_color
+            stmt.setInt(8, v.getVehicleYear());                   // _vehicle_year
+            stmt.setString(9, v.getFederalConf());                // _federal_conf
+            stmt.setString(10, v.getPerfDistUnit().toString());    // _perf_dist_unit
+            stmt.setString(11, v.getPerfVolUnit().toString());     // _perf_vol_unit
+            stmt.setBigDecimal(12, v.getPerfScalar());             // _perf_scalar
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {

@@ -609,7 +609,7 @@ class AIPCRouterIntegrationTest {
     }
 
     @Test
-    void testCreateAndGetVehicule() {
+    void testCreateAndGetVehicle() {
 
         UUID tenantId = tsConfig.getFakeTenantId();
         String prefixPathWithTenant = String.format("/adm/%s/vehicles", tenantId);
@@ -707,7 +707,7 @@ class AIPCRouterIntegrationTest {
                         .returnResult();
 
                 VehicleDto created = res.getResponseBody();
-                assert created != null : "Created vehicule should not be null";
+                assert created != null : "Created vehicle should not be null";
                 createdVehicleIds.add(created.getId());
             }
 
