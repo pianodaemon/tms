@@ -640,7 +640,7 @@ class AIPCRouterIntegrationTest {
                 .returnResult();
 
         VehicleDto createdVehicule = response.getResponseBody();
-        assert createdVehicule != null : "Created vehicule should not be null";
+        assert createdVehicule != null : "Created vehicle should not be null";
         assert "ABC-1234".equals(createdVehicule.getNumberPlate());
         assert "ASDXXXX001".equals(createdVehicule.getNumberSerial());
         assert 2025 == createdVehicule.getVehicleYear();
