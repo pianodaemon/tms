@@ -1,6 +1,8 @@
 package com.agnux.tms.api.security;
 
 import static com.agnux.tms.api.handler.ServiceResponseHelper.forbidden;
+import static com.agnux.tms.api.handler.ServiceResponseHelper.unauthorized;
+
 import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.errors.ErrorCodes;
 
@@ -41,7 +43,7 @@ public abstract class AbstractRoleFilter implements HandlerFilterFunction<Server
                     if (userRoles.stream().noneMatch(requiredRoles::contains)) {
                         final String errorMsg = "missing required role";
                         log.debug(errorMsg);
-                        return forbidden(E_MSG_CONTEXT, new TmsException(errorMsg, ErrorCodes.LACK_OF_PERMISSIONS));
+                        return unauthorized(E_MSG_CONTEXT, new TmsException(errorMsg, ErrorCodes.LACK_OF_PERMISSIONS));
                     }
 
                     return next.handle(request);
