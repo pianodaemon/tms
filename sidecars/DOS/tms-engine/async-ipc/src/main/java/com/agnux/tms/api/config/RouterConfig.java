@@ -39,7 +39,7 @@ public class RouterConfig {
 
     @Bean
     public RouterFunction<ServerResponse> admRouter(
-            AgreementHandler agreementHandler,
+            AgreementHandler agreementHandler, AgreementRoleFilter agreementRoleFilter,
             CustomerHandler customerHandler, CustomerRoleFilter customerRoleFilter,
             BoxHandler boxHandler, BoxRoleFilter boxRoleFilter,
             DriverHandler driverHandler, DriverRoleFilter driverRoleFilter,
@@ -48,7 +48,7 @@ public class RouterConfig {
             TenantVerificationFilter tenantVerificationFilter) {
 
         return nest(path("/" + ADM_API_PATH),
-                mtCrudRoutes("/agreements", agreementHandler)
+                mtCrudRoutes("/agreements", agreementHandler).filter(agreementRoleFilter)
                         .and(mtCrudRoutes("/boxes", boxHandler)).filter(boxRoleFilter)
                         .and(mtCrudRoutes("/customers", customerHandler)).filter(customerRoleFilter)
                         .and(mtCrudRoutes("/drivers", driverHandler)).filter(driverRoleFilter)
