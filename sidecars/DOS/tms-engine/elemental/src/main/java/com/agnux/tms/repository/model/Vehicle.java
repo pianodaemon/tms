@@ -34,12 +34,13 @@ public class Vehicle extends TmsBasicModel {
     private BigDecimal perfScalar;
 
     public Vehicle(final UUID vehicleId, final UUID tenantId,
-            final String numberPlate, final String numberSerial,
+            final String numberPlate, final Date numberPlateExpiration, final String numberSerial,
             final VehicleType vehicleType, final VehicleColor vehicleColor,
             final int vehicleYear, final String federalConf,
             DistUnit perfDistUnit, VolUnit perfVolUnit, BigDecimal perfScalar) {
         this(vehicleId, tenantId);
         this.numberPlate = numberPlate;
+        this.numberPlateExpiration = numberPlateExpiration;
         this.numberSerial = numberSerial;
         this.vehicleType = vehicleType;
         this.vehicleColor = vehicleColor;

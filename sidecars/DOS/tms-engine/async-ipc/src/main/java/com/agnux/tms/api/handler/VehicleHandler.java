@@ -21,7 +21,7 @@ public class VehicleHandler extends ScaffoldHandler<Vehicle, VehicleDto> {
     @Override
     protected Vehicle entMapper(VehicleDto dto, UUID tenantId) throws TmsException {
         return new Vehicle(dto.getId(), tenantId,
-                dto.getNumberPlate(), dto.getNumberSerial(),
+                dto.getNumberPlate(), dto.getNumberPlateExpiration(), dto.getNumberSerial(),
                 dto.getVehicleType(),
                 dto.getVehicleColor(),
                 dto.getVehicleYear(), dto.getFederalConf(),
@@ -31,9 +31,10 @@ public class VehicleHandler extends ScaffoldHandler<Vehicle, VehicleDto> {
     @Override
     protected VehicleDto dtoMapper(Vehicle ent) {
         UUID id = ent.getId().orElseThrow();
-        VehicleDto dto = new VehicleDto(
+        return new VehicleDto(
                 id,
                 ent.getNumberPlate(),
+                ent.getNumberPlateExpiration(),
                 ent.getNumberSerial(),
                 ent.getVehicleType(),
                 ent.getVehicleColor(),
@@ -43,7 +44,5 @@ public class VehicleHandler extends ScaffoldHandler<Vehicle, VehicleDto> {
                 ent.getPerfVolUnit(),
                 ent.getPerfScalar()
         );
-
-        return dto;
     }
 }
