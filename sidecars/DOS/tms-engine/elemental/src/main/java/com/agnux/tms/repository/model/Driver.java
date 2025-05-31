@@ -26,7 +26,7 @@ public class Driver extends TmsBasicModel {
     public Driver(final UUID driverId, final UUID tenantId,
             final String name, final String firstSurname, final String secondSurname, final String licenseNumber) {
         this(driverId, tenantId);
-        this.name = name;
+        this.name = name.trim();
         this.firstSurname = firstSurname.trim();
         this.secondSurname = secondSurname.trim();
         this.licenseNumber = licenseNumber.trim();
