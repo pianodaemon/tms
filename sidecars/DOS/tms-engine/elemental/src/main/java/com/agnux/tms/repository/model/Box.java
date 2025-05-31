@@ -28,6 +28,7 @@ public class Box extends TmsBasicModel {
 
     private static final Pattern NAME_FIELD_MULTI_CONSECUTIVE = Pattern.compile("\\.\\.+|--++");
     private static final Pattern NAME_FIELD_INVALID_SEQUENCES = Pattern.compile("-\\.|\\.-");
+    private static final Pattern NUMBER_PLATE_PATTERN = Pattern.compile("^[A-Za-z0-9]{4,10}$");
 
     public Box(final UUID boxId, final UUID tenantId,
             String name, final BoxType boxType, BoxBrand brand, String numberSerial,
@@ -37,7 +38,7 @@ public class Box extends TmsBasicModel {
         this.boxType = boxType;
         this.brand = brand;
         this.numberSerial = numberSerial.trim();
-        this.numberPlate = numberPlate.trim();
+        this.numberPlate = removeMultipleSpaces(numberPlate.trim());
         this.numberPlateExpiration = numberPlateExpiration;
         this.boxYear = boxYear;
         this.lease = lease;
@@ -51,6 +52,7 @@ public class Box extends TmsBasicModel {
     public void validate() throws TmsException {
         super.validate();
         this.validateName();
+        this.validateNumberPlate();
         this.validateBoxYear();
     }
 
@@ -86,6 +88,16 @@ public class Box extends TmsBasicModel {
         int currentYear = java.time.Year.now().getValue();
         if (boxYear > currentYear + 1) {
             throw new TmsException("Box year cannot be in the far future", ErrorCodes.INVALID_DATA);
+        }
+    }
+
+    private void validateNumberPlate() throws TmsException {
+        if (numberPlate == null) {
+            throw new TmsException("Number plate must not be null", ErrorCodes.INVALID_DATA);
+        }
+
+        if (!NUMBER_PLATE_PATTERN.matcher(numberPlate).matches()) {
+            throw new TmsException("Number plate must be greater than 3 and less than 11 alphanumeric characters with no spaces", ErrorCodes.INVALID_DATA);
         }
     }
 }
