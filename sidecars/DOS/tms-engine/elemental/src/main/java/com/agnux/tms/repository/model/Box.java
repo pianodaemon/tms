@@ -37,7 +37,7 @@ public class Box extends TmsBasicModel {
         this.name = removeMultipleSpaces(name.trim());
         this.boxType = boxType;
         this.brand = brand;
-        this.numberSerial = numberSerial.trim();
+        this.numberSerial = removeMultipleSpaces(numberSerial.trim());
         this.numberPlate = removeMultipleSpaces(numberPlate.trim());
         this.numberPlateExpiration = numberPlateExpiration;
         this.boxYear = boxYear;
@@ -53,6 +53,7 @@ public class Box extends TmsBasicModel {
         super.validate();
         this.validateName();
         this.validateNumberPlate();
+        this.validateNumberPlateExpiration();
         this.validateBoxYear();
     }
 
@@ -100,4 +101,16 @@ public class Box extends TmsBasicModel {
             throw new TmsException("Number plate must be greater than 3 and less than 11 alphanumeric characters with no spaces", ErrorCodes.INVALID_DATA);
         }
     }
+
+    private void validateNumberPlateExpiration() throws TmsException {
+        if (numberPlateExpiration == null) {
+            throw new TmsException("Number plate expiration date must not be null", ErrorCodes.INVALID_DATA);
+        }
+
+        Date today = new Date();
+        if (!numberPlateExpiration.after(today)) {
+            throw new TmsException("Number plate expiration date must be in the future", ErrorCodes.INVALID_DATA);
+        }
+    }
+
 }
