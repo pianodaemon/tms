@@ -21,15 +21,19 @@ public class Driver extends TmsBasicModel {
     private String secondSurname;
     private String licenseNumber;
 
-    final static Pattern PATTERN_ANY_PERSON_NAME = Pattern.compile("^([A-Z][A-Za-z]+(?:[-'][A-Z][a-z]+)?)(\\s[A-Z][a-z]+(?:[-'][A-Z][a-z]+)?)*$");
+    /// \\p{L} = any kind of letter from any language
+    /// '\\- = allows apostrophes and hyphens
+    /// [ ] = allows space
+    /// Ensures length ≥ 2 and ends/starts with a letter
+    final static Pattern PATTERN_ANY_PERSON_NAME = Pattern.compile("^\\p{L}[\\p{L}'\\- ]{0,98}\\p{L}$");
 
     public Driver(final UUID driverId, final UUID tenantId,
             final String name, final String firstSurname, final String secondSurname, final String licenseNumber) {
         this(driverId, tenantId);
-        this.name = name.trim();
-        this.firstSurname = firstSurname.trim();
-        this.secondSurname = secondSurname.trim();
-        this.licenseNumber = licenseNumber.trim();
+        this.name = removeMultipleSpaces(name.trim());
+        this.firstSurname = removeMultipleSpaces(firstSurname.trim());
+        this.secondSurname = removeMultipleSpaces(secondSurname.trim());
+        this.licenseNumber = removeMultipleSpaces(licenseNumber.trim());
     }
 
     public Driver(final UUID driverId, final UUID tenantId) {
