@@ -21,7 +21,7 @@ import lombok.extern.log4j.Log4j2;
 @AllArgsConstructor
 public abstract class AbstractRoleFilter implements HandlerFilterFunction<ServerResponse, ServerResponse> {
 
-    private final Set<String> requiredRoles;
+    protected final Set<String> requiredRoles;
 
     protected static final String E_MSG_CONTEXT = "Role filter";
 

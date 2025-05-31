@@ -1,6 +1,7 @@
 package com.agnux.tms.api.config;
 
 import com.agnux.tms.api.handler.*;
+import com.agnux.tms.api.security.CustomerRoleFilter;
 import com.agnux.tms.api.security.TenantVerificationFilter;
 
 import org.springframework.context.annotation.Bean;
@@ -39,7 +40,9 @@ public class RouterConfig {
 
     @Bean
     public RouterFunction<ServerResponse> admRouter(
-            AgreementHandler agreementHandler, CustomerHandler customerHandler, BoxHandler boxHandler,
+            AgreementHandler agreementHandler,
+            CustomerHandler customerHandler, CustomerRoleFilter customerRoleFilter,
+            BoxHandler boxHandler,
             DriverHandler driverHandler, PatioHandler patioHandler, VehicleHandler vehicleHandler,
             TenantVerificationFilter tenantVerificationFilter) {
 
