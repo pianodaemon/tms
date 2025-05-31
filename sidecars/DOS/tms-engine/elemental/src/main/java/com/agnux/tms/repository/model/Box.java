@@ -112,5 +112,4 @@ public class Box extends TmsBasicModel {
             throw new TmsException("Number plate expiration date must be in the future", ErrorCodes.INVALID_DATA);
         }
     }
-
 }

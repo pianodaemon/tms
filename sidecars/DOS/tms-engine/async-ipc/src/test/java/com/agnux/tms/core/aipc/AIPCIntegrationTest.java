@@ -617,10 +617,14 @@ class AIPCRouterIntegrationTest {
         UUID tenantId = tsConfig.getFakeTenantId();
         String prefixPathWithTenant = String.format("/adm/%s/vehicles", tenantId);
 
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR, 24);
+        Date expirationDate = calendar.getTime();
+
         VehicleDto newVehicle = new VehicleDto(
                 null,
                 "ABC1234",
-                new Date(),
+                expirationDate,
                 "ASDXXXX001",
                 VehicleType.DRY_VAN,
                 VehicleColor.GRAY,
@@ -688,7 +692,7 @@ class AIPCRouterIntegrationTest {
                 VehicleDto v = new VehicleDto(
                         null,
                         "PLATE" + i,
-                        new Date(),
+                        expirationDate,
                         "SERIAL-" + i,
                         VehicleType.DRY_VAN,
                         VehicleColor.GRAY,

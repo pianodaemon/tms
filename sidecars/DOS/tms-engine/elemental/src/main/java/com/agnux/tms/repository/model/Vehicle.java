@@ -64,6 +64,7 @@ public class Vehicle extends TmsBasicModel {
     public void validate() throws TmsException {
         super.validate();
         this.validateNumberPlate();
+        this.validateNumberPlateExpiration();
         this.validateVehicleYear();
     }
 
@@ -85,6 +86,17 @@ public class Vehicle extends TmsBasicModel {
 
         if (!NUMBER_PLATE_PATTERN.matcher(numberPlate).matches()) {
             throw new TmsException("Number plate must be greater than 3 and less than 11 alphanumeric characters with no spaces", ErrorCodes.INVALID_DATA);
+        }
+    }
+
+    private void validateNumberPlateExpiration() throws TmsException {
+        if (numberPlateExpiration == null) {
+            throw new TmsException("Number plate expiration date must not be null", ErrorCodes.INVALID_DATA);
+        }
+
+        Date today = new Date();
+        if (!numberPlateExpiration.after(today)) {
+            throw new TmsException("Number plate expiration date must be in the future", ErrorCodes.INVALID_DATA);
         }
     }
 }
