@@ -34,12 +34,18 @@ public class TenantVerificationFilter implements HandlerFilterFunction<ServerRes
                     String tokenTenantId = jwt.getClaimAsString(TENANT_CLAIM);
 
                     if (!pathTenantId.equals(tokenTenantId)) {
-                        log.info("Preventing tenant identifier spoofing");
+                        log.error("Preventing tenant identifier spoofing");
                         return forbidden(FILTER_CONTEXT, new TmsException("Tenant identifier mismatch", ErrorCodes.LACK_OF_DATA_INTEGRITY));
+                    }
+
+                    if (jwt.getExpiresAt() != null && jwt.getExpiresAt().isBefore(java.time.Instant.now())) {
+                        log.debug("Token has expired");
+                        return unauthorized(FILTER_CONTEXT, new TmsException("Token expired", ErrorCodes.LACK_OF_PERMISSIONS));
                     }
 
                     return next.handle(request);
                 })
                 .switchIfEmpty(unauthorized(FILTER_CONTEXT, new TmsException("Unauthorized to access this resource", ErrorCodes.LACK_OF_PERMISSIONS)));
     }
+
 }
