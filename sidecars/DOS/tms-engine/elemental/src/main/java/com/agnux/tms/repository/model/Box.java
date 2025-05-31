@@ -26,7 +26,7 @@ public class Box extends TmsBasicModel {
     private int boxYear;
     private boolean lease;
 
-    private static final Pattern NAME_FIELD_MULT_CONSECUTIVE = Pattern.compile("\\.\\.+|--++");
+    private static final Pattern NAME_FIELD_MULTI_CONSECUTIVE = Pattern.compile("\\.\\.+|--++");
     private static final Pattern NAME_FIELD_INVALID_SEQUENCES = Pattern.compile("-\\.|\\.-");
 
     public Box(final UUID boxId, final UUID tenantId,
@@ -67,7 +67,7 @@ public class Box extends TmsBasicModel {
             throw new TmsException("Box name must not contain the sequences '-.' or '.-'", ErrorCodes.INVALID_DATA);
         }
 
-        if (NAME_FIELD_MULT_CONSECUTIVE.matcher(name).find()) {
+        if (NAME_FIELD_MULTI_CONSECUTIVE.matcher(name).find()) {
             throw new TmsException("Box name must not contain multiple consecutive dots/hyphens", ErrorCodes.INVALID_DATA);
         }
 
