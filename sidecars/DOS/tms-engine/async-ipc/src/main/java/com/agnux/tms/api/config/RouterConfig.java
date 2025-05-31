@@ -1,6 +1,7 @@
 package com.agnux.tms.api.config;
 
 import com.agnux.tms.api.handler.*;
+import com.agnux.tms.api.security.BoxRoleFilter;
 import com.agnux.tms.api.security.CustomerRoleFilter;
 import com.agnux.tms.api.security.PatioRoleFilter;
 import com.agnux.tms.api.security.TenantVerificationFilter;
@@ -43,7 +44,7 @@ public class RouterConfig {
     public RouterFunction<ServerResponse> admRouter(
             AgreementHandler agreementHandler,
             CustomerHandler customerHandler, CustomerRoleFilter customerRoleFilter,
-            BoxHandler boxHandler,
+            BoxHandler boxHandler, BoxRoleFilter boxRoleFilter,
             DriverHandler driverHandler,
             PatioHandler patioHandler, PatioRoleFilter patioRoleFilter,
             VehicleHandler vehicleHandler,
@@ -51,7 +52,7 @@ public class RouterConfig {
 
         return nest(path("/" + ADM_API_PATH),
                 mtCrudRoutes("/agreements", agreementHandler)
-                        .and(mtCrudRoutes("/boxes", boxHandler))
+                        .and(mtCrudRoutes("/boxes", boxHandler)).filter(boxRoleFilter)
                         .and(mtCrudRoutes("/customers", customerHandler)).filter(customerRoleFilter)
                         .and(mtCrudRoutes("/drivers", driverHandler))
                         .and(mtCrudRoutes("/patios", patioHandler)).filter(patioRoleFilter)

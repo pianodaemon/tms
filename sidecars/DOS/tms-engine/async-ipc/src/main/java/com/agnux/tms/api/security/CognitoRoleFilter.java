@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-public abstract class CognitoRoleFilter extends AbstractRoleFilter {
+abstract class CognitoRoleFilter extends AbstractRoleFilter {
 
     private static final String GROUP_CLAIM = "cognito:groups";
 

@@ -19,7 +19,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @AllArgsConstructor
-public abstract class AbstractRoleFilter implements HandlerFilterFunction<ServerResponse, ServerResponse> {
+abstract class AbstractRoleFilter implements HandlerFilterFunction<ServerResponse, ServerResponse> {
 
     protected final Set<String> requiredRoles;
 
