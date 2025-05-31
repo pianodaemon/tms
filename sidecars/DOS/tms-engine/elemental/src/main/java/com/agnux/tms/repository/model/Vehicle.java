@@ -1,5 +1,7 @@
 package com.agnux.tms.repository.model;
 
+import com.agnux.tms.errors.ErrorCodes;
+import com.agnux.tms.errors.TmsException;
 import com.agnux.tms.reference.qualitative.VehicleColor;
 import com.agnux.tms.reference.qualitative.VehicleType;
 import com.agnux.tms.reference.quantitative.DistUnit;
@@ -53,5 +55,22 @@ public class Vehicle extends TmsBasicModel {
 
     public Vehicle(final UUID vehicleId, final UUID tenantId) {
         super(vehicleId, tenantId);
+    }
+
+    @Override
+    public void validate() throws TmsException {
+        super.validate();
+        this.validateVehicleYear();
+    }
+
+    private void validateVehicleYear() throws TmsException {
+        if (vehicleYear < 1970) {
+            throw new TmsException("Vehicle year must be no earlier than 1970", ErrorCodes.INVALID_DATA);
+        }
+
+        int currentYear = java.time.Year.now().getValue();
+        if (vehicleYear > currentYear + 1) {
+            throw new TmsException("Vehicle year cannot be in the far future", ErrorCodes.INVALID_DATA);
+        }
     }
 }
