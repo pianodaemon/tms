@@ -49,7 +49,7 @@ public class RouterConfig {
         return nest(path("/" + ADM_API_PATH),
                 mtCrudRoutes("/agreements", agreementHandler)
                         .and(mtCrudRoutes("/boxes", boxHandler))
-                        .and(mtCrudRoutes("/customers", customerHandler))
+                        .and(mtCrudRoutes("/customers", customerHandler)).filter(customerRoleFilter)
                         .and(mtCrudRoutes("/drivers", driverHandler))
                         .and(mtCrudRoutes("/patios", patioHandler))
                         .and(mtCrudRoutes("/vehicles", vehicleHandler))
