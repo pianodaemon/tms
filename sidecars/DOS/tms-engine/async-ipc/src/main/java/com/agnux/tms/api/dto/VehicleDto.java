@@ -23,6 +23,7 @@ public class VehicleDto {
     private String numberPlate;
     private Date numberPlateExpiration;
     private String numberSerial;
+    private int numberOfAxis;
     private VehicleType vehicleType;
     private VehicleColor vehicleColor;
     private int vehicleYear;
