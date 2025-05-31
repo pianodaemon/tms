@@ -20,6 +20,7 @@ public class Box extends TmsBasicModel {
     private String name;
     private BoxType boxType;
     private BoxBrand brand;
+    private int numberOfAxis;
     private String numberSerial;
     private String numberPlate;
     private Date numberPlateExpiration;
@@ -31,12 +32,14 @@ public class Box extends TmsBasicModel {
     private static final Pattern NUMBER_PLATE_PATTERN = Pattern.compile("^[A-Za-z0-9]{4,10}$");
 
     public Box(final UUID boxId, final UUID tenantId,
-            String name, final BoxType boxType, BoxBrand brand, String numberSerial,
+            String name, final BoxType boxType, BoxBrand brand,
+            final int numberOfAxis,  String numberSerial,
             String numberPlate, Date numberPlateExpiration, int boxYear, boolean lease) {
         this(boxId, tenantId);
         this.name = removeMultipleSpaces(name.trim());
         this.boxType = boxType;
         this.brand = brand;
+        this.numberOfAxis = numberOfAxis;
         this.numberSerial = removeMultipleSpaces(numberSerial.trim());
         this.numberPlate = removeMultipleSpaces(numberPlate.trim());
         this.numberPlateExpiration = numberPlateExpiration;
