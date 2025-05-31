@@ -24,6 +24,7 @@ CREATE TABLE boxes (
     number_serial VARCHAR(20) NOT NULL,
     number_plate VARCHAR(10) NOT NULL,
     number_plate_expiration date NOT NULL,
+    number_axis SMALLINT NOT NULL,
     box_year INT NOT NULL,
     lease BOOLEAN DEFAULT false NOT NULL,
     last_touch_time timestamp with time zone NOT NULL,
@@ -62,6 +63,7 @@ CREATE TABLE vehicles (
     number_plate VARCHAR(10) NOT NULL,
     number_serial VARCHAR(128) NOT NULL,
     number_plate_expiration date NOT NULL,
+    number_axis SMALLINT NOT NULL,
     vehicle_type VARCHAR(50) NOT NULL,  -- Store as a string (enum values)
     vehicle_color VARCHAR(50) NOT NULL, -- Store as a string (enum values)
     vehicle_year INT NOT NULL,
@@ -139,6 +141,7 @@ CREATE OR REPLACE FUNCTION alter_vehicle(
     _number_plate      VARCHAR,
     _number_plate_expiration DATE,
     _number_serial     VARCHAR,
+    _number_axis       SMALLINT,
     _vehicle_type      VARCHAR,
     _vehicle_color     VARCHAR,
     _vehicle_year      INT,
@@ -372,6 +375,7 @@ CREATE OR REPLACE FUNCTION alter_box(
     _tenant_id   UUID,
     _name        VARCHAR,
     _box_type    VARCHAR,
+    _number_axis   SMALLINT,
     _box_brand   VARCHAR,
     _number_serial VARCHAR,
     _number_plate  VARCHAR,
