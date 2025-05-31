@@ -63,9 +63,16 @@ public class Vehicle extends TmsBasicModel {
     @Override
     public void validate() throws TmsException {
         super.validate();
+        this.validateNumSerial();
         this.validateNumberPlate();
         this.validateNumberPlateExpiration();
         this.validateVehicleYear();
+    }
+
+    public void validateNumSerial() throws TmsException {
+        if (numberSerial == null || numberSerial.isBlank()) {
+            throw new TmsException("Vehicle serial number must not be null or blank", ErrorCodes.INVALID_DATA);
+        }
     }
 
     private void validateVehicleYear() throws TmsException {
