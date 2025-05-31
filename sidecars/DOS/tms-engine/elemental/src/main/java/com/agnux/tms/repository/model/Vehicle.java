@@ -63,6 +63,7 @@ public class Vehicle extends TmsBasicModel {
     @Override
     public void validate() throws TmsException {
         super.validate();
+        this.validateNumberPlate();
         this.validateVehicleYear();
     }
 
