@@ -97,7 +97,7 @@ class AIPCRouterIntegrationTest {
         UUID tenantId = tsConfig.getFakeTenantId();
         String prefixPathWithTenant = String.format("/adm/%s/drivers", tenantId);
 
-        DriverDto newDriver = new DriverDto(null, "Integration Test Driver", "tyson", "wallas", "D123456789");
+        DriverDto newDriver = new DriverDto(null, "Integration Test Driver", "Tyson", "Wallas", "D123456789");
 
         var response = webTestClient.post()
                 .uri(prefixPathWithTenant)
@@ -113,8 +113,8 @@ class AIPCRouterIntegrationTest {
         DriverDto createdDriver = response.getResponseBody();
         assert createdDriver != null : "Created driver should not be null";
         assert "Integration Test Driver".equals(createdDriver.getName());
-        assert "tyson".equals(createdDriver.getFirstSurname());
-        assert "wallas".equals(createdDriver.getSecondSurname());
+        assert "Tyson".equals(createdDriver.getFirstSurname());
+        assert "Wallas".equals(createdDriver.getSecondSurname());
         assert "D123456789".equals(createdDriver.getLicenseNumber());
 
         final UUID newID = createdDriver.getId();
@@ -143,14 +143,17 @@ class AIPCRouterIntegrationTest {
         // --- Pagination assertions ---
         List<UUID> createdDriverIds = new ArrayList<>();
         for (int i = 1; i <= 6; i++) {
-            DriverDto d = new DriverDto(null, "Paginated Driver " + i, "RFC" + i, "LIC" + i, "REG" + i);
+            char letter = (char) (96 + i);
+            String pepper = String.valueOf(letter);
+            DriverDto d = new DriverDto(null, "Paginated Driver Tuk" + pepper, "RFC" + pepper, "LIC" + pepper, "REG" + pepper);
             var res = webTestClient.post()
                     .uri(prefixPathWithTenant)
                     .header(AUTH_HEADER_NAME, tsConfig.getFakeAuthHeaderVal())
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(d)
                     .exchange()
-                    .expectStatus().isOk()
+                    .expectStatus()
+                    .isOk()
                     .expectBody(DriverDto.class)
                     .returnResult();
 
