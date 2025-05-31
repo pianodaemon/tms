@@ -67,11 +67,18 @@ public class Vehicle extends TmsBasicModel {
         this.validateNumberPlate();
         this.validateNumberPlateExpiration();
         this.validateVehicleYear();
+        this.validateFederalConf();
     }
 
     public void validateNumSerial() throws TmsException {
         if (numberSerial == null || numberSerial.isBlank()) {
             throw new TmsException("Vehicle serial number must not be null or blank", ErrorCodes.INVALID_DATA);
+        }
+    }
+
+    public void validateFederalConf() throws TmsException {
+        if (federalConf == null || federalConf.isBlank()) {
+            throw new TmsException("Vehicle federal conf must not be null or blank", ErrorCodes.INVALID_DATA);
         }
     }
 
