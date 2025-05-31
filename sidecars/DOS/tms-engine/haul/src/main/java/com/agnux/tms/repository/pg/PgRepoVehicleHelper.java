@@ -9,11 +9,7 @@ import com.agnux.tms.reference.qualitative.VehicleType;
 import com.agnux.tms.reference.quantitative.VolUnit;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Types;
+import java.sql.*;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
@@ -106,16 +102,17 @@ class PgRepoVehicleHelper extends PgRepoCommonHelper {
         UUID vehicleId = UUID.fromString(rs.getString("id"));
         UUID tenantId = UUID.fromString(rs.getString("tenant_id"));
         String numberPlate = rs.getString("number_plate");
+        Date expirationDate = rs.getDate("number_plate_expiration");
         String numberSerial = rs.getString("number_serial");
         VehicleType vehicleType = VehicleType.valueOf(rs.getString("vehicle_type"));
         VehicleColor vehicleColor = VehicleColor.valueOf(rs.getString("vehicle_color"));
-        Integer vehicleYear = rs.getInt("vehicle_year");
+        int vehicleYear = rs.getInt("vehicle_year");
         String federalConf = rs.getString("federal_conf");
         String distUnitStr = rs.getString("perf_dist_unit");
         String volUnitStr = rs.getString("perf_vol_unit");
         BigDecimal scalar = rs.getBigDecimal("perf_scalar");
 
-        return new Vehicle(vehicleId, tenantId, numberPlate, numberSerial,
+        return new Vehicle(vehicleId, tenantId, numberPlate, expirationDate, numberSerial,
                 vehicleType, vehicleColor, vehicleYear, federalConf, DistUnit.valueOf(distUnitStr),
                 VolUnit.valueOf(volUnitStr), scalar);
     }
