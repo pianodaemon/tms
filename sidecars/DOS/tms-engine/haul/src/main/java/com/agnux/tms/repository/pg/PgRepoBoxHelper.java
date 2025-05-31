@@ -12,11 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 class PgRepoBoxHelper extends PgRepoCommonHelper {
 
@@ -97,7 +93,7 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
         return new PgLister<>(
                 ENTITY_TABLE,
                 Set.of("id", "tenant_id", "name"),
-                Arrays.asList("*"),
+                List.of("*"),
                 PgRepoBoxHelper::fromResultSet
         ).list(conn, searchParams, pageParams);
     }
@@ -111,6 +107,7 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
         Date expirationDate = rs.getDate("number_plate_expiration");
         BoxBrand brand = BoxBrand.valueOf(rs.getString("box_brand"));
         BoxType type = BoxType.valueOf(rs.getString("box_type"));
-        return new Box(id, tenantId, name, type, brand, serial, numberPlate, expirationDate, rs.getInt("box_year"), rs.getBoolean("lease"));
+        int numberOfAxis = rs.getInt("number_axis");
+        return new Box(id, tenantId, name, type, brand, numberOfAxis, serial, numberPlate, expirationDate, rs.getInt("box_year"), rs.getBoolean("lease"));
     }
 }
