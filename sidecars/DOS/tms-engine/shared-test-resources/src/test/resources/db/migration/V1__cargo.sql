@@ -77,13 +77,15 @@ CREATE TABLE drivers (
     CONSTRAINT unique_license_per_tenant UNIQUE (tenant_id, license_number)
 );
 
-COMMENT ON COLUMN drivers.id IS 'Identificador unico de conductor';
+COMMENT ON COLUMN drivers.id IS 'Identificador unico de chofer';
 COMMENT ON COLUMN drivers.tenant_id IS 'Pertenece a subscriptor';
-COMMENT ON COLUMN drivers.name IS 'Nombre de el conductor';
-
-COMMENT ON COLUMN drivers.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de el conductor';
-COMMENT ON COLUMN drivers.creation_time IS 'El momento en que fue creado el conductor';
-COMMENT ON COLUMN drivers.blocked IS 'Indica si el conductor fue logicamente eliminado';
+COMMENT ON COLUMN drivers.name IS 'Nombre de pila';
+COMMENT ON COLUMN drivers.first_surname IS 'Apellido paterno';
+COMMENT ON COLUMN drivers.second_surname IS 'Apellido materno';
+COMMENT ON COLUMN drivers.license_number IS 'Licencia de manejo';
+COMMENT ON COLUMN drivers.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro del chofer';
+COMMENT ON COLUMN drivers.creation_time IS 'El momento en que fue creado el chofer';
+COMMENT ON COLUMN drivers.blocked IS 'Indica si el chofer fue logicamente eliminado';
 
 
 CREATE TABLE vehicles (
