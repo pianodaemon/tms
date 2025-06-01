@@ -39,6 +39,15 @@ export class AdmApi<T, CreateDto = Omit<T, 'id'>> {
     await this.http.delete(`${this.basePath}/${id}`);
   }
 
+  async update(item: T): Promise<T> {
+    if (!item || !('id' in item) || !item.id) {
+      throw new Error('Cannot update item: missing valid id');
+    }
+
+    const response = await this.http.put<T>(this.basePath, item);
+    return response.data;
+  }
+
   async listPaginated(params: {
     pageOpts?: Record<string, string | number>;
     filters?: Record<string, string | number>;
