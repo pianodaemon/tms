@@ -8,6 +8,6 @@ export interface CustomerDto {
 
 export class CustomerApi extends AdmApi<CustomerDto> {
   constructor(tenantId: string, authToken: string, baseUrl?: string) {
-    super(tenantId, authToken, 'drivers', baseUrl);
+    super(tenantId, authToken, 'customers', baseUrl);
   }
 }
