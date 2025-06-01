@@ -160,6 +160,10 @@ CREATE TABLE patios (
     blocked boolean DEFAULT false NOT NULL
 );
 
+COMMENT ON COLUMN patios.id IS 'Identificador unico de el patio';
+COMMENT ON COLUMN patios.tenant_id IS 'Pertenece a subscriptor';
+COMMENT ON COLUMN patios.name IS 'Nombre del patio';
+
 COMMENT ON COLUMN patios.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de el patio';
 COMMENT ON COLUMN patios.creation_time IS 'El momento en que fue creado el patio';
 COMMENT ON COLUMN patios.blocked IS 'Indica si el patio fue logicamente eliminado';
