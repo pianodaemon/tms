@@ -27,6 +27,7 @@ public class Vehicle extends TmsBasicModel {
     private VehicleType vehicleType;
     private VehicleColor vehicleColor;
     private int vehicleYear;
+    private Date insuranceExpiration;
     private String federalConf;
 
     // El rendimiento es una media de los históricos
@@ -43,7 +44,7 @@ public class Vehicle extends TmsBasicModel {
                    final String numberPlate, final Date numberPlateExpiration,
                    final String numberSerial,
                    final int numberOfAxis, final VehicleType vehicleType,
-                   final VehicleColor vehicleColor, final int vehicleYear,
+                   final VehicleColor vehicleColor, final int vehicleYear, final Date insuranceExpiration,
                    final String federalConf, DistUnit perfDistUnit,
                    VolUnit perfVolUnit, BigDecimal perfScalar) {
         this(vehicleId, tenantId);
@@ -54,6 +55,7 @@ public class Vehicle extends TmsBasicModel {
         this.vehicleType = vehicleType;
         this.vehicleColor = vehicleColor;
         this.vehicleYear = vehicleYear;
+        this.insuranceExpiration = insuranceExpiration;
         this.federalConf = removeMultipleSpaces(federalConf.trim());
         this.perfScalar = perfScalar;
         this.perfDistUnit = perfDistUnit;
@@ -73,6 +75,7 @@ public class Vehicle extends TmsBasicModel {
         this.validateVehicleYear();
         this.validateFederalConf();
         this.validateNumberAxis();
+        this.validateInsuranceExpiration();
     }
 
     public void validateNumberAxis() throws TmsException {
@@ -122,6 +125,17 @@ public class Vehicle extends TmsBasicModel {
         Date today = new Date();
         if (!numberPlateExpiration.after(today)) {
             throw new TmsException("Number plate expiration date must be in the future", ErrorCodes.INVALID_DATA);
+        }
+    }
+
+    private void validateInsuranceExpiration() throws TmsException {
+        if (numberPlateExpiration == null) {
+            throw new TmsException("Insurance expiration date must not be null", ErrorCodes.INVALID_DATA);
+        }
+
+        Date today = new Date();
+        if (!numberPlateExpiration.after(today)) {
+            throw new TmsException("Insurance expiration date must be in the future", ErrorCodes.INVALID_DATA);
         }
     }
 }

@@ -27,6 +27,7 @@ public class VehicleDto {
     private VehicleType vehicleType;
     private VehicleColor vehicleColor;
     private int vehicleYear;
+    private Date insuranceExpiration;
     private String federalConf;
 
     // El rendimiento es una media de los históricos
