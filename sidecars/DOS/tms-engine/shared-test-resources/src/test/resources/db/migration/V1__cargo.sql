@@ -155,7 +155,8 @@ COMMENT ON COLUMN agreements.latitude_origin IS 'Distancia angular entre el orig
 COMMENT ON COLUMN agreements.longitude_origin IS 'Distancia angular entre el origen y el meridiano de Greenwich';
 COMMENT ON COLUMN agreements.latitude_destiny IS 'Distancia angular entre el destino y el ecuador';
 COMMENT ON COLUMN agreements.longitude_destiny IS 'Distancia angular entre el destino y el meridiano de Greenwich';
-
+COMMENT ON COLUMN agreements.dist_unit IS 'Unidad de medida para la distancia (valor de un enum como cadena)';
+COMMENT ON COLUMN agreements.dist_scalar IS 'Distancia entre origen y destino, expresada en la unidad especificada';
 COMMENT ON COLUMN agreements.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de el acuerdo';
 COMMENT ON COLUMN agreements.creation_time IS 'El momento en que fue creado el acuerdo';
 COMMENT ON COLUMN agreements.blocked IS 'Indica si el acuerdo fue logicamente eliminado';
