@@ -39,7 +39,7 @@ class PgRepoVehicleHelper extends PgRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_vehicle");
         }
 
-        String sql = "SELECT * FROM alter_vehicle(?::UUID, ?::UUID, ?::VARCHAR, ?::DATE, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::INT, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::NUMERIC) AS (vehicle_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_vehicle(?::UUID, ?::UUID, ?::VARCHAR, ?::DATE, ?::VARCHAR, ?::SMALLINT, ?::VARCHAR, ?::VARCHAR, ?::INT, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::NUMERIC) AS (vehicle_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 

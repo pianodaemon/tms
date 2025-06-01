@@ -40,7 +40,7 @@ class PgRepoBoxHelper extends PgRepoCommonHelper {
             verifyPgFunctionExists(conn, "alter_box");
         }
 
-        String sql = "SELECT * FROM alter_box(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::INT, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::DATE, ?::INT, ?::BOOLEAN) AS (box_id UUID, message TEXT)";
+        String sql = "SELECT * FROM alter_box(?::UUID, ?::UUID, ?::VARCHAR, ?::VARCHAR, ?::SMALLINT, ?::VARCHAR, ?::VARCHAR, ?::VARCHAR, ?::DATE, ?::INT, ?::BOOLEAN) AS (box_id UUID, message TEXT)";
 
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
