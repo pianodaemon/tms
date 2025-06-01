@@ -39,13 +39,26 @@ export class AdmApi<T, CreateDto = Omit<T, 'id'>> {
     await this.http.delete(`${this.basePath}/${id}`);
   }
 
-  async listPaginated(pageNumber: number, pageSize: number): Promise<PaginatedResponse<T>> {
+  async listPaginated(params: {
+    pageOpts?: Record<string, string | number>;
+    filters?: Record<string, string | number>;
+  }): Promise<PaginatedResponse<T>> {
+    const { pageOpts = {}, filters = {} } = params;
+
+    const queryParams: Record<string, string | number> = {};
+
+    for (const [key, value] of Object.entries(filters)) {
+      queryParams[`filter_${key}`] = value;
+    }
+
+    for (const [key, value] of Object.entries(pageOpts)) {
+      queryParams[`page_${key}`] = value;
+    }
+
     const response = await this.http.get<PaginatedResponse<T>>(this.basePath, {
-      params: {
-        page_number: pageNumber,
-        page_size: pageSize,
-      },
+      params: queryParams,
     });
+
     return response.data;
   }
 }
