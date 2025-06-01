@@ -163,7 +163,8 @@ CREATE TABLE patios (
 COMMENT ON COLUMN patios.id IS 'Identificador unico de el patio';
 COMMENT ON COLUMN patios.tenant_id IS 'Pertenece a subscriptor';
 COMMENT ON COLUMN patios.name IS 'Nombre del patio';
-
+COMMENT ON COLUMN patios.latitude_location IS 'Distancia angular entre el patio y el ecuador';
+COMMENT ON COLUMN patios.longitude_location IS 'Distancia angular entre el patio y el meridiano de Greenwich';
 COMMENT ON COLUMN patios.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de el patio';
 COMMENT ON COLUMN patios.creation_time IS 'El momento en que fue creado el patio';
 COMMENT ON COLUMN patios.blocked IS 'Indica si el patio fue logicamente eliminado';
