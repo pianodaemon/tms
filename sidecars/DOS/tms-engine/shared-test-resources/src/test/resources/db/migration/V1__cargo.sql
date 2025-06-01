@@ -32,6 +32,20 @@ CREATE TABLE boxes (
     blocked boolean DEFAULT false NOT NULL
 );
 
+COMMENT ON COLUMN boxes.id IS 'Identificador unico de caja';
+COMMENT ON COLUMN boxes.tenant_id IS 'Pertenece a determinado subscriptor';
+COMMENT ON COLUMN boxes.name IS 'Nombre de la caja';
+COMMENT ON COLUMN boxes.box_type IS 'Tipo de caja';
+COMMENT ON COLUMN boxes.box_brand IS 'La marca de la caja'; 
+COMMENT ON COLUMN boxes.number_plate IS 'Las placas de la caja';
+COMMENT ON COLUMN boxes.number_plate_expiration IS 'Fecha de expiracion de placas';
+COMMENT ON COLUMN boxes.number_axis IS 'Numero de ejes';
+COMMENT ON COLUMN boxes.box_year IS 'Año de la caja';
+COMMENT ON COLUMN boxes.lease IS 'Indica si la caja es de alquiler o propia';
+COMMENT ON COLUMN boxes.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de la caja';
+COMMENT ON COLUMN boxes.creation_time IS 'El momento en que fue creada la caja';
+COMMENT ON COLUMN boxes.blocked IS 'Indica si la caja fue logicamente eliminada';
+
 
 CREATE TABLE customers (
     id UUID PRIMARY KEY,
@@ -41,6 +55,13 @@ CREATE TABLE customers (
     creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL
 );
+
+COMMENT ON COLUMN customers.id IS 'Identificador unico de cliente';
+COMMENT ON COLUMN customers.tenant_id IS 'Pertenece a subscriptor';
+COMMENT ON COLUMN customers.name IS 'Nombre con el que se le conoce a este cliente';
+COMMENT ON COLUMN customers.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de el cliente';
+COMMENT ON COLUMN customers.creation_time IS 'El momento en que fue creado el cliente';
+COMMENT ON COLUMN customers.blocked IS 'Indica si el cliente fue logicamente eliminado';
 
 
 CREATE TABLE drivers (
@@ -55,6 +76,16 @@ CREATE TABLE drivers (
     blocked boolean DEFAULT false NOT NULL,
     CONSTRAINT unique_license_per_tenant UNIQUE (tenant_id, license_number)
 );
+
+COMMENT ON COLUMN drivers.id IS 'Identificador unico de chofer';
+COMMENT ON COLUMN drivers.tenant_id IS 'Pertenece a subscriptor';
+COMMENT ON COLUMN drivers.name IS 'Nombre de pila';
+COMMENT ON COLUMN drivers.first_surname IS 'Apellido paterno';
+COMMENT ON COLUMN drivers.second_surname IS 'Apellido materno';
+COMMENT ON COLUMN drivers.license_number IS 'Licencia de manejo';
+COMMENT ON COLUMN drivers.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro del chofer';
+COMMENT ON COLUMN drivers.creation_time IS 'El momento en que fue creado el chofer';
+COMMENT ON COLUMN drivers.blocked IS 'Indica si el chofer fue logicamente eliminado';
 
 
 CREATE TABLE vehicles (
@@ -78,6 +109,24 @@ CREATE TABLE vehicles (
     CONSTRAINT vehicle_unique_number_plate UNIQUE (tenant_id, number_plate)
 );
 
+COMMENT ON COLUMN vehicles.id IS 'Identificador unico de el vehiculo';
+COMMENT ON COLUMN vehicles.tenant_id IS 'Pertenece a subscriptor';
+COMMENT ON COLUMN vehicles.number_plate IS 'Las placas de el vehiculo';
+COMMENT ON COLUMN vehicles.number_serial IS 'El numero de serie de el vehiculo';
+COMMENT ON COLUMN vehicles.number_plate_expiration IS 'Fecha de expiracion de las placas';
+COMMENT ON COLUMN vehicles.insurance_expiration IS 'Fecha de expiracion del seguro';
+COMMENT ON COLUMN vehicles.number_axis IS 'Numero de ejes';
+COMMENT ON COLUMN vehicles.vehicle_type IS 'Tipo de vehiculo (valor de un enum como cadena)';
+COMMENT ON COLUMN vehicles.vehicle_color IS 'Color del vehiculo (valor de un enum como cadena)';
+COMMENT ON COLUMN vehicles.vehicle_year IS 'Año del modelo del vehiculo';
+COMMENT ON COLUMN vehicles.federal_conf IS 'Configuración del autotransporte federal conforme a la Carta Porte';
+COMMENT ON COLUMN vehicles.perf_dist_unit IS 'Unidad de rendimiento de distancia (ej. km/litro)';
+COMMENT ON COLUMN vehicles.perf_vol_unit IS 'Unidad de volumen de rendimiento (ej. litros)';
+COMMENT ON COLUMN vehicles.perf_scalar IS 'Valor numérico de rendimiento del vehiculo';
+COMMENT ON COLUMN vehicles.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de el vehiculor';
+COMMENT ON COLUMN vehicles.creation_time IS 'El momento en que fue creado el vehiculo';
+COMMENT ON COLUMN vehicles.blocked IS 'Indica si el vehiculo fue logicamente eliminado';
+
 
 CREATE TABLE agreements (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
@@ -98,6 +147,20 @@ CREATE TABLE agreements (
     )
 );
 
+COMMENT ON COLUMN agreements.id IS 'Identificador unico de el acuerdo';
+COMMENT ON COLUMN agreements.tenant_id IS 'Pertenece a subscriptor';
+COMMENT ON COLUMN agreements.customer_id IS 'Cliente con quien se ha celebrado el acuerdo';
+COMMENT ON COLUMN agreements.receiver IS 'Destinatario de el acuerdo';
+COMMENT ON COLUMN agreements.latitude_origin IS 'Distancia angular entre el origen y el ecuador';
+COMMENT ON COLUMN agreements.longitude_origin IS 'Distancia angular entre el origen y el meridiano de Greenwich';
+COMMENT ON COLUMN agreements.latitude_destiny IS 'Distancia angular entre el destino y el ecuador';
+COMMENT ON COLUMN agreements.longitude_destiny IS 'Distancia angular entre el destino y el meridiano de Greenwich';
+COMMENT ON COLUMN agreements.dist_unit IS 'Unidad de medida para la distancia (valor de un enum como cadena)';
+COMMENT ON COLUMN agreements.dist_scalar IS 'Distancia entre origen y destino, expresada en la unidad especificada';
+COMMENT ON COLUMN agreements.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de el acuerdo';
+COMMENT ON COLUMN agreements.creation_time IS 'El momento en que fue creado el acuerdo';
+COMMENT ON COLUMN agreements.blocked IS 'Indica si el acuerdo fue logicamente eliminado';
+
 
 CREATE TABLE patios (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
@@ -109,6 +172,15 @@ CREATE TABLE patios (
     creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL
 );
+
+COMMENT ON COLUMN patios.id IS 'Identificador unico de el patio';
+COMMENT ON COLUMN patios.tenant_id IS 'Pertenece a subscriptor';
+COMMENT ON COLUMN patios.name IS 'Nombre del patio';
+COMMENT ON COLUMN patios.latitude_location IS 'Distancia angular entre el patio y el ecuador';
+COMMENT ON COLUMN patios.longitude_location IS 'Distancia angular entre el patio y el meridiano de Greenwich';
+COMMENT ON COLUMN patios.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de el patio';
+COMMENT ON COLUMN patios.creation_time IS 'El momento en que fue creado el patio';
+COMMENT ON COLUMN patios.blocked IS 'Indica si el patio fue logicamente eliminado';
 
 
 CREATE TABLE cargo_assignments (
