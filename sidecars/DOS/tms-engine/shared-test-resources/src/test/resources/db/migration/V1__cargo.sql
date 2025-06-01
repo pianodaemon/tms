@@ -33,14 +33,18 @@ CREATE TABLE boxes (
 );
 
 COMMENT ON COLUMN boxes.id IS 'Identificador unico de caja';
-COMMENT ON COLUMN boxes.tenant_id IS 'Pertenece a subscriptor';
-COMMENT ON COLUMN boxes.name IS 'Nombre con el que se le conoce a la caja';
+COMMENT ON COLUMN boxes.tenant_id IS 'Pertenece a determinado subscriptor';
+COMMENT ON COLUMN boxes.name IS 'Nombre de la caja';
 COMMENT ON COLUMN boxes.box_type IS 'Tipo de caja';
 COMMENT ON COLUMN boxes.box_brand IS 'La marca de la caja'; 
 COMMENT ON COLUMN boxes.number_plate IS 'Las placas de la caja';
-COMMENT ON COLUMN boxes.number_plate_expiration IS 'Fecha de expiracion de las placas';
+COMMENT ON COLUMN boxes.number_plate_expiration IS 'Fecha de expiracion de placas';
 COMMENT ON COLUMN boxes.number_axis IS 'Numero de ejes';
 COMMENT ON COLUMN boxes.box_year IS 'Año de la caja';
+COMMENT ON COLUMN boxes.lease IS 'Indica si la caja es de alquiler o propia';
+COMMENT ON COLUMN boxes.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de la caja';
+COMMENT ON COLUMN boxes.creation_time IS 'El momento en que fue creada la caja';
+COMMENT ON COLUMN boxes.blocked IS 'Indica si la caja fue logicamente eliminada';
 
 
 CREATE TABLE customers (
@@ -100,6 +104,9 @@ COMMENT ON COLUMN vehicles.id IS 'Identificador unico de el vehiculo';
 COMMENT ON COLUMN vehicles.tenant_id IS 'Pertenece a subscriptor';
 COMMENT ON COLUMN vehicles.number_plate IS 'Las placas de el vehiculo';
 COMMENT ON COLUMN vehicles.number_plate_expiration IS 'Fecha de expiracion de las placas';
+COMMENT ON COLUMN vehicles.insurance_expiration IS 'Fecha de expiracion del seguro';
+    
+COMMENT ON COLUMN vehicles.number_axis IS 'Numero de ejes';
 
 
 CREATE TABLE agreements (
