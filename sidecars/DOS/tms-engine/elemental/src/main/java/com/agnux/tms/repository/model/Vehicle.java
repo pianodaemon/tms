@@ -129,12 +129,12 @@ public class Vehicle extends TmsBasicModel {
     }
 
     private void validateInsuranceExpiration() throws TmsException {
-        if (numberPlateExpiration == null) {
+        if (this.insuranceExpiration == null) {
             throw new TmsException("Insurance expiration date must not be null", ErrorCodes.INVALID_DATA);
         }
 
         Date today = new Date();
-        if (!numberPlateExpiration.after(today)) {
+        if (!this.insuranceExpiration.after(today)) {
             throw new TmsException("Insurance expiration date must be in the future", ErrorCodes.INVALID_DATA);
         }
     }
