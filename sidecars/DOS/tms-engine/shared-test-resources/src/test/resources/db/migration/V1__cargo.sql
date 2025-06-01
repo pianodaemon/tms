@@ -59,6 +59,9 @@ CREATE TABLE customers (
 COMMENT ON COLUMN customers.id IS 'Identificador unico de cliente';
 COMMENT ON COLUMN customers.tenant_id IS 'Pertenece a subscriptor';
 COMMENT ON COLUMN customers.name IS 'Nombre con el que se le conoce a este cliente';
+COMMENT ON COLUMN customers.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de el cliente';
+COMMENT ON COLUMN customers.creation_time IS 'El momento en que fue creado el cliente';
+COMMENT ON COLUMN customers.blocked IS 'Indica si el cliente fue logicamente eliminado';
 
 
 CREATE TABLE drivers (
