@@ -109,6 +109,7 @@ public class BasicRepoImplTest {
                 VehicleType.REFRIGERATED_VAN,
                 VehicleColor.GREEN,
                 1970,
+                new Date(),
                 "VL",
                 DistUnit.KM, VolUnit.LT, new BigDecimal("7.50"));
 
@@ -330,11 +331,11 @@ public class BasicRepoImplTest {
         UUID tenantId = UUID.randomUUID();
 
         // Create the first Vehicle
-        Vehicle vehicle1 = new Vehicle(null, tenantId, "XYZ-999", new Date(),"AXD00000000A", 1,VehicleType.DELIVERY_TRUCK, VehicleColor.BROWN, 2022, "VL", DistUnit.KM, VolUnit.LT, new BigDecimal("5.5"));
+        Vehicle vehicle1 = new Vehicle(null, tenantId, "XYZ-999", new Date(),"AXD00000000A", 1,VehicleType.DELIVERY_TRUCK, VehicleColor.BROWN, 2022, new Date(), "VL", DistUnit.KM, VolUnit.LT, new BigDecimal("5.5"));
         final UUID vehicle1Id = repo.createVehicle(vehicle1);
 
         // Create the second Vehicle
-        Vehicle vehicle2 = new Vehicle(null, tenantId, "ABC-123", new Date(),"AXD00000000B", 1, VehicleType.DELIVERY_TRUCK, VehicleColor.RED, 2023, "VL", DistUnit.KM, VolUnit.LT, new BigDecimal("6.5"));
+        Vehicle vehicle2 = new Vehicle(null, tenantId, "ABC-123", new Date(),"AXD00000000B", 1, VehicleType.DELIVERY_TRUCK, VehicleColor.RED, 2023, new Date(),  "VL", DistUnit.KM, VolUnit.LT, new BigDecimal("6.5"));
         final UUID vehicle2Id = repo.createVehicle(vehicle2);
 
         // Create the first Driver
