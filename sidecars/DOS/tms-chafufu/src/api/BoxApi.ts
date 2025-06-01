@@ -4,7 +4,8 @@ import { PaginatedResponse } from './types';
 export interface BoxDto {
   id: string | null;
   name: string;
-
+  boxType: string;
+  brand: string;
   numberOfAxis: number;
   numberSerial: string;
   numberPlate: string;
