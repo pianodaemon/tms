@@ -139,6 +139,13 @@ CREATE TABLE agreements (
     )
 );
 
+COMMENT ON COLUMN agreements.id IS 'Identificador unico de el acuerdo';
+COMMENT ON COLUMN agreements.tenant_id IS 'Pertenece a subscriptor';
+
+COMMENT ON COLUMN agreements.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de el acuerdo';
+COMMENT ON COLUMN agreements.creation_time IS 'El momento en que fue creado el acuerdo';
+COMMENT ON COLUMN agreements.blocked IS 'Indica si el acuerdo fue logicamente eliminado';
+
 
 CREATE TABLE patios (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
@@ -150,6 +157,10 @@ CREATE TABLE patios (
     creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL
 );
+
+COMMENT ON COLUMN patios.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de el patio';
+COMMENT ON COLUMN patios.creation_time IS 'El momento en que fue creado el patio';
+COMMENT ON COLUMN patios.blocked IS 'Indica si el patio fue logicamente eliminado';
 
 
 CREATE TABLE cargo_assignments (
