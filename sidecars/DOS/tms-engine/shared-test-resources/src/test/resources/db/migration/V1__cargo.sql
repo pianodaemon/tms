@@ -112,9 +112,9 @@ CREATE TABLE vehicles (
 COMMENT ON COLUMN vehicles.id IS 'Identificador unico de el vehiculo';
 COMMENT ON COLUMN vehicles.tenant_id IS 'Pertenece a subscriptor';
 COMMENT ON COLUMN vehicles.number_plate IS 'Las placas de el vehiculo';
+COMMENT ON COLUMN vehicles.number_serial IS 'El numero de serie de el vehiculo';
 COMMENT ON COLUMN vehicles.number_plate_expiration IS 'Fecha de expiracion de las placas';
 COMMENT ON COLUMN vehicles.insurance_expiration IS 'Fecha de expiracion del seguro';
-    
 COMMENT ON COLUMN vehicles.number_axis IS 'Numero de ejes';
 COMMENT ON COLUMN vehicles.vehicle_type IS 'Tipo de vehiculo (valor de un enum como cadena)';
 COMMENT ON COLUMN vehicles.vehicle_color IS 'Color del vehiculo (valor de un enum como cadena)';
@@ -122,7 +122,7 @@ COMMENT ON COLUMN vehicles.vehicle_year IS 'Año del modelo del vehiculo';
 COMMENT ON COLUMN vehicles.federal_conf IS 'Configuración del autotransporte federal conforme a la Carta Porte';
 COMMENT ON COLUMN vehicles.perf_dist_unit IS 'Unidad de rendimiento de distancia (ej. km/litro)';
 COMMENT ON COLUMN vehicles.perf_vol_unit IS 'Unidad de volumen de rendimiento (ej. litros)';
-
+COMMENT ON COLUMN vehicles.perf_scalar IS 'Valor numérico de rendimiento del vehiculo';
 COMMENT ON COLUMN vehicles.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de el vehiculor';
 COMMENT ON COLUMN vehicles.creation_time IS 'El momento en que fue creado el vehiculo';
 COMMENT ON COLUMN vehicles.blocked IS 'Indica si el vehiculo fue logicamente eliminado';
