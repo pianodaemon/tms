@@ -21,6 +21,7 @@ public class BoxDto {
     private String name;
     private BoxType boxType;
     private BoxBrand brand;
+    private int numberOfAxis;
     private String numberSerial;
     private String numberPlate;
     private Date numberPlateExpiration;
