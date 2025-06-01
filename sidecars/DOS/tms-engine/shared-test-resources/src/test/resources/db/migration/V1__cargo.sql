@@ -81,6 +81,10 @@ COMMENT ON COLUMN drivers.id IS 'Identificador unico de conductor';
 COMMENT ON COLUMN drivers.tenant_id IS 'Pertenece a subscriptor';
 COMMENT ON COLUMN drivers.name IS 'Nombre de el conductor';
 
+COMMENT ON COLUMN drivers.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de el conductor';
+COMMENT ON COLUMN drivers.creation_time IS 'El momento en que fue creado el conductor';
+COMMENT ON COLUMN drivers.blocked IS 'Indica si el conductor fue logicamente eliminado';
+
 
 CREATE TABLE vehicles (
     id UUID PRIMARY KEY,           -- corresponds to TmsBasicModel.Id
@@ -110,6 +114,10 @@ COMMENT ON COLUMN vehicles.number_plate_expiration IS 'Fecha de expiracion de la
 COMMENT ON COLUMN vehicles.insurance_expiration IS 'Fecha de expiracion del seguro';
     
 COMMENT ON COLUMN vehicles.number_axis IS 'Numero de ejes';
+
+COMMENT ON COLUMN vehicles.last_touch_time IS 'Ultimo momento de actualizacion a cualquier parametro de el vehiculor';
+COMMENT ON COLUMN vehicles.creation_time IS 'El momento en que fue creado el vehiculo';
+COMMENT ON COLUMN vehicles.blocked IS 'Indica si el vehiculo fue logicamente eliminado';
 
 
 CREATE TABLE agreements (
