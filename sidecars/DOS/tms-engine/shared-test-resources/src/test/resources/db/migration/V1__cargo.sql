@@ -149,7 +149,8 @@ CREATE TABLE agreements (
 
 COMMENT ON COLUMN agreements.id IS 'Identificador unico de el acuerdo';
 COMMENT ON COLUMN agreements.tenant_id IS 'Pertenece a subscriptor';
-
+COMMENT ON COLUMN agreements.customer_id IS 'Cliente con quien se ha celebrado el acuerdo';
+COMMENT ON COLUMN agreements.receiver IS 'Destinatario de el acuerdo';
 COMMENT ON COLUMN agreements.latitude_origin IS 'Distancia angular entre el origen y el ecuador';
 COMMENT ON COLUMN agreements.longitude_origin IS 'Distancia angular entre el origen y el meridiano de Greenwich';
 COMMENT ON COLUMN agreements.latitude_destiny IS 'Distancia angular entre el destino y el ecuador';
