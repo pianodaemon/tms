@@ -32,6 +32,16 @@ CREATE TABLE boxes (
     blocked boolean DEFAULT false NOT NULL
 );
 
+COMMENT ON COLUMN boxes.id IS 'Identificador unico de caja';
+COMMENT ON COLUMN boxes.tenant_id IS 'Pertenece a subscriptor';
+COMMENT ON COLUMN boxes.name IS 'Nombre con el que se le conoce a la caja';
+COMMENT ON COLUMN boxes.box_type IS 'Tipo de caja';
+COMMENT ON COLUMN boxes.box_brand IS 'La marca de la caja'; 
+COMMENT ON COLUMN boxes.number_plate IS 'Las placas de la caja';
+COMMENT ON COLUMN boxes.number_plate_expiration IS 'Fecha de expiracion de las placas';
+COMMENT ON COLUMN boxes.number_axis IS 'Numero de ejes';
+COMMENT ON COLUMN boxes.box_year IS 'Año de la caja';
+
 
 CREATE TABLE customers (
     id UUID PRIMARY KEY,
@@ -41,6 +51,10 @@ CREATE TABLE customers (
     creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL
 );
+
+COMMENT ON COLUMN customers.id IS 'Identificador unico de cliente';
+COMMENT ON COLUMN customers.tenant_id IS 'Pertenece a subscriptor';
+COMMENT ON COLUMN customers.name IS 'Nombre con el que se le conoce a este cliente';
 
 
 CREATE TABLE drivers (
@@ -55,6 +69,10 @@ CREATE TABLE drivers (
     blocked boolean DEFAULT false NOT NULL,
     CONSTRAINT unique_license_per_tenant UNIQUE (tenant_id, license_number)
 );
+
+COMMENT ON COLUMN drivers.id IS 'Identificador unico de conductor';
+COMMENT ON COLUMN drivers.tenant_id IS 'Pertenece a subscriptor';
+COMMENT ON COLUMN drivers.name IS 'Nombre de el conductor';
 
 
 CREATE TABLE vehicles (
@@ -77,6 +95,11 @@ CREATE TABLE vehicles (
     blocked boolean DEFAULT false NOT NULL,
     CONSTRAINT vehicle_unique_number_plate UNIQUE (tenant_id, number_plate)
 );
+
+COMMENT ON COLUMN vehicles.id IS 'Identificador unico de el vehiculo';
+COMMENT ON COLUMN vehicles.tenant_id IS 'Pertenece a subscriptor';
+COMMENT ON COLUMN vehicles.number_plate IS 'Las placas de el vehiculo';
+COMMENT ON COLUMN vehicles.number_plate_expiration IS 'Fecha de expiracion de las placas';
 
 
 CREATE TABLE agreements (
