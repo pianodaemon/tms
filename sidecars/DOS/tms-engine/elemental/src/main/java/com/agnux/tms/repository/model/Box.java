@@ -59,6 +59,13 @@ public class Box extends TmsBasicModel {
         this.validateNumberPlate();
         this.validateNumberPlateExpiration();
         this.validateBoxYear();
+        this.validateNumberAxis();
+    }
+
+    public void validateNumberAxis() throws TmsException {
+        if (numberOfAxis < 0) {
+            throw new TmsException("Number of axis must not be negative", ErrorCodes.INVALID_DATA);
+        }
     }
 
     public void validateNumSerial() throws TmsException {
