@@ -29,7 +29,8 @@ CREATE TABLE boxes (
     lease BOOLEAN DEFAULT false NOT NULL,
     last_touch_time timestamp with time zone NOT NULL,
     creation_time timestamp with time zone NOT NULL,
-    blocked boolean DEFAULT false NOT NULL
+    blocked boolean DEFAULT false NOT NULL,
+    CONSTRAINT unique_box_per_tenant UNIQUE (tenant_id, id)
 );
 
 COMMENT ON COLUMN boxes.id IS 'Identificador unico de caja';
@@ -53,7 +54,8 @@ CREATE TABLE customers (
     name VARCHAR(128) NOT NULL,
     last_touch_time timestamp with time zone NOT NULL,
     creation_time timestamp with time zone NOT NULL,
-    blocked boolean DEFAULT false NOT NULL
+    blocked boolean DEFAULT false NOT NULL,
+    CONSTRAINT unique_customer_per_tenant UNIQUE (tenant_id, id)
 );
 
 COMMENT ON COLUMN customers.id IS 'Identificador unico de cliente';
@@ -74,6 +76,7 @@ CREATE TABLE drivers (
     last_touch_time timestamp with time zone NOT NULL,
     creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL,
+    CONSTRAINT unique_driver_per_tenant UNIQUE (tenant_id, id),
     CONSTRAINT unique_license_per_tenant UNIQUE (tenant_id, license_number)
 );
 
@@ -106,6 +109,7 @@ CREATE TABLE vehicles (
     last_touch_time timestamp with time zone NOT NULL,
     creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL,
+    CONSTRAINT unique_vehicle_per_tenant UNIQUE (tenant_id, id),
     CONSTRAINT vehicle_unique_number_plate UNIQUE (tenant_id, number_plate)
 );
 
@@ -142,6 +146,7 @@ CREATE TABLE agreements (
     last_touch_time timestamp with time zone NOT NULL,
     creation_time timestamp with time zone NOT NULL,
     blocked boolean DEFAULT false NOT NULL,
+    CONSTRAINT unique_agreement_per_tenant UNIQUE (tenant_id, id),
     CONSTRAINT unique_route_per_customer UNIQUE (
         customer_id, latitude_origin, longitude_origin, latitude_destiny, longitude_destiny
     )
@@ -170,7 +175,8 @@ CREATE TABLE patios (
     longitude_location DOUBLE PRECISION NOT NULL,
     last_touch_time timestamp with time zone NOT NULL,
     creation_time timestamp with time zone NOT NULL,
-    blocked boolean DEFAULT false NOT NULL
+    blocked boolean DEFAULT false NOT NULL,
+    CONSTRAINT unique_patio_per_tenant UNIQUE (tenant_id, id)
 );
 
 COMMENT ON COLUMN patios.id IS 'Identificador unico de el patio';
