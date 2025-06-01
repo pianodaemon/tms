@@ -52,7 +52,7 @@ class HaulMgmtTest {
         customer = new Customer(customerUuid, tenantUuid, "quintanilla");
         tripDetails = new TripDetailsDto(vehicleUuid, agreementUuid, driverUuid);
         agreement = new Agreement(agreementUuid, tenantUuid, customerUuid, "Soriana", 0, 0, 0, 0, DistUnit.KM, new BigDecimal("100"));
-        ship = new Vehicle(vehicleUuid, tenantDetails.getTenantId(), "GAS9500", new Date(),"AXD000000001", VehicleType.CAR, VehicleColor.LIGHT_BLUE, 1980, "VL", DistUnit.KM, VolUnit.LT, BigDecimal.ZERO);
+        ship = new Vehicle(vehicleUuid, tenantDetails.getTenantId(), "GAS9500", new Date(),"AXD000000001", 1, VehicleType.CAR, VehicleColor.LIGHT_BLUE, 1980, "VL", DistUnit.KM, VolUnit.LT, BigDecimal.ZERO);
     }
 
     @Test
@@ -83,7 +83,7 @@ class HaulMgmtTest {
     @Test
     void assignTrip_ShouldThrowTmsException_WhenTenantMismatch() throws TmsException {
         // Arrange
-        Vehicle mismatchedVehicle = new Vehicle(vehicleUuid, UUID.fromString("0a232802-d6e8-458f-9eca-6a8c2b980900"), "GAS9500", new Date(),"AXD000000001", VehicleType.CAR, VehicleColor.ORANGE, 1980, "VL", DistUnit.KM, VolUnit.LT, BigDecimal.ZERO);
+        Vehicle mismatchedVehicle = new Vehicle(vehicleUuid, UUID.fromString("0a232802-d6e8-458f-9eca-6a8c2b980900"), "GAS9500", new Date(),"AXD000000001", 1,VehicleType.CAR, VehicleColor.ORANGE, 1980, "VL", DistUnit.KM, VolUnit.LT, BigDecimal.ZERO);
         when(repo.getVehicle(vehicleUuid)).thenReturn(mismatchedVehicle);
 
         // Act & Assert
