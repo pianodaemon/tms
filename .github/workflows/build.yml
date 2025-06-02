@@ -41,7 +41,44 @@ jobs:
           cd sidecars/DOS/tms-webui
           npm install
           npm run build
-          npm test
+          npm test -- --coverage
+
+      - name: Coverage tms-webui
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd sidecars/DOS/tms-webui
+          COVERAGE_FILE="coverage/coverage-summary.json"
+
+          if [[ ! -f "$COVERAGE_FILE" ]]; then
+            echo "❌ Jest coverage file is missing"
+            exit 1
+          fi
+
+          TOTAL_LINES=$(jq '.total.lines.pct' "$COVERAGE_FILE")
+          TOTAL_STATEMENTS=$(jq '.total.statements.pct' "$COVERAGE_FILE")
+          TOTAL_FUNCTIONS=$(jq '.total.functions.pct' "$COVERAGE_FILE")
+          TOTAL_BRANCHES=$(jq '.total.branches.pct' "$COVERAGE_FILE")
+
+          echo "| Metric     | Coverage (%) |" > table.md
+          echo "|------------|---------------|" >> table.md
+          echo "| Lines      | $TOTAL_LINES |" >> table.md
+          echo "| Statements | $TOTAL_STATEMENTS |" >> table.md
+          echo "| Functions  | $TOTAL_FUNCTIONS |" >> table.md
+          echo "| Branches   | $TOTAL_BRANCHES |" >> table.md
+
+          COMMENT=$(printf "🧪 **Test coverage tms-webui report**\n<details><summary>Click to expand coverage table</summary>\n\n%s\n\n</details>" "$(cat table.md)")
+          COMMENT_JSON=$(jq -n --arg body "$COMMENT" '{body: $body}')
+
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          REPO=${{ github.repository }}
+
+          curl -s -X POST \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Content-Type: application/json" \
+            -d "$COMMENT_JSON" \
+            "https://api.github.com/repos/$REPO/issues/$PR_NUMBER/comments"
 
       - name: Test tms-engine
         run: |
