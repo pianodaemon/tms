@@ -49,24 +49,29 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd sidecars/DOS/tms-webui
-          COVERAGE_FILE="coverage/coverage-summary.json"
 
-          if [[ ! -f "$COVERAGE_FILE" ]]; then
-            echo "❌ Jest coverage file is missing"
+          COVERAGE_JSON="coverage/coverage-final.json"
+          SUMMARY_JSON="coverage/coverage-summary.json"
+
+          if [[ ! -f "$COVERAGE_JSON" ]]; then
+            echo "❌ Jest coverage-final.json is missing"
             exit 1
           fi
 
-          TOTAL_LINES=$(jq '.total.lines.pct' "$COVERAGE_FILE")
-          TOTAL_STATEMENTS=$(jq '.total.statements.pct' "$COVERAGE_FILE")
-          TOTAL_FUNCTIONS=$(jq '.total.functions.pct' "$COVERAGE_FILE")
-          TOTAL_BRANCHES=$(jq '.total.branches.pct' "$COVERAGE_FILE")
+          echo "| File | Statements | Branches | Functions | Lines |" > table.md
+          echo "|------|------------|----------|-----------|-------|" >> table.md
 
-          echo "| Metric     | Coverage (%) |" > table.md
-          echo "|------------|---------------|" >> table.md
-          echo "| Lines      | $TOTAL_LINES |" >> table.md
-          echo "| Statements | $TOTAL_STATEMENTS |" >> table.md
-          echo "| Functions  | $TOTAL_FUNCTIONS |" >> table.md
-          echo "| Branches   | $TOTAL_BRANCHES |" >> table.md
+          jq -r 'to_entries[] |
+            "| \(.key) | \(.value.statements.pct // 0)% | \(.value.branches.pct // 0)% | \(.value.functions.pct // 0)% | \(.value.lines.pct // 0)% |"' \
+            "$COVERAGE_JSON" >> table.md
+
+          if [[ -f "$SUMMARY_JSON" ]]; then
+            TOTAL_LINES=$(jq '.total.lines.pct' "$SUMMARY_JSON")
+            TOTAL_STATEMENTS=$(jq '.total.statements.pct' "$SUMMARY_JSON")
+            TOTAL_FUNCTIONS=$(jq '.total.functions.pct' "$SUMMARY_JSON")
+            TOTAL_BRANCHES=$(jq '.total.branches.pct' "$SUMMARY_JSON")
+            echo "| **Total** | ${TOTAL_STATEMENTS}% | ${TOTAL_BRANCHES}% | ${TOTAL_FUNCTIONS}% | ${TOTAL_LINES}% |" >> table.md
+          fi
 
           COMMENT=$(printf "🧪 **Test coverage tms-webui report**\n<details><summary>Click to expand coverage table</summary>\n\n%s\n\n</details>" "$(cat table.md)")
           COMMENT_JSON=$(jq -n --arg body "$COMMENT" '{body: $body}')
