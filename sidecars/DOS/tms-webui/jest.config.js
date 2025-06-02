@@ -8,4 +8,7 @@ module.exports = {
   transform: {
     ...tsJestTransformCfg,
   },
+  collectCoverage: true,
+  coverageDirectory: "coverage",
+  coverageReporters: ["json-summary", "text", "lcov"], // key part
 };
