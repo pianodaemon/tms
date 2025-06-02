@@ -9,16 +9,17 @@ module.exports = {
   transform: {
     ...tsJestTransformCfg,
   },
-  testMatch: ['**/tests/**/*.test.ts'],
   collectCoverage: true,
   coverageDirectory: "coverage",
   coverageReporters: ["json", "json-summary", "text", "lcov"],
   collectCoverageFrom: [
-    'tests/**/*.{ts,tsx}',
-    'src/**/*.{ts,tsx}'
+    'src/**/*.{ts,tsx}',      // ✅ this still works
+    '!src/**/*.d.ts',
+    '!src/**/__tests__/**',   // ✅ this still avoids collecting coverage from test files
   ],
   coveragePathIgnorePatterns: [
     '/node_modules/',
+    // ❌ remove '/tests/' — no longer relevant
   ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
 };

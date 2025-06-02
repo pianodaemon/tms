@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AdmApi } from '../../src/ipc/AdmApi';
+import { AdmApi } from '../AdmApi';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
 interface DummyDto {
