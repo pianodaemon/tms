@@ -31,6 +31,18 @@ jobs:
       - name: Set up Java (Build system)
         uses: gradle/actions/setup-gradle@af1da67850ed9a4cedd57bfd976089dd991e2582 # v4.0.0
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Test tms-webui
+        run: |
+          cd sidecars/DOS/tms-webui
+          npm install
+          npm run build
+          npm test
+
       - name: Test tms-engine
         run: |
           cd sidecars/DOS/tms-engine
