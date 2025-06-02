@@ -6,7 +6,7 @@ export interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-export class AdmApi<T, CreateDto = Omit<T, 'id'>> {
+export class AdmApi<T extends { id: string | null }, CreateDto = Omit<T, 'id'>> {
   protected http: AxiosInstance;
   protected basePath: string;
 
