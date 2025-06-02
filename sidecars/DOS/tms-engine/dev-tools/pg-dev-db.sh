@@ -4,7 +4,7 @@ set -euo pipefail
 # Configuration
 CONTAINER_NAME="pg-dev-db"
 DB_USER="devuser"
-DB_PASS="dedpass"
+DB_PASS="devpass"
 DB_NAME="devdb"
 DB_PORT="5433"  # Use a non-standard port to avoid conflicts
 NETWORK_NAME="dbmate-net"
