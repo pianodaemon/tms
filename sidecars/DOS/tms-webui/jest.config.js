@@ -12,8 +12,9 @@ module.exports = {
   coverageDirectory: "coverage",
   coverageReporters: ["json", "json-summary", "text", "lcov"],
   collectCoverageFrom: [
-    'src/**/*.ts',      // ✅ Include source files
-    '!src/**/*.d.ts',   // ❌ Exclude type declarations
+    'src/**/*.{ts,tsx}',           // <– this covers AdmApi.ts and others
+    '!src/**/*.d.ts',
+    '!src/**/__tests__/**',
   ],
   coveragePathIgnorePatterns: [
     '/node_modules/',
@@ -26,4 +27,5 @@ module.exports = {
       diagnostics: false,         // Optional: silence type warnings in tests
     },
   },
+  preset: 'ts-jest'
 };
