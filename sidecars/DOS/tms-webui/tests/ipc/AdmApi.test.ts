@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { AdmApi } from '../../src/ipc/AdmApi';
-
-jest.mock('axios');
-const mockedAxios = axios as jest.Mocked<typeof axios>;
+import AxiosMockAdapter from 'axios-mock-adapter';
 
 interface DummyDto {
   id: string | null;
@@ -18,20 +16,26 @@ class DummyApi extends AdmApi<DummyDto> {
 describe('AdmApi update method', () => {
   const tenantId = 'tenant-123';
   const authToken = 'Bearer token';
-  const api = new DummyApi(tenantId, authToken);
+  let api: DummyApi;
+  let mock: AxiosMockAdapter;
+
+  beforeEach(() => {
+    api = new DummyApi(tenantId, authToken);
+    mock = new AxiosMockAdapter((api as any).http); // access protected .http
+  });
+
+  afterEach(() => {
+    mock.restore();
+  });
 
   it('should call PUT with correct url and data, and return response data', async () => {
     const dummyItem = { id: 'abc123', name: 'Updated name' };
-    const mockResponse = { data: dummyItem };
+    const expectedUrl = `/adm/${tenantId}/dummy`;
 
-    mockedAxios.put.mockResolvedValueOnce(mockResponse);
+    mock.onPut(expectedUrl, dummyItem).reply(200, dummyItem);
 
     const result = await api.update(dummyItem);
 
-    expect(mockedAxios.put).toHaveBeenCalledWith(
-      `/adm/${tenantId}/dummy`,
-      dummyItem
-    );
     expect(result).toEqual(dummyItem);
   });
 
