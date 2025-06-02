@@ -1,6 +1,7 @@
 const { createDefaultPreset } = require("ts-jest");
 
-const tsJestTransformCfg = createDefaultPreset().transform;
+const tsJestPreset = createDefaultPreset();
+const tsJestTransformCfg = tsJestPreset ? tsJestPreset.transform : {};
 
 /** @type {import("jest").Config} **/
 module.exports = {
@@ -10,5 +11,15 @@ module.exports = {
   },
   collectCoverage: true,
   coverageDirectory: "coverage",
-  coverageReporters: ["json-summary", "text", "lcov"], // key part
+  coverageReporters: ["json", "json-summary", "text", "lcov"],
+  collectCoverageFrom: [
+    'src/**/*.{ts,tsx}',      // ✅ this still works
+    '!src/**/*.d.ts',
+    '!src/**/__tests__/**',   // ✅ this still avoids collecting coverage from test files
+  ],
+  coveragePathIgnorePatterns: [
+    '/node_modules/',
+    // ❌ remove '/tests/' — no longer relevant
+  ],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'json'],
 };
