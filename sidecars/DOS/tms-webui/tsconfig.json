@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "jsx": "react-jsx",            // Enables JSX with the new JSX transform
     "esModuleInterop": true
   },
   "files": [],
