@@ -51,7 +51,7 @@ jobs:
           COVERAGE_FILE="coverage/coverage-summary.json"
 
           if [[ ! -f "$COVERAGE_FILE" ]]; then
-            echo "❌ Jest coverage file is missing"
+            echo "❌ Vitest coverage file is missing"
             exit 1
           fi
 
