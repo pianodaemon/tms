@@ -1,3 +1,4 @@
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { AdmApi } from '../AdmApi';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
@@ -46,4 +47,3 @@ describe('AdmApi update method', () => {
     );
   });
 });
-
