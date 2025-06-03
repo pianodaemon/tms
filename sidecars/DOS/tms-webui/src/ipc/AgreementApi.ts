@@ -1,5 +1,4 @@
-import { AdmApi } from './AdmApi';
-import { PaginatedResponse } from './types';
+import { AdmApi, PaginatedResponse } from './AdmApi';
 
 export interface AgreementDto {
   id: string | null;
