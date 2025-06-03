@@ -40,8 +40,7 @@ jobs:
         run: |
           cd sidecars/DOS/tms-webui
           npm install
-          npm run build
-          npm test -- --coverage
+          npm run test:coverage
 
       - name: Coverage tms-webui
         if: github.event_name == 'pull_request'
