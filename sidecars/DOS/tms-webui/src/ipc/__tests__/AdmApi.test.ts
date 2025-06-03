@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { AdmApi, PaginatedResponse } from '../AdmApi';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { AdmApi } from '../AdmApi';
 import AxiosMockAdapter from 'axios-mock-adapter';
 
 interface DummyDto {
@@ -21,7 +21,7 @@ describe('AdmApi update method', () => {
 
   beforeEach(() => {
     api = new DummyApi(tenantId, authToken);
-    mock = new AxiosMockAdapter((api as any).http); // access protected .http
+    mock = new AxiosMockAdapter((api as any).http);
   });
 
   afterEach(() => {
