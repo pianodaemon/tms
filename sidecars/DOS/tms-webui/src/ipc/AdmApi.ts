@@ -1,5 +1,4 @@
-import axios from 'axios';
-import type { AxiosInstance } from 'axios';
+import axios, { type AxiosInstance } from 'axios';
 
 export interface PaginatedResponse<T> {
   data: T[];
@@ -15,7 +14,7 @@ export class AdmApi<T extends { id: string | null }, CreateDto = Omit<T, 'id'>> 
     tenantId: string,
     authToken: string,
     resourcePath: string,
-    baseUrl: string = '/adm'
+    baseUrl = '/adm'
   ) {
     this.basePath = `${baseUrl}/${tenantId}/${resourcePath}`;
     this.http = axios.create({
@@ -41,7 +40,7 @@ export class AdmApi<T extends { id: string | null }, CreateDto = Omit<T, 'id'>> 
   }
 
   async update(item: T): Promise<T> {
-    if (!item || !('id' in item) || !item.id) {
+    if (!item?.id) {
       throw new Error('Cannot update item: missing valid id');
     }
 
