@@ -1,12 +1,16 @@
 import PaginatedGrid from '../comps/paginator/PaginatedGrid';
 import type { BoxDto } from '../ipc/BoxApi';
 import { AdmApi } from '../ipc/AdmApi';
+import { useState } from 'react';
 
 const tenantId = 'yourTenantId';
 const authToken = 'Bearer yourAuthToken';
 const boxApi = new AdmApi<BoxDto>(tenantId, authToken, 'boxes');
 
 const BoxesGrid = () => {
+  const [pageOpts] = useState({ page: 0, size: 10 });
+  const [filters] = useState({});
+
   const columns = [
     { header: 'Name', render: (b: BoxDto) => b.name },
     { header: 'Type', render: (b: BoxDto) => b.boxType },
@@ -22,7 +26,15 @@ const BoxesGrid = () => {
     { header: 'Lease', render: (b: BoxDto) => (b.lease ? 'Yes' : 'No') },
   ];
 
-  return <PaginatedGrid title="Boxes" api={boxApi} columns={columns} />;
+  return (
+    <PaginatedGrid
+      title="Boxes"
+      api={boxApi}
+      columns={columns}
+      pageOpts={pageOpts}
+      filters={filters}
+    />
+  );
 };
 
 export default BoxesGrid;
