@@ -1,4 +1,6 @@
-import { generatePageNumbers } from '../bricks';
+import { test, describe, it, vi, beforeEach, expect } from 'vitest';
+import { generatePageNumbers, fetchDtos } from '../bricks';
+import { AdmApi } from '../../../ipc/AdmApi';
 
 describe('generatePageNumbers', () => {
   test('centered range within bounds', () => {
@@ -38,3 +40,62 @@ describe('generatePageNumbers', () => {
   });
 });
 
+interface DummyDto {
+  id: string | null;
+  name: string;
+}
+
+class DummyApi extends AdmApi<DummyDto> {
+  constructor(tenantId: string, authToken: string) {
+    super(tenantId, authToken, 'dummy');
+  }
+}
+
+describe('fetchDtos', () => {
+  let mockApi: DummyApi;
+  const dummyData: DummyDto[] = [{ id: 'abc123', name: 'Test Dummy' }];
+
+  const setData = vi.fn();
+  const setTotalPages = vi.fn();
+  const setLoading = vi.fn();
+
+  const pageOpts = { number: 1, size: 10 };
+  const filters = { status: 'active' };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockApi = {
+      listPaginated: vi.fn().mockResolvedValue({
+        data: dummyData,
+        totalPages: 2,
+      }),
+    } as unknown as AdmApi<DummyDto>;
+  });
+
+  it('calls listPaginated with pageOpts and filters', async () => {
+    await fetchDtos(mockApi, pageOpts, filters, setData, setTotalPages);
+
+    expect(mockApi.listPaginated).toHaveBeenCalledWith({
+      pageOpts,
+      filters,
+    });
+    expect(setData).toHaveBeenCalledWith(dummyData);
+    expect(setTotalPages).toHaveBeenCalledWith(2);
+  });
+
+  it('handles errors and sets defaults', async () => {
+    (mockApi.listPaginated as any).mockRejectedValue(new Error('Failure'));
+
+    await fetchDtos(mockApi, pageOpts, filters, setData, setTotalPages);
+
+    expect(setData).toHaveBeenCalledWith([]);
+    expect(setTotalPages).toHaveBeenCalledWith(1);
+  });
+
+  it('uses setLoading if provided', async () => {
+    await fetchDtos(mockApi, pageOpts, filters, setData, setTotalPages, setLoading);
+
+    expect(setLoading).toHaveBeenNthCalledWith(1, true);
+    expect(setLoading).toHaveBeenLastCalledWith(false);
+  });
+});
