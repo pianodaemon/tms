@@ -1,4 +1,4 @@
-export function getPages(currentPage: number, totalPages: number, displayCount: number): number[] {
+export function generatePageNumbers(currentPage: number, totalPages: number, displayCount: number): number[] {
   const pages: number[] = [];
   const half = Math.floor(displayCount / 2);
   let start = Math.max(currentPage - half, 1);
