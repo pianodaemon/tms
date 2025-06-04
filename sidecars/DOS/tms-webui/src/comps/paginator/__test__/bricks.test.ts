@@ -98,4 +98,16 @@ describe('fetchDtos', () => {
     expect(setLoading).toHaveBeenNthCalledWith(1, true);
     expect(setLoading).toHaveBeenLastCalledWith(false);
   });
+
+  it('does not fail if setLoading is not provided', async () => {
+    await expect(fetchDtos(mockApi, pageOpts, filters, setData, setTotalPages)).resolves.not.toThrow();
+  });
+
+  it('calls setLoading on error if provided', async () => {
+    (mockApi.listPaginated as any).mockRejectedValue(new Error('Failure'));
+    await fetchDtos(mockApi, pageOpts, filters, setData, setTotalPages, setLoading);
+
+    expect(setLoading).toHaveBeenNthCalledWith(1, true);
+    expect(setLoading).toHaveBeenLastCalledWith(false);
+  });
 });
