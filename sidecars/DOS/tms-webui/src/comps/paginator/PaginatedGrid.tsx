@@ -1,33 +1,45 @@
 import React, { useEffect, useState } from 'react';
+
 import { AdmApi } from '../../ipc/AdmApi';
 import PageTracker from './PageTracker';
 import { fetchDtos } from './bricks';
+
 
 type Column<T> = {
   header: string;
   render: (item: T) => React.ReactNode;
 };
 
-type PaginatedGridProps<T extends { id: string | null }> = {
+type PaginatedGridProps<T extends { id: string | null; }> = {
   title?: string;
   api: AdmApi<T>;
   columns: Column<T>[];
-  pageSize?: number;
+  pageOpts: { page: number; size: number; [key: string]: any };
+  filters?: Record<string, any>;
 };
 
-function PaginatedGrid<T extends { id: string | null; }>({ title, api, columns, pageSize = 10 }: PaginatedGridProps<T>) {
-  const [rows, setDtos] = useState<T[]>([]);
+function PaginatedGrid<T extends { id: string | null; }>({
+  title,
+  api,
+  columns,
+  pageOpts,
+  filters = {},
+}: PaginatedGridProps<T>) {
+  const [rows, setRows] = useState<T[]>([]);
   const [totalPages, setTotalPages] = useState(1);
-  const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    let pageOps = { page: currentPage, size: pageSize };
-    let filters = {};
-    fetchDtos(api, pageOps, filters, setDtos, setTotalPages, setLoading);
-  }, [currentPage, api, pageSize]);
+    fetchDtos(api, pageOpts, filters, setRows, setTotalPages, setLoading);
+  }, [api, pageOpts, filters]);
 
-  const handlePageChange = (page: number) => setCurrentPage(page);
+  const handlePageChange = (page: number) => {
+    // let parent component control page state
+    if (typeof pageOpts.page === 'number') {
+      pageOpts.page = page; // update mutable object
+      fetchDtos(api, pageOpts, filters, setRows, setTotalPages, setLoading);
+    }
+  };
 
   return (
     <div>
@@ -58,7 +70,7 @@ function PaginatedGrid<T extends { id: string | null; }>({ title, api, columns, 
 
       <PageTracker
         totalPages={totalPages}
-        currentPage={currentPage}
+        currentPage={pageOpts.page}
         displayCount={5}
         onPageChange={handlePageChange}
       />
