@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 // Mock PaginatedGrid to isolate test
 vi.mock('../PaginatedGrid', () => ({
   default: ({ title, api, columns, pageOpts, filters }: any) => {
-//    const { useEffect, useState } = require('react');
 
     const [data, setData] = useState<any[]>([]);
 
