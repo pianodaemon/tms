@@ -1,14 +1,25 @@
-import PaginatedGrid from '../comps/paginator/PaginatedGrid';
-import type { BoxDto } from '../ipc/BoxApi';
-import { BoxApi } from '../ipc/BoxApi';
+import type { BoxDto } from '../../ipc/BoxApi';
+import PaginatedGrid from './PaginatedGrid';
 import { useState } from 'react';
+import { MockApi } from '../../ipc/MockApi'; // path to your mock class
 
-const tenantId = 'yourTenantId';
-const authToken = 'Bearer yourAuthToken';
-const boxApi = new BoxApi(tenantId, authToken, 'boxes');
+const initialBoxes: BoxDto[] = Array.from({ length: 45 }, (_, i) => ({
+  id: `${i + 1}`,
+  name: `Box ${i + 1}`,
+  boxType: i % 2 === 0 ? 'Refrigerated' : 'Standard',
+  brand: `Brand ${i % 5}`,
+  numberOfAxis: 2 + (i % 3),
+  numberSerial: `SN-${1000 + i}`,
+  numberPlate: `PLATE-${i + 1}`,
+  numberPlateExpiration: new Date(2026, (i % 12), 1).toISOString(),
+  boxYear: 2020 + (i % 5),
+  lease: i % 2 === 0,
+}));
 
-const BoxesGrid = () => {
-  const [pageOpts] = useState({ page: 0, size: 10 });
+const mockBoxApi = new MockApi<BoxDto>(initialBoxes);
+
+const SimulationGrid = () => {
+  const [pageOpts] = useState({ page: 1, size: 5 });
   const [filters] = useState({});
 
   const columns = [
@@ -29,7 +40,7 @@ const BoxesGrid = () => {
   return (
     <PaginatedGrid
       title="Boxes"
-      api={boxApi}
+      api={mockBoxApi}
       columns={columns}
       pageOpts={pageOpts}
       filters={filters}
@@ -37,4 +48,4 @@ const BoxesGrid = () => {
   );
 };
 
-export default BoxesGrid;
+export default SimulationGrid;

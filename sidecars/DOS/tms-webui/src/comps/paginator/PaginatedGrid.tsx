@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 import { AdmApi } from '../../ipc/AdmApi';
 import PageTracker from './PageTracker';
-import { fetchDtos } from './bricks';
-
 
 type Column<T> = {
   header: string;
@@ -17,6 +15,31 @@ type PaginatedGridProps<T extends { id: string | null; }> = {
   pageOpts: { page: number; size: number; [key: string]: any };
   filters?: Record<string, any>;
 };
+
+async function fetchDtos<T extends { id: string | null; }>(
+  api: AdmApi<T>,
+  pageOpts: Record<string, any>,
+  filters: Record<string, any>,
+  setData: (data: T[]) => void,
+  setTotalPages: (pages: number) => void,
+  setLoading?: (isLoading: boolean) => void
+): Promise<void> {
+  setLoading?.(true);
+  try {
+    const response = await api.listPaginated({
+      pageOpts,
+      filters,
+    });
+    setData(response.data);
+    setTotalPages(response.totalPages);
+  } catch (err) {
+    console.error('fetchRows error:', err);
+    setData([]);
+    setTotalPages(1);
+  } finally {
+    setLoading?.(false);
+  }
+}
 
 function PaginatedGrid<T extends { id: string | null; }>({
   title,
@@ -42,30 +65,36 @@ function PaginatedGrid<T extends { id: string | null; }>({
   };
 
   return (
-    <div>
-      {title && <h2>{title}</h2>}
+    <div className="p-4 space-y-4">
+      {title && <h2 className="text-xl font-semibold text-gray-800">{title}</h2>}
 
       {loading ? (
-        <p>Loading...</p>
+        <div className="text-gray-500">Loading...</div>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              {columns.map((col, index) => (
-                <th key={index}>{col.header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((item, i) => (
-              <tr key={i}>
-                {columns.map((col, j) => (
-                  <td key={j}>{col.render(item)}</td>
+        <div className="overflow-x-auto rounded-lg shadow">
+          <table className="min-w-full text-sm text-left text-gray-700 bg-white border border-gray-200">
+            <thead className="bg-gray-100 text-gray-600 uppercase text-xs">
+              <tr>
+                {columns.map((col, index) => (
+                  <th key={index} className="px-4 py-3 border-b">
+                    {col.header}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {rows.map((item, i) => (
+                <tr key={i} className="hover:bg-gray-50">
+                  {columns.map((col, j) => (
+                    <td key={j} className="px-4 py-2 border-b">
+                      {col.render(item)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       <PageTracker
