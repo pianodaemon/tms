@@ -41,7 +41,7 @@ export class MockApi<T extends { id: string | null }, CreateDto = Omit<T, 'id'>>
     filters?: Record<string, string | number>;
   }): Promise<PaginatedResponse<T>> {
     const { pageOpts = {}, filters = {} } = params;
-    const page = Number(pageOpts.page ?? 0);
+    const page = Math.max(0, Number(pageOpts.page ?? 1) - 1);
     const size = Number(pageOpts.size ?? 10);
 
     // Simple filtering

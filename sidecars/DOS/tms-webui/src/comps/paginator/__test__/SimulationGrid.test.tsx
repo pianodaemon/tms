@@ -50,11 +50,11 @@ describe('SimulationGrid', () => {
       expect(screen.getByText('Boxes')).toBeInTheDocument();
     });
 
-    // Page 1: Boxes 11–20
-    expect(screen.getByText('Box 11')).toBeInTheDocument();
-    expect(screen.getByText('Box 20')).toBeInTheDocument();
+    // Page 1: Boxes 1–10
+    expect(screen.getByText('Box 1')).toBeInTheDocument();
+    expect(screen.getByText('Box 10')).toBeInTheDocument();
 
-    // Page 0: should not show
-    expect(screen.queryByText('Box 1')).not.toBeInTheDocument();
+    // Page 2: should not show
+    expect(screen.queryByText('Box 11')).not.toBeInTheDocument();
   });
 });

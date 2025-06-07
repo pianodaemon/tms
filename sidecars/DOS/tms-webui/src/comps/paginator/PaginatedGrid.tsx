@@ -100,7 +100,7 @@ function PaginatedGrid<T extends { id: string | null; }>({
       <PageTracker
         totalPages={totalPages}
         currentPage={pageOpts.page}
-        displayCount={5}
+        displayCount={3}
         onPageChange={handlePageChange}
       />
     </div>
