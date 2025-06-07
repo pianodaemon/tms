@@ -19,7 +19,7 @@ const initialBoxes: BoxDto[] = Array.from({ length: 45 }, (_, i) => ({
 const mockBoxApi = new MockApi<BoxDto>(initialBoxes);
 
 const SimulationGrid = () => {
-  const [pageOpts] = useState({ page: 1, size: 5 });
+  const [pageOpts] = useState({ page: 1, size: 10 });
   const [filters] = useState({});
 
   const columns = [
