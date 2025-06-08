@@ -3,6 +3,8 @@ import reactLogo from '../assets/react.svg'
 import viteLogo from '/vite.svg'
 import '../App.css'
 
+import SimulationGrid from '../comps/paginator/SimulationGrid.tsx'
+
 function Home() {
   const [count, setCount] = useState(0)
 
@@ -28,6 +30,7 @@ function Home() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
+<SimulationGrid />
     </>
   )
 }
