@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { test, describe, expect } from 'vitest';
 import { generatePageNumbers } from '../bricks';
 
 describe('generatePageNumbers', () => {
