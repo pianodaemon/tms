@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { generatePageNumbers } from './bricks';
 
 interface PageTrackerProps {
@@ -14,10 +14,14 @@ const PageTracker: React.FC<PageTrackerProps> = ({
   displayCount,
   onPageChange,
 }) => {
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentPage]);
+
   const handleClick = (page: number) => {
     if (page !== currentPage) {
       onPageChange(page);
-      window.scrollTo({ top: 0, behavior: 'smooth' }); // moved here instead of useEffect
     }
   };
 
