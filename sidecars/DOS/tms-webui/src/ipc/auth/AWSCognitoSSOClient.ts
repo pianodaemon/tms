@@ -1,8 +1,4 @@
-import {
-  AuthenticationDetails,
-  CognitoUser,
-  CognitoUserPool,
-} from 'amazon-cognito-identity-js';
+import { AuthenticationDetails, CognitoUser, CognitoUserPool } from 'amazon-cognito-identity-js';
 import type { SSOClient } from './SSOClient';
 
 export interface AuthUser {
@@ -19,6 +15,7 @@ const poolData = {
 const userPool = new CognitoUserPool(poolData);
 
 export class AWSCognitoSSOClient implements SSOClient<AuthUser> {
+
   async signIn(username: string, password: string): Promise<AuthUser> {
     const user = new CognitoUser({ Username: username, Pool: userPool });
     const authDetails = new AuthenticationDetails({
