@@ -54,7 +54,7 @@ function PaginatedGrid<T extends { id: string | null; }>({
 
   useEffect(() => {
     fetchDtos(api, pageOpts, filters, setRows, setTotalPages, setLoading);
-  }, [api, pageOpts, filters]);
+  }, [pageOpts, filters]);
 
   const handlePageChange = (page: number) => {
     // let parent component control page state
