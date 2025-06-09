@@ -1,38 +1,25 @@
 import type { SSOClient } from './SSOClient';
 import type { AuthUser } from './AuthUser';
-import { signIn, getCurrentUser, fetchAuthSession, signOut } from 'aws-amplify/auth';
-
+import {
+  signIn,
+  getCurrentUser,
+  fetchAuthSession,
+  signOut as amplifySignOut,
+} from 'aws-amplify/auth';
 
 export class AmplifySSOClient implements SSOClient<AuthUser> {
-
   async signIn(username: string, password: string): Promise<AuthUser> {
-
     await signIn({ username, password });
-
-    const user = await getCurrentUser();
-    const session = await fetchAuthSession();
-
-    return {
-      id: user.userId,
-      email: user.signInDetails?.loginId ?? user.userId,
-      token: session.tokens?.idToken?.toString() ?? '',
-    };
+    return this.buildAuthUser();
   }
 
   async signOut(): Promise<void> {
-    await signOut();
+    await amplifySignOut();
   }
 
   async getCurrentUser(): Promise<AuthUser | null> {
     try {
-      const user = await getCurrentUser();
-      const session = await fetchAuthSession();
-
-      return {
-        id: user.username,
-        email: user.signInDetails?.loginId ?? user.username,
-        token: session.tokens?.idToken?.toString() ?? '',
-      };
+      return await this.buildAuthUser();
     } catch {
       return null;
     }
@@ -45,5 +32,16 @@ export class AmplifySSOClient implements SSOClient<AuthUser> {
     } catch {
       return false;
     }
+  }
+
+  private async buildAuthUser(): Promise<AuthUser> {
+    const user = await getCurrentUser();
+    const session = await fetchAuthSession();
+
+    return {
+      id: user.userId,
+      email: user.signInDetails?.loginId ?? user.userId,
+      token: session.tokens?.idToken?.toString() ?? '',
+    };
   }
 }
