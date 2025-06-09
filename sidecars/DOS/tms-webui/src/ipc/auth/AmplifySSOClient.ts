@@ -1,7 +1,7 @@
 import type { SSOClient } from './SSOClient';
 import type { AuthUser } from './AuthUser';
 import { signIn, getCurrentUser, fetchAuthSession, signOut } from 'aws-amplify/auth';
-//import { AuthUser, SSOClient } from './SSOClient'; // assuming these are defined
+
 
 export class AmplifySSOClient implements SSOClient<AuthUser> {
 
