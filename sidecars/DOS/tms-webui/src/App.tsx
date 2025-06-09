@@ -1,4 +1,5 @@
 import HalfBakeRouter from './router/HalfBakeRouter';
+import './amplifyConfig';
 
 function App() {
 
