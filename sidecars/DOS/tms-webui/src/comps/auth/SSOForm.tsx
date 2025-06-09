@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { SSOClient } from '../../ipc/auth/SSOClient';
-import type { AuthUser } from '../../ipc/auth/AWSCognitoSSOClient';
+import type { AuthUser } from '../../ipc/auth/AuthUser';
 
 interface SSOFormProps {
   ssoClient: SSOClient<AuthUser>;
