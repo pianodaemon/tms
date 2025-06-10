@@ -1,3 +1,4 @@
+import ehandle from '../../icskit/ehandle';
 import type { SSOClient } from './SSOClient';
 import type { AuthUser } from './AuthUser';
 import {
@@ -5,11 +6,16 @@ import {
   getCurrentUser,
   fetchAuthSession,
   signOut as amplifySignOut,
+  type SignInOutput,
 } from 'aws-amplify/auth';
 
 export class AmplifySSOClient implements SSOClient<AuthUser> {
   async signIn(username: string, password: string): Promise<AuthUser> {
-    await signIn({ username, password });
+    const [error, _] = await ehandle.catchError<SignInOutput>(signIn({ username, password }));
+    if (error) {
+      console.error("SSO client can not sign in : ", error.message);
+    }
+    //await signIn({ username, password });
     return this.buildAuthUser();
   }
 
