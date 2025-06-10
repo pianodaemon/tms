@@ -15,7 +15,6 @@ export class AmplifySSOClient implements SSOClient<AuthUser> {
     if (error) {
       console.error("SSO client can not sign in : ", error.message);
     }
-    //await signIn({ username, password });
     return this.buildAuthUser();
   }
 
